@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaSicura - Water Filtration Monitoring</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="login-card">
+            <div class="logo-area">
+                <div class="logo-icon">&#x1F4A7;</div>
+                <h1>AquaSicura</h1>
+                <p class="subtitle">Water Filtration Monitoring</p>
+            </div>
+            <form id="login-form" onsubmit="return doLogin(event)">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="admin@aquasicura.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-server">ThingsBoard Server</label>
+                    <input type="text" id="login-server" value="thingsboard.cloud" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="login-btn">Sign In</button>
+                <p id="login-error" class="error-text" style="display:none"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App (shown after login) -->
+    <div id="app-screen" class="screen">
+        <!-- Top Nav Bar -->
+        <nav class="navbar">
+            <div class="nav-left">
+                <span class="nav-logo">&#x1F4A7; AquaSicura</span>
+            </div>
+            <div class="nav-right">
+                <span id="nav-user" class="nav-user"></span>
+                <span id="nav-role" class="nav-badge"></span>
+                <button class="btn btn-sm btn-outline" onclick="doLogout()">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Admin Tabs (only visible for Tenant Admin) -->
+        <div id="admin-tabs" class="tab-bar" style="display:none">
+            <button class="tab active" data-tab="dashboard" onclick="switchTab(this)">Dashboard</button>
+            <button class="tab" data-tab="devices" onclick="switchTab(this)">Devices</button>
+            <button class="tab" data-tab="customers" onclick="switchTab(this)">Customers</button>
+            <button class="tab" data-tab="alarms" onclick="switchTab(this)">Alarms</button>
+        </div>
+
+        <!-- User Tabs (only visible for Customer User) -->
+        <div id="user-tabs" class="tab-bar" style="display:none">
+            <button class="tab active" data-tab="dashboard" onclick="switchTab(this)">My Device</button>
+            <button class="tab" data-tab="alarms" onclick="switchTab(this)">Alarms</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="page-header">
+                <h2 id="dashboard-title">All Devices</h2>
+                <button class="btn btn-sm btn-primary" onclick="refreshDashboard()">Refresh</button>
+            </div>
+            <div id="device-cards" class="device-grid">
+                <p class="loading">Loading devices...</p>
+            </div>
+        </div>
+
+        <!-- Devices Tab (Admin only) -->
+        <div id="tab-devices" class="tab-content">
+            <div class="page-header">
+                <h2>Device Management</h2>
+                <button class="btn btn-sm btn-primary" onclick="openAddDeviceModal()">+ Add Device</button>
+            </div>
+            <table class="data-table" id="devices-table">
+                <thead>
+                    <tr><th>Name</th><th>Type</th><th>Customer</th><th>Active</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="devices-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Customers Tab (Admin only) -->
+        <div id="tab-customers" class="tab-content">
+            <div class="page-header">
+                <h2>Customer &amp; User Management</h2>
+                <button class="btn btn-sm btn-primary" onclick="openAddCustomerModal()">+ Add Customer</button>
+            </div>
+            <div id="customers-list" class="customers-grid"></div>
+        </div>
+
+        <!-- Alarms Tab -->
+        <div id="tab-alarms" class="tab-content">
+            <div class="page-header">
+                <h2>Alarm Configuration</h2>
+            </div>
+            <div id="alarm-device-selector" style="margin-bottom:16px;">
+                <label for="alarm-device-select"><strong>Select Device:</strong></label>
+                <select id="alarm-device-select" onchange="loadDeviceAlarmConfig()"></select>
+            </div>
+            <div class="alarm-config-card" id="alarm-config-card">
+                <h3>Alarm Limits</h3>
+                <p class="hint">These limits are sent to the device as shared attributes. The device checks values against these limits and triggers WhatsApp notifications.</p>
+                <div class="alarm-grid">
+                    <div class="alarm-row">
+                        <span class="alarm-label">TDS Min (ppm)</span>
+                        <input type="number" id="wa-tds-min" step="1">
+                    </div>
+                    <div class="alarm-row">
+                        <span class="alarm-label">TDS Max (ppm)</span>
+                        <input type="number" id="wa-tds-max" step="1">
+                    </div>
+                    <div class="alarm-row">
+                        <span class="alarm-label">pH Min</span>
+                        <input type="number" id="wa-ph-min" step="0.1">
+                    </div>
+                    <div class="alarm-row">
+                        <span class="alarm-label">pH Max</span>
+                        <input type="number" id="wa-ph-max" step="0.1">
+                    </div>
+                    <div class="alarm-row">
+                        <span class="alarm-label">Temp Min (&deg;C)</span>
+                        <input type="number" id="wa-temp-min" step="0.5">
+                    </div>
+                    <div class="alarm-row">
+                        <span class="alarm-label">Temp Max (&deg;C)</span>
+                        <input type="number" id="wa-temp-max" step="0.5">
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="margin-top:16px;" onclick="saveDeviceAlarmConfig()">Save Alarm Limits to Device</button>
+                <div id="alarm-save-status" class="status-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Device Modal -->
+    <div id="modal-add-device" class="modal-overlay" style="display:none">
+        <div class="modal-card">
+            <h3>Add New Device</h3>
+            <div class="form-group">
+                <label>Device Name</label>
+                <input type="text" id="new-device-name" placeholder="e.g. AquaSicura-AB12">
+            </div>
+            <div class="form-group">
+                <label>Device Type</label>
+                <input type="text" id="new-device-type" value="AquaSicura" readonly>
+            </div>
+            <div class="form-group">
+                <label>Assign to Customer (optional)</label>
+                <select id="new-device-customer"><option value="">-- None --</option></select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="addDevice()">Create Device</button>
+                <button class="btn btn-outline" onclick="closeModal('modal-add-device')">Cancel</button>
+            </div>
+            <div id="add-device-result" class="status-msg"></div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div id="modal-add-customer" class="modal-overlay" style="display:none">
+        <div class="modal-card">
+            <h3>Add New Customer</h3>
+            <div class="form-group">
+                <label>Customer Name (Company/Location)</label>
+                <input type="text" id="new-customer-name" placeholder="e.g. Building A">
+            </div>
+            <hr>
+            <h4>Create User Account for this Customer</h4>
+            <div class="form-group">
+                <label>User Email</label>
+                <input type="email" id="new-user-email" placeholder="user@example.com">
+            </div>
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" id="new-user-first" placeholder="John">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" id="new-user-last" placeholder="Doe">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="addCustomerAndUser()">Create Customer &amp; User</button>
+                <button class="btn btn-outline" onclick="closeModal('modal-add-customer')">Cancel</button>
+            </div>
+            <div id="add-customer-result" class="status-msg"></div>
+        </div>
+    </div>
+
+    <!-- Device Detail Modal -->
+    <div id="modal-device-detail" class="modal-overlay" style="display:none">
+        <div class="modal-card modal-wide">
+            <div class="modal-header">
+                <h3 id="detail-device-name">Device</h3>
+                <button class="btn btn-sm btn-outline" onclick="closeModal('modal-device-detail')">X</button>
+            </div>
+            <div class="detail-grid" id="detail-grid"></div>
+            <div id="detail-alarms" style="margin-top:16px;"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
