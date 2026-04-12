@@ -479,6 +479,11 @@ function deleteUser(id, email) {
 }
 
 // ── Alarm Config via ThingsBoard Shared Attributes ──────────────────
+
+// All notification config keys stored as shared attributes per device
+const NOTIF_ATTR_KEYS = 'tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax,' +
+    'alarmDelay,notifWeb,notifList,notifEmail,notifSms,notifEmailAddr,notifSmsPhone';
+
 function populateAlarmDeviceSelector() {
     const sel = document.getElementById('alarm-device-select');
     sel.innerHTML = '';
@@ -486,6 +491,42 @@ function populateAlarmDeviceSelector() {
         sel.innerHTML += `<option value="${d.id.id}">${d.name}</option>`;
     });
     if (allDevices.length > 0) loadDeviceAlarmConfig();
+    updateNotifPermStatus();
+}
+
+function toggleNotifField(type) {
+    const cb = document.getElementById('notif-' + type);
+    const field = document.getElementById('notif-' + type + '-field');
+    if (field) field.style.display = cb.checked ? 'block' : 'none';
+}
+
+function requestNotifPermission() {
+    if (!('Notification' in window)) {
+        alert('Your browser does not support desktop notifications.');
+        return;
+    }
+    Notification.requestPermission().then(perm => { updateNotifPermStatus(); });
+}
+
+function updateNotifPermStatus() {
+    const statusEl = document.getElementById('notif-web-perm-status');
+    const btn = document.getElementById('notif-web-perm-btn');
+    if (!statusEl) return;
+    if (!('Notification' in window)) {
+        statusEl.textContent = 'Not supported by your browser';
+        btn.style.display = 'none';
+    } else if (Notification.permission === 'granted') {
+        statusEl.textContent = 'Permission granted';
+        statusEl.style.color = 'var(--success)';
+        btn.style.display = 'none';
+    } else if (Notification.permission === 'denied') {
+        statusEl.textContent = 'Permission denied — enable in browser settings';
+        statusEl.style.color = 'var(--danger)';
+        btn.style.display = 'none';
+    } else {
+        statusEl.textContent = '';
+        btn.style.display = 'inline-block';
+    }
 }
 
 function loadDeviceAlarmConfig() {
@@ -499,49 +540,107 @@ function loadDeviceAlarmConfig() {
         document.getElementById('wa-ph-max').value   = DEFAULT_ALARMS.phAlarmMax;
         document.getElementById('wa-temp-min').value = DEFAULT_ALARMS.tempAlarmMin;
         document.getElementById('wa-temp-max').value = DEFAULT_ALARMS.tempAlarmMax;
+        document.getElementById('alarm-delay').value = '5';
+        document.getElementById('notif-web').checked    = true;
+        document.getElementById('notif-list').checked   = true;
+        document.getElementById('notif-email').checked  = false;
+        document.getElementById('notif-sms').checked    = false;
+        document.getElementById('notif-email-addr').value = '';
+        document.getElementById('notif-sms-phone').value  = '';
+        toggleNotifField('email');
+        toggleNotifField('sms');
     }
 
-    // Read from shared attributes first (this is the authoritative source)
-    api('/plugins/telemetry/DEVICE/' + deviceId + '/values/attributes/SHARED_SCOPE?keys=tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax')
+    // Read from shared attributes (authoritative source)
+    api('/plugins/telemetry/DEVICE/' + deviceId + '/values/attributes/SHARED_SCOPE?keys=' + NOTIF_ATTR_KEYS)
     .then(attrs => {
-        if (!attrs || attrs.length === 0) { applyDefaults(); return; }
-        // attrs is an array of {key, value} objects
+        if (!attrs || attrs.length === 0) { applyDefaults(); loadAlarmHistory(); return; }
         const map = {};
         attrs.forEach(a => { map[a.key] = a.value; });
+
+        // Limits
         document.getElementById('wa-tds-min').value  = map.tdsAlarmMin  !== undefined ? map.tdsAlarmMin  : DEFAULT_ALARMS.tdsAlarmMin;
         document.getElementById('wa-tds-max').value  = map.tdsAlarmMax  !== undefined ? map.tdsAlarmMax  : DEFAULT_ALARMS.tdsAlarmMax;
         document.getElementById('wa-ph-min').value   = map.phAlarmMin   !== undefined ? map.phAlarmMin   : DEFAULT_ALARMS.phAlarmMin;
         document.getElementById('wa-ph-max').value   = map.phAlarmMax   !== undefined ? map.phAlarmMax   : DEFAULT_ALARMS.phAlarmMax;
         document.getElementById('wa-temp-min').value = map.tempAlarmMin !== undefined ? map.tempAlarmMin : DEFAULT_ALARMS.tempAlarmMin;
         document.getElementById('wa-temp-max').value = map.tempAlarmMax !== undefined ? map.tempAlarmMax : DEFAULT_ALARMS.tempAlarmMax;
+
+        // Delay
+        document.getElementById('alarm-delay').value = map.alarmDelay !== undefined ? String(map.alarmDelay) : '5';
+
+        // Notification channels
+        document.getElementById('notif-web').checked   = map.notifWeb   !== undefined ? (map.notifWeb === true || map.notifWeb === 'true') : true;
+        document.getElementById('notif-list').checked  = map.notifList  !== undefined ? (map.notifList === true || map.notifList === 'true') : true;
+        document.getElementById('notif-email').checked = map.notifEmail !== undefined ? (map.notifEmail === true || map.notifEmail === 'true') : false;
+        document.getElementById('notif-sms').checked   = map.notifSms   !== undefined ? (map.notifSms === true || map.notifSms === 'true') : false;
+        document.getElementById('notif-email-addr').value = map.notifEmailAddr || '';
+        document.getElementById('notif-sms-phone').value  = map.notifSmsPhone || '';
+
+        toggleNotifField('email');
+        toggleNotifField('sms');
     })
     .catch(() => { applyDefaults(); });
+
+    loadAlarmHistory();
 }
 
 function saveDeviceAlarmConfig() {
     const deviceId = document.getElementById('alarm-device-select').value;
     if (!deviceId) return;
 
+    // Validate
+    const emailEnabled = document.getElementById('notif-email').checked;
+    const smsEnabled   = document.getElementById('notif-sms').checked;
+    const emailAddr    = document.getElementById('notif-email-addr').value.trim();
+    const smsPhone     = document.getElementById('notif-sms-phone').value.trim();
+
+    if (emailEnabled && !emailAddr) {
+        alert('Please enter an email address for email notifications.');
+        document.getElementById('notif-email-addr').focus();
+        return;
+    }
+    if (smsEnabled && !smsPhone) {
+        alert('Please enter a phone number for SMS notifications.');
+        document.getElementById('notif-sms-phone').focus();
+        return;
+    }
+
     const attrs = {
+        // Limits
         tdsAlarmMin:  parseFloat(document.getElementById('wa-tds-min').value),
         tdsAlarmMax:  parseFloat(document.getElementById('wa-tds-max').value),
         phAlarmMin:   parseFloat(document.getElementById('wa-ph-min').value),
         phAlarmMax:   parseFloat(document.getElementById('wa-ph-max').value),
         tempAlarmMin: parseFloat(document.getElementById('wa-temp-min').value),
-        tempAlarmMax: parseFloat(document.getElementById('wa-temp-max').value)
+        tempAlarmMax: parseFloat(document.getElementById('wa-temp-max').value),
+        // Delay
+        alarmDelay:   parseInt(document.getElementById('alarm-delay').value),
+        // Notification channels
+        notifWeb:       document.getElementById('notif-web').checked,
+        notifList:      document.getElementById('notif-list').checked,
+        notifEmail:     emailEnabled,
+        notifSms:       smsEnabled,
+        notifEmailAddr: emailAddr,
+        notifSmsPhone:  smsPhone
     };
 
     const status = document.getElementById('alarm-save-status');
     status.textContent = 'Saving...';
     status.className = 'status-msg';
 
-    // Save as shared attributes — the device can read these via ThingsBoard MQTT/HTTP attributes API
     api('/plugins/telemetry/DEVICE/' + deviceId + '/SHARED_SCOPE', {
         method: 'POST',
         body: JSON.stringify(attrs)
     })
     .then(() => {
-        status.textContent = 'Alarm limits saved to device as shared attributes. The device will pick up the new limits on its next check.';
+        status.innerHTML = 'All alarm settings saved successfully. The device will pick up new limits on its next check (up to 60s).' +
+            '<br><small>Notification channels: ' +
+            (attrs.notifWeb ? 'Browser ' : '') +
+            (attrs.notifList ? 'AlarmList ' : '') +
+            (attrs.notifEmail ? 'Email(' + attrs.notifEmailAddr + ') ' : '') +
+            (attrs.notifSms ? 'SMS(' + attrs.notifSmsPhone + ') ' : '') +
+            '| Delay: ' + attrs.alarmDelay + ' min</small>';
         status.className = 'status-msg ok';
     })
     .catch(err => {
@@ -549,6 +648,146 @@ function saveDeviceAlarmConfig() {
         status.className = 'status-msg err';
     });
 }
+
+// ── Alarm History (ThingsBoard Alarms API) ─────────────────────────
+
+function loadAlarmHistory() {
+    const deviceId = document.getElementById('alarm-device-select').value;
+    if (!deviceId) return;
+    const tbody = document.getElementById('alarm-history-tbody');
+    tbody.innerHTML = '<tr><td colspan="7" class="loading">Loading...</td></tr>';
+
+    // ThingsBoard Alarms API — fetch alarms for this device
+    api('/alarm/DEVICE/' + deviceId + '?pageSize=50&page=0&sortProperty=createdTime&sortOrder=DESC')
+    .then(page => {
+        const alarms = page.data || [];
+        if (alarms.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="loading">No alarms recorded for this device.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = alarms.map(a => {
+            const d = new Date(a.createdTime);
+            const dateStr = d.getFullYear() + '-' +
+                String(d.getMonth()+1).padStart(2,'0') + '-' +
+                String(d.getDate()).padStart(2,'0') + ' ' +
+                String(d.getHours()).padStart(2,'0') + ':' +
+                String(d.getMinutes()).padStart(2,'0') + ':' +
+                String(d.getSeconds()).padStart(2,'0');
+
+            const severity = (a.severity || 'WARNING').toUpperCase();
+            const sevClass = severity === 'CRITICAL' ? 'critical' : 'warning';
+            const statusVal = (a.status || 'ACTIVE_UNACK').toUpperCase();
+            let statusClass = 'active';
+            let statusLabel = 'Active';
+            if (statusVal.includes('CLEAR')) { statusClass = 'cleared'; statusLabel = 'Cleared'; }
+            else if (statusVal.includes('ACK')) { statusClass = 'ack'; statusLabel = 'Acknowledged'; }
+
+            // Parse alarm type and details
+            const alarmType = a.type || 'Unknown';
+            const details = a.details || {};
+            const value = details.value !== undefined ? parseFloat(details.value).toFixed(2) : '--';
+            const limit = details.limit !== undefined ? details.limit : '--';
+
+            return '<tr>' +
+                '<td>' + dateStr + '</td>' +
+                '<td>' + escHtml(alarmType) + '</td>' +
+                '<td>' + value + '</td>' +
+                '<td>' + limit + '</td>' +
+                '<td><span class="alarm-severity ' + sevClass + '">' + severity + '</span></td>' +
+                '<td><span class="alarm-status ' + statusClass + '">' + statusLabel + '</span></td>' +
+                '<td>' + (statusClass === 'active' ?
+                    '<button class="btn btn-sm btn-outline" onclick="ackAlarm(\'' + a.id.id + '\')">Ack</button> ' +
+                    '<button class="btn btn-sm btn-outline" onclick="clearAlarm(\'' + a.id.id + '\')">Clear</button>' :
+                    statusClass === 'ack' ?
+                    '<button class="btn btn-sm btn-outline" onclick="clearAlarm(\'' + a.id.id + '\')">Clear</button>' :
+                    '<span style="color:var(--text-light)">--</span>') +
+                '</td></tr>';
+        }).join('');
+    })
+    .catch(err => {
+        tbody.innerHTML = '<tr><td colspan="7" class="loading">Error: ' + err.message + '</td></tr>';
+    });
+}
+
+function escHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function ackAlarm(alarmId) {
+    api('/alarm/' + alarmId + '/ack', { method: 'POST' })
+    .then(() => loadAlarmHistory())
+    .catch(err => alert('Error: ' + err.message));
+}
+
+function clearAlarm(alarmId) {
+    api('/alarm/' + alarmId + '/clear', { method: 'POST' })
+    .then(() => loadAlarmHistory())
+    .catch(err => alert('Error: ' + err.message));
+}
+
+function clearAlarmHistory() {
+    if (!confirm('Clear all alarms for this device? This cannot be undone.')) return;
+    const deviceId = document.getElementById('alarm-device-select').value;
+    if (!deviceId) return;
+
+    // Fetch all active alarms and clear each one
+    api('/alarm/DEVICE/' + deviceId + '?pageSize=100&page=0')
+    .then(page => {
+        const alarms = page.data || [];
+        return Promise.all(alarms.map(a =>
+            api('/alarm/' + a.id.id + '/clear', { method: 'POST' }).catch(() => {})
+        ));
+    })
+    .then(() => loadAlarmHistory())
+    .catch(err => alert('Error: ' + err.message));
+}
+
+// ── Browser Notification for Active Alarms (polling) ───────────────
+let lastNotifiedAlarms = new Set();
+
+function checkAlarmsAndNotify() {
+    if (!TOKEN || !allDevices.length) return;
+
+    allDevices.forEach(device => {
+        api('/plugins/telemetry/DEVICE/' + device.id.id + '/values/timeseries?keys=tdsAlarm,phAlarm,tempAlarm,tds,pH,waterTemp')
+        .then(ts => {
+            const tdsA  = tv(ts, 'tdsAlarm')  === 'true';
+            const phA   = tv(ts, 'phAlarm')   === 'true';
+            const tempA = tv(ts, 'tempAlarm') === 'true';
+
+            const alarms = [];
+            if (tdsA)  alarms.push('TDS: ' + (tv(ts, 'tds') || '?') + ' ppm');
+            if (phA)   alarms.push('pH: ' + (tv(ts, 'pH') || '?'));
+            if (tempA) alarms.push('Temp: ' + (tv(ts, 'waterTemp') || '?') + '\u00b0C');
+
+            if (alarms.length === 0) {
+                lastNotifiedAlarms.delete(device.id.id);
+                return;
+            }
+
+            // Only notify once per alarm cycle (don't spam)
+            const alarmKey = device.id.id + ':' + alarms.join(',');
+            if (lastNotifiedAlarms.has(alarmKey)) return;
+            lastNotifiedAlarms.add(alarmKey);
+
+            // Check if web notifications are enabled for this device
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('AquaSicura Alarm - ' + device.name, {
+                    body: alarms.join('\n'),
+                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💧</text></svg>',
+                    tag: 'alarm-' + device.id.id,
+                    requireInteraction: true
+                });
+            }
+        })
+        .catch(() => {});
+    });
+}
+
+// Check for alarms every 30 seconds
+setInterval(checkAlarmsAndNotify, 30000);
 
 // ── Tab switch hooks ────────────────────────────────────────────────
 const origSwitchTab = switchTab;

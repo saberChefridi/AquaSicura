@@ -139,10 +139,58 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color:
 .customer-devices { margin-top: 8px; font-size: 13px; color: var(--text-light); }
 
 /* ── Alarm Config ────────────────────────────────────────────────── */
-.alarm-config-card {
+.alarm-section-card {
     background: var(--card); border-radius: var(--radius); padding: 24px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.06); max-width: 500px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06); margin-bottom: 20px;
 }
+.alarm-section-card h3 { font-size: 17px; margin-bottom: 8px; }
+
+/* Alarm Limits */
+.alarm-limits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.alarm-limit-group {
+    background: #f0f4f8; border-radius: 8px; padding: 14px; text-align: center;
+}
+.alarm-limit-header { font-weight: 700; font-size: 14px; color: var(--primary-dark); margin-bottom: 10px; }
+.alarm-limit-inputs { display: flex; gap: 10px; justify-content: center; }
+.alarm-limit-inputs .form-group { margin-bottom: 0; }
+.alarm-limit-inputs label { font-size: 11px; text-align: center; }
+.alarm-limit-inputs input { width: 90px; text-align: center; padding: 8px 6px; }
+
+/* Alarm Delay */
+.alarm-delay-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.alarm-delay-row select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
+
+/* Notification Channels */
+.notif-channels { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.notif-channel-card {
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+    transition: .2s;
+}
+.notif-channel-card:has(input:checked) { border-color: var(--primary); background: #f0f5ff; }
+.notif-channel-header { margin-bottom: 6px; }
+.toggle-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.toggle-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+.notif-desc { font-size: 12px; color: var(--text-light); margin-bottom: 8px; line-height: 1.4; }
+.notif-field { margin-top: 8px; }
+.notif-field label { font-size: 12px; font-weight: 600; color: var(--text-light); display: block; margin-bottom: 4px; }
+.notif-field input {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; outline: none; transition: .2s;
+}
+.notif-field input:focus { border-color: var(--primary); }
+
+/* Alarm History */
+#alarm-history-table th { font-size: 11px; }
+#alarm-history-table td { font-size: 13px; }
+.alarm-severity { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.alarm-severity.critical { background: #ffebee; color: var(--danger); }
+.alarm-severity.warning { background: #fff3e0; color: var(--warn); }
+.alarm-status { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.alarm-status.active { background: #ffebee; color: var(--danger); }
+.alarm-status.cleared { background: #e8f5e9; color: var(--success); }
+.alarm-status.ack { background: #e3f2fd; color: var(--accent); }
+
+/* Legacy compat */
 .alarm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .alarm-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
 .alarm-label { font-size: 14px; font-weight: 600; }
@@ -213,6 +261,11 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color:
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 900px) {
     .chart-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+    .alarm-limits-grid { grid-template-columns: 1fr; }
+    .notif-channels { grid-template-columns: 1fr; }
+    .alarm-delay-row { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 600px) {
     .sensor-grid { grid-template-columns: 1fr 1fr; }

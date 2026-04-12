@@ -111,37 +111,160 @@
                 <label for="alarm-device-select"><strong>Select Device:</strong></label>
                 <select id="alarm-device-select" onchange="loadDeviceAlarmConfig()"></select>
             </div>
-            <div class="alarm-config-card" id="alarm-config-card">
-                <h3>Alarm Limits</h3>
-                <p class="hint">These limits are sent to the device as shared attributes. The device checks values against these limits and triggers WhatsApp notifications.</p>
-                <div class="alarm-grid">
-                    <div class="alarm-row">
-                        <span class="alarm-label">TDS Min (ppm)</span>
-                        <input type="number" id="wa-tds-min" step="1">
+
+            <!-- Alarm Limits -->
+            <div class="alarm-section-card">
+                <h3>&#x26A0;&#xFE0F; Alarm Limits</h3>
+                <p class="hint">Set the acceptable range for each sensor. Values outside these limits will trigger alarms.</p>
+                <div class="alarm-limits-grid">
+                    <div class="alarm-limit-group">
+                        <div class="alarm-limit-header">TDS (ppm)</div>
+                        <div class="alarm-limit-inputs">
+                            <div class="form-group"><label>Min</label><input type="number" id="wa-tds-min" step="1"></div>
+                            <div class="form-group"><label>Max</label><input type="number" id="wa-tds-max" step="1"></div>
+                        </div>
                     </div>
-                    <div class="alarm-row">
-                        <span class="alarm-label">TDS Max (ppm)</span>
-                        <input type="number" id="wa-tds-max" step="1">
+                    <div class="alarm-limit-group">
+                        <div class="alarm-limit-header">pH</div>
+                        <div class="alarm-limit-inputs">
+                            <div class="form-group"><label>Min</label><input type="number" id="wa-ph-min" step="0.1"></div>
+                            <div class="form-group"><label>Max</label><input type="number" id="wa-ph-max" step="0.1"></div>
+                        </div>
                     </div>
-                    <div class="alarm-row">
-                        <span class="alarm-label">pH Min</span>
-                        <input type="number" id="wa-ph-min" step="0.1">
-                    </div>
-                    <div class="alarm-row">
-                        <span class="alarm-label">pH Max</span>
-                        <input type="number" id="wa-ph-max" step="0.1">
-                    </div>
-                    <div class="alarm-row">
-                        <span class="alarm-label">Temp Min (&deg;C)</span>
-                        <input type="number" id="wa-temp-min" step="0.5">
-                    </div>
-                    <div class="alarm-row">
-                        <span class="alarm-label">Temp Max (&deg;C)</span>
-                        <input type="number" id="wa-temp-max" step="0.5">
+                    <div class="alarm-limit-group">
+                        <div class="alarm-limit-header">Temperature (&deg;C)</div>
+                        <div class="alarm-limit-inputs">
+                            <div class="form-group"><label>Min</label><input type="number" id="wa-temp-min" step="0.5"></div>
+                            <div class="form-group"><label>Max</label><input type="number" id="wa-temp-max" step="0.5"></div>
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-primary" style="margin-top:16px;" onclick="saveDeviceAlarmConfig()">Save Alarm Limits to Device</button>
+            </div>
+
+            <!-- Alarm Delay -->
+            <div class="alarm-section-card">
+                <h3>&#x23F1;&#xFE0F; Alarm Delay</h3>
+                <p class="hint">How long sensor values must stay outside limits before an alarm is triggered. This avoids false alarms from brief spikes.</p>
+                <div class="alarm-delay-row">
+                    <label for="alarm-delay"><strong>Trigger after:</strong></label>
+                    <select id="alarm-delay">
+                        <option value="0">Immediately</option>
+                        <option value="1">1 minute</option>
+                        <option value="5" selected>5 minutes</option>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="60">60 minutes</option>
+                    </select>
+                    <span class="hint" style="margin:0">of continuous out-of-range readings</span>
+                </div>
+            </div>
+
+            <!-- Notification Channels -->
+            <div class="alarm-section-card">
+                <h3>&#x1F514; Notification Channels</h3>
+                <p class="hint">Choose how you want to be notified when an alarm is triggered. You can enable multiple channels.</p>
+
+                <div class="notif-channels">
+                    <!-- Web Notification -->
+                    <div class="notif-channel-card">
+                        <div class="notif-channel-header">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="notif-web" checked>
+                                <span>&#x1F310; Browser Notification</span>
+                            </label>
+                        </div>
+                        <p class="notif-desc">Pop-up notification in your browser when the dashboard is open. Requires notification permission.</p>
+                        <button class="btn btn-sm btn-outline" id="notif-web-perm-btn" onclick="requestNotifPermission()">Grant Permission</button>
+                        <span id="notif-web-perm-status" class="hint" style="margin:0"></span>
+                    </div>
+
+                    <!-- Alarm List -->
+                    <div class="notif-channel-card">
+                        <div class="notif-channel-header">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="notif-list" checked>
+                                <span>&#x1F4CB; Alarm List</span>
+                            </label>
+                        </div>
+                        <p class="notif-desc">Log all alarms in the alarm history list below. Always recommended for record keeping.</p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="notif-channel-card">
+                        <div class="notif-channel-header">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="notif-email" onchange="toggleNotifField('email')">
+                                <span>&#x2709;&#xFE0F; Email</span>
+                            </label>
+                        </div>
+                        <p class="notif-desc">Send an email alert when an alarm is triggered.</p>
+                        <div class="notif-field" id="notif-email-field" style="display:none;">
+                            <label>Email Address:</label>
+                            <input type="email" id="notif-email-addr" placeholder="alerts@example.com">
+                        </div>
+                    </div>
+
+                    <!-- SMS -->
+                    <div class="notif-channel-card">
+                        <div class="notif-channel-header">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="notif-sms" onchange="toggleNotifField('sms')">
+                                <span>&#x1F4F1; SMS</span>
+                            </label>
+                        </div>
+                        <p class="notif-desc">Send an SMS alert. Requires an SMS gateway configured on ThingsBoard.</p>
+                        <div class="notif-field" id="notif-sms-field" style="display:none;">
+                            <label>Phone Number:</label>
+                            <input type="tel" id="notif-sms-phone" placeholder="+971 50 123 4567">
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp (existing, kept) -->
+                    <div class="notif-channel-card">
+                        <div class="notif-channel-header">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="notif-whatsapp" checked disabled>
+                                <span>&#x1F4AC; WhatsApp (Device)</span>
+                            </label>
+                        </div>
+                        <p class="notif-desc">WhatsApp notifications are sent directly by the ESP32 device. This is always active and configured on the device itself.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="alarm-section-card" style="background:transparent;box-shadow:none;padding:0;">
+                <button class="btn btn-primary btn-full" onclick="saveDeviceAlarmConfig()">Save All Alarm Settings</button>
                 <div id="alarm-save-status" class="status-msg"></div>
+            </div>
+
+            <!-- Active Alarms List -->
+            <div class="alarm-section-card">
+                <div class="page-header" style="margin-bottom:12px;">
+                    <h3>&#x1F6A8; Alarm History</h3>
+                    <div>
+                        <button class="btn btn-sm btn-outline" onclick="loadAlarmHistory()">Refresh</button>
+                        <button class="btn btn-sm btn-danger" onclick="clearAlarmHistory()">Clear All</button>
+                    </div>
+                </div>
+                <div class="log-table-wrap" style="max-height:400px;overflow-y:auto;">
+                    <table class="data-table" id="alarm-history-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Sensor</th>
+                                <th>Value</th>
+                                <th>Limit</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alarm-history-tbody">
+                            <tr><td colspan="7" class="loading">Select a device to view alarm history</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
