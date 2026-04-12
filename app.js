@@ -7,6 +7,16 @@ let REFRESH  = '';          // JWT refresh token
 let USER     = null;        // { email, authority, ... }
 let IS_ADMIN = false;
 
+// ── Default Alarm Limits (applied to every new device) ──────────────
+const DEFAULT_ALARMS = {
+    tdsAlarmMin:  100,
+    tdsAlarmMax:  300,
+    phAlarmMin:   5,
+    phAlarmMax:   8,
+    tempAlarmMin: 15,
+    tempAlarmMax: 45
+};
+
 // ── Helpers ─────────────────────────────────────────────────────────
 function api(path, opts = {}) {
     const headers = { 'Content-Type': 'application/json', ...opts.headers };
@@ -308,10 +318,21 @@ function addDevice() {
         return dev;
     })
     .then(dev => {
+        // Set default alarm limits as shared attributes
+        return api('/plugins/telemetry/DEVICE/' + dev.id.id + '/SHARED_SCOPE', {
+            method: 'POST',
+            body: JSON.stringify(DEFAULT_ALARMS)
+        }).then(() => dev);
+    })
+    .then(dev => {
         // Get the access token
         return api('/device/' + dev.id.id + '/credentials').then(cred => {
             result.className = 'status-msg ok';
-            result.innerHTML = 'Device created!<br>Access Token: <strong>' + cred.credentialsId + '</strong><br><em>Copy this token and paste it into the device config page.</em>';
+            result.innerHTML = 'Device created!<br>Access Token: <strong>' + cred.credentialsId + '</strong>' +
+                '<br>Default alarm limits applied: TDS ' + DEFAULT_ALARMS.tdsAlarmMin + '\u2013' + DEFAULT_ALARMS.tdsAlarmMax +
+                ' ppm, pH ' + DEFAULT_ALARMS.phAlarmMin + '\u2013' + DEFAULT_ALARMS.phAlarmMax +
+                ', Temp ' + DEFAULT_ALARMS.tempAlarmMin + '\u2013' + DEFAULT_ALARMS.tempAlarmMax + '\u00b0C' +
+                '<br><em>Copy this token and paste it into the device config page.</em>';
             loadDevicesTable();
             refreshDashboard();
         });
@@ -471,25 +492,30 @@ function loadDeviceAlarmConfig() {
     const deviceId = document.getElementById('alarm-device-select').value;
     if (!deviceId) return;
 
-    // Read from latest telemetry (alarm limits are sent as telemetry from device)
-    api('/plugins/telemetry/DEVICE/' + deviceId + '/values/timeseries?keys=tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax')
-    .then(ts => {
-        document.getElementById('wa-tds-min').value  = tv(ts, 'tdsAlarmMin')  || 100;
-        document.getElementById('wa-tds-max').value  = tv(ts, 'tdsAlarmMax')  || 300;
-        document.getElementById('wa-ph-min').value   = tv(ts, 'phAlarmMin')   || 5;
-        document.getElementById('wa-ph-max').value   = tv(ts, 'phAlarmMax')   || 8;
-        document.getElementById('wa-temp-min').value = tv(ts, 'tempAlarmMin') || 15;
-        document.getElementById('wa-temp-max').value = tv(ts, 'tempAlarmMax') || 45;
+    function applyDefaults() {
+        document.getElementById('wa-tds-min').value  = DEFAULT_ALARMS.tdsAlarmMin;
+        document.getElementById('wa-tds-max').value  = DEFAULT_ALARMS.tdsAlarmMax;
+        document.getElementById('wa-ph-min').value   = DEFAULT_ALARMS.phAlarmMin;
+        document.getElementById('wa-ph-max').value   = DEFAULT_ALARMS.phAlarmMax;
+        document.getElementById('wa-temp-min').value = DEFAULT_ALARMS.tempAlarmMin;
+        document.getElementById('wa-temp-max').value = DEFAULT_ALARMS.tempAlarmMax;
+    }
+
+    // Read from shared attributes first (this is the authoritative source)
+    api('/plugins/telemetry/DEVICE/' + deviceId + '/values/attributes/SHARED_SCOPE?keys=tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax')
+    .then(attrs => {
+        if (!attrs || attrs.length === 0) { applyDefaults(); return; }
+        // attrs is an array of {key, value} objects
+        const map = {};
+        attrs.forEach(a => { map[a.key] = a.value; });
+        document.getElementById('wa-tds-min').value  = map.tdsAlarmMin  !== undefined ? map.tdsAlarmMin  : DEFAULT_ALARMS.tdsAlarmMin;
+        document.getElementById('wa-tds-max').value  = map.tdsAlarmMax  !== undefined ? map.tdsAlarmMax  : DEFAULT_ALARMS.tdsAlarmMax;
+        document.getElementById('wa-ph-min').value   = map.phAlarmMin   !== undefined ? map.phAlarmMin   : DEFAULT_ALARMS.phAlarmMin;
+        document.getElementById('wa-ph-max').value   = map.phAlarmMax   !== undefined ? map.phAlarmMax   : DEFAULT_ALARMS.phAlarmMax;
+        document.getElementById('wa-temp-min').value = map.tempAlarmMin !== undefined ? map.tempAlarmMin : DEFAULT_ALARMS.tempAlarmMin;
+        document.getElementById('wa-temp-max').value = map.tempAlarmMax !== undefined ? map.tempAlarmMax : DEFAULT_ALARMS.tempAlarmMax;
     })
-    .catch(() => {
-        // defaults
-        document.getElementById('wa-tds-min').value  = 100;
-        document.getElementById('wa-tds-max').value  = 300;
-        document.getElementById('wa-ph-min').value   = 5;
-        document.getElementById('wa-ph-max').value   = 8;
-        document.getElementById('wa-temp-min').value = 15;
-        document.getElementById('wa-temp-max').value = 45;
-    });
+    .catch(() => { applyDefaults(); });
 }
 
 function saveDeviceAlarmConfig() {
