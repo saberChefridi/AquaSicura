@@ -3,17 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaSicura - Water Filtration Monitoring</title>
+    <title>AquaSicura - Reviving the Essence of Water</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="login-screen" class="screen active">
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- LANDING PAGE                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="landing-screen" class="screen active">
+        <!-- Hero Background Image -->
+        <div class="hero-bg">
+            <img src="hero-bg.jpg" alt="" class="hero-img">
+            <div class="hero-overlay"></div>
+        </div>
+
+        <!-- Floating Navigation -->
+        <nav class="landing-nav">
+            <div class="landing-nav-brand">
+                <span class="brand-drop"></span>
+                <span class="brand-text">AquaSicura</span>
+            </div>
+            <div class="landing-nav-links">
+                <a href="#philosophy" class="nav-link" onclick="scrollToSection('philosophy')">Philosophy</a>
+                <a href="#products" class="nav-link" onclick="scrollToSection('products')">Products</a>
+                <a href="#mission" class="nav-link" onclick="scrollToSection('mission')">Technology</a>
+                <button class="btn btn-glass" onclick="showLoginScreen()">Dashboard</button>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="#philosophy" onclick="scrollToSection('philosophy'); toggleMobileMenu();">Philosophy</a>
+            <a href="#products" onclick="scrollToSection('products'); toggleMobileMenu();">Products</a>
+            <a href="#mission" onclick="scrollToSection('mission'); toggleMobileMenu();">Technology</a>
+            <a href="#" onclick="showLoginScreen(); toggleMobileMenu();">Dashboard</a>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">Water Filtration Intelligence</div>
+                <h1 class="hero-title">
+                    <span class="title-line">The Essence</span>
+                    <span class="title-line accent">of Living Water</span>
+                </h1>
+                <p class="hero-subtitle">
+                    In ancient times, water was revered as the source of all life &mdash;
+                    a sacred element flowing with vitality. Today, we restore that reverence
+                    through precision monitoring and purification.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-luminous" onclick="scrollToSection('philosophy')">Discover</button>
+                    <button class="btn btn-glass-dark" onclick="showLoginScreen()">Enter Dashboard</button>
+                </div>
+            </div>
+            <div class="hero-scroll-hint" onclick="scrollToSection('philosophy')">
+                <div class="scroll-line"></div>
+                <span>Scroll</span>
+            </div>
+        </section>
+
+        <!-- Philosophy Section -->
+        <section class="content-section" id="philosophy">
+            <div class="section-inner">
+                <div class="section-badge">Philosophy</div>
+                <h2 class="section-title">Water is Life.<br><em>Yet the water we drink has lost its life.</em></h2>
+                <div class="philosophy-grid">
+                    <div class="philosophy-card">
+                        <div class="philosophy-icon">
+                            <svg viewBox="0 0 48 48" fill="none"><path d="M24 4C24 4 8 20 8 30a16 16 0 0032 0C40 20 24 4 24 4z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="24" cy="30" r="6" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/></svg>
+                        </div>
+                        <h3>The Ancient Greeks</h3>
+                        <p>Thales of Miletus declared water the <em>arche</em> &mdash; the fundamental principle from which all things emerge. To the ancients, water was not merely a substance but the breath of creation itself.</p>
+                    </div>
+                    <div class="philosophy-card">
+                        <div class="philosophy-icon">
+                            <svg viewBox="0 0 48 48" fill="none"><path d="M24 2v44M2 24h44M8 8l32 32M40 8L8 40" stroke="currentColor" stroke-width="1" opacity=".3"/><circle cx="24" cy="24" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/></svg>
+                        </div>
+                        <h3>Dead Water</h3>
+                        <p>Modern treatment strips water of its minerals and memory. What arrives at our taps has traveled through miles of pipes, losing its structure, its minerals, its very essence. We drink, but we are not nourished.</p>
+                    </div>
+                    <div class="philosophy-card">
+                        <div class="philosophy-icon">
+                            <svg viewBox="0 0 48 48" fill="none"><path d="M12 36c0-8 12-24 12-24s12 16 12 24" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M16 34c0-5 8-16 8-16s8 11 8 16" stroke="currentColor" stroke-width="1" fill="none" opacity=".5"/><path d="M20 33c0-3 4-10 4-10s4 7 4 10" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/></svg>
+                        </div>
+                        <h3>Revival</h3>
+                        <p>AquaSicura is our answer. Through multi-stage filtration, UV purification, and real-time intelligence, we do not merely clean water &mdash; we <em>revive</em> it. Restoring mineral balance, ensuring purity, bringing water back to life.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote Divider -->
+        <section class="quote-section">
+            <blockquote>
+                <p>&ldquo;Water is the driving force of all nature.&rdquo;</p>
+                <cite>&mdash; Leonardo da Vinci</cite>
+            </blockquote>
+        </section>
+
+        <!-- ═══ PRODUCTS / STORE ═══════════════════════════════════════ -->
+        <section class="content-section section-products" id="products">
+            <div class="section-inner">
+                <div class="section-badge">Our Solutions</div>
+                <h2 class="section-title">Purification,<br><em>Tailored to Every Drop.</em></h2>
+                <p class="section-intro">From the kitchen tap to the swimming pool &mdash; every water source deserves revival. Choose the solution that fits your life.</p>
+
+                <div class="products-grid">
+                    <!-- Product 1: Drinking Water -->
+                    <div class="product-card product-featured">
+                        <div class="product-image">
+                            <svg viewBox="0 0 120 120" fill="none">
+                                <rect x="35" y="15" width="50" height="90" rx="8" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/>
+                                <path d="M45 40h30M45 55h30M45 70h30" stroke="currentColor" stroke-width=".8" opacity=".3"/>
+                                <path d="M60 10C60 10 50 25 50 30a10 10 0 0020 0c0-5-10-20-10-20z" fill="rgba(112,146,190,0.15)" stroke="currentColor" stroke-width="1"/>
+                                <circle cx="60" cy="85" r="8" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/>
+                                <path d="M56 85l3 3 5-6" stroke="currentColor" stroke-width="1" opacity=".6"/>
+                            </svg>
+                        </div>
+                        <div class="product-badge">Most Popular</div>
+                        <h3>Drinking Water Filter</h3>
+                        <p class="product-tagline">Pure water, straight from your tap.</p>
+                        <p class="product-desc">Our flagship multi-stage filtration system with smart monitoring. Removes chlorine, heavy metals, bacteria, and restores essential minerals for water that truly nourishes.</p>
+                        <div class="product-features">
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>Installation</strong>
+                                    <p>Under-sink installation by certified technician. No structural changes needed. Completed in under 2 hours.</p>
+                                </div>
+                            </div>
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>Smart Monitoring</strong>
+                                    <p>Real-time pH, TDS, temperature &amp; flow monitoring with cloud dashboard and mobile alerts.</p>
+                                </div>
+                            </div>
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>After Service</strong>
+                                    <p>Annual filter replacement, quarterly water quality report, 24/7 alarm monitoring, lifetime technical support.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-luminous" onclick="scrollToSection('monitor')">Learn More</button>
+                    </div>
+
+                    <!-- Product 2: Shower Filter -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <svg viewBox="0 0 120 120" fill="none">
+                                <circle cx="60" cy="35" r="22" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/>
+                                <path d="M45 50 L45 100 M55 50 L55 105 M65 50 L65 105 M75 50 L75 100" stroke="currentColor" stroke-width=".8" opacity=".3"/>
+                                <path d="M50 55 L50 95 M60 55 L60 100 M70 55 L70 95" stroke="currentColor" stroke-width=".6" opacity=".2"/>
+                                <circle cx="60" cy="35" r="8" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/>
+                            </svg>
+                        </div>
+                        <h3>Shower Filter</h3>
+                        <p class="product-tagline">Bathe in water that cares for your skin.</p>
+                        <p class="product-desc">Removes chlorine, limescale, and impurities that damage skin and hair. Feel the difference from the very first shower &mdash; softer skin, shinier hair, no more dryness.</p>
+                        <div class="product-features">
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>Easy Install</strong>
+                                    <p>Inline installation between pipe and showerhead. No tools required. 5-minute DIY setup.</p>
+                                </div>
+                            </div>
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>Advantages</strong>
+                                    <p>Reduces skin irritation, protects colored hair, prevents limescale buildup on glass and tiles.</p>
+                                </div>
+                            </div>
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>After Service</strong>
+                                    <p>Cartridge replacement every 6 months. Subscribe for automatic delivery at a discount.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-glass-dark" onclick="scrollToSection('monitor')">Learn More</button>
+                    </div>
+
+                    <!-- Product 3: Swimming Pool -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <svg viewBox="0 0 120 120" fill="none">
+                                <path d="M15 60 Q30 50 45 60 Q60 70 75 60 Q90 50 105 60" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/>
+                                <path d="M15 72 Q30 62 45 72 Q60 82 75 72 Q90 62 105 72" stroke="currentColor" stroke-width="1" fill="none" opacity=".35"/>
+                                <path d="M15 84 Q30 74 45 84 Q60 94 75 84 Q90 74 105 84" stroke="currentColor" stroke-width=".8" fill="none" opacity=".2"/>
+                                <rect x="20" y="40" width="80" height="50" rx="4" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".3"/>
+                                <circle cx="60" cy="30" r="12" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/>
+                            </svg>
+                        </div>
+                        <h3>Swimming Pool Filter</h3>
+                        <p class="product-tagline">Crystal-clear water, chemical-free serenity.</p>
+                        <p class="product-desc">Advanced multi-stage pool filtration with UV sterilization. Drastically reduces chemical usage while keeping water pristine, safe, and inviting all year round.</p>
+                        <div class="product-features">
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>Installation</strong>
+                                    <p>Professional integration with existing pool pump system. Custom sizing for any pool up to 150m&sup3;.</p>
+                                </div>
+                            </div>
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>Advantages</strong>
+                                    <p>Up to 70% less chlorine needed. No red eyes, no skin irritation. IoT monitoring from your phone.</p>
+                                </div>
+                            </div>
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>After Service</strong>
+                                    <p>Quarterly maintenance visit, UV lamp replacement, water chemistry consultation, priority support.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-glass-dark" onclick="scrollToSection('monitor')">Learn More</button>
+                    </div>
+
+                    <!-- Product 4: Compact Sink Filter -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <svg viewBox="0 0 120 120" fill="none">
+                                <path d="M40 30 Q60 20 80 30 L85 80 Q60 90 35 80 Z" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/>
+                                <path d="M55 25 L55 15 Q60 10 65 15 L65 25" stroke="currentColor" stroke-width="1" opacity=".4"/>
+                                <path d="M48 50h24M48 60h24M48 70h24" stroke="currentColor" stroke-width=".6" opacity=".3"/>
+                                <circle cx="60" cy="95" r="6" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/>
+                                <path d="M60 89v-5" stroke="currentColor" stroke-width="1" opacity=".4"/>
+                            </svg>
+                        </div>
+                        <h3>Compact Sink Filter</h3>
+                        <p class="product-tagline">Small space, big purification.</p>
+                        <p class="product-desc">Designed for small kitchens, offices, and apartments. Compact countertop or faucet-mounted design delivers the same multi-stage purification in a beautifully minimal form.</p>
+                        <div class="product-features">
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>Installation</strong>
+                                    <p>Attach directly to any standard faucet. No plumbing, no drilling. Switch between filtered and unfiltered with a lever.</p>
+                                </div>
+                            </div>
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>Advantages</strong>
+                                    <p>Perfect for renters. Portable &mdash; take it when you move. Elegant brushed-steel design complements any kitchen.</p>
+                                </div>
+                            </div>
+                            <div class="product-feature">
+                                <span class="pf-icon">&#x2726;</span>
+                                <div>
+                                    <strong>After Service</strong>
+                                    <p>Filter cartridge lasts 3 months. Easy twist-and-replace. Subscription delivery available.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-glass-dark" onclick="scrollToSection('monitor')">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="content-section section-light" id="mission">
+            <div class="section-inner">
+                <div class="section-badge">Mission</div>
+                <h2 class="section-title">Precision Monitoring,<br>Pristine Water.</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-number">01</div>
+                        <h4>Real-Time Sensors</h4>
+                        <p>pH, TDS, temperature, flow rate, and pressure &mdash; measured every second, reported every minute. Nothing escapes our vigilance.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-number">02</div>
+                        <h4>Intelligent Alarms</h4>
+                        <p>Configurable thresholds with multi-channel notifications. Browser, email, SMS, WhatsApp &mdash; know instantly when water quality deviates.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-number">03</div>
+                        <h4>UV Purification</h4>
+                        <p>Automated UV lamp sterilization eliminates 99.9% of bacteria and viruses, controlled and monitored through our smart relay system.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-number">04</div>
+                        <h4>Cloud Dashboard</h4>
+                        <p>Monitor every device from anywhere. Historical charts, exportable logs, and alarm management &mdash; all from your browser.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section" id="monitor">
+            <div class="cta-inner">
+                <h2>Begin Your Journey</h2>
+                <p>Access the AquaSicura monitoring dashboard to see your water quality in real time.</p>
+                <button class="btn btn-luminous btn-lg" onclick="showLoginScreen()">Enter Dashboard</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="landing-footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="brand-drop"></span>
+                    <span>AquaSicura</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#philosophy" onclick="scrollToSection('philosophy')">Philosophy</a>
+                    <a href="#products" onclick="scrollToSection('products')">Products</a>
+                    <a href="#mission" onclick="scrollToSection('mission')">Technology</a>
+                    <a href="#" onclick="showLoginScreen()">Dashboard</a>
+                </div>
+                <div class="footer-copy">&copy; 2026 AquaSicura. Reviving the essence of water.</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- LOGIN SCREEN                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="login-screen" class="screen">
+        <div class="login-bg">
+            <img src="hero-bg.jpg" alt="" class="hero-img">
+            <div class="login-overlay"></div>
+        </div>
         <div class="login-card">
+            <button class="login-back" onclick="showLandingScreen()" title="Back to Home">&larr;</button>
             <div class="logo-area">
-                <div class="logo-icon">&#x1F4A7;</div>
+                <div class="logo-icon-elegant">
+                    <svg viewBox="0 0 60 80" fill="none" width="50" height="66">
+                        <path d="M30 5C30 5 5 35 5 52a25 25 0 0050 0C55 35 30 5 30 5z" fill="rgba(112,146,190,0.15)" stroke="rgba(112,146,190,0.6)" stroke-width="1.5"/>
+                        <path d="M30 18C30 18 14 38 14 48a16 16 0 0032 0C46 38 30 18 30 18z" fill="rgba(112,146,190,0.1)" stroke="rgba(112,146,190,0.3)" stroke-width="1"/>
+                    </svg>
+                </div>
                 <h1>AquaSicura</h1>
                 <p class="subtitle">Water Filtration Monitoring</p>
             </div>
@@ -36,21 +378,28 @@
         </div>
     </div>
 
-    <!-- Main App (shown after login) -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- MAIN APP (shown after login)                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="app-screen" class="screen">
         <!-- Top Nav Bar -->
         <nav class="navbar">
             <div class="nav-left">
-                <span class="nav-logo">&#x1F4A7; AquaSicura</span>
+                <span class="nav-logo" onclick="doLogout()" style="cursor:pointer;">
+                    <svg viewBox="0 0 60 80" fill="none" width="18" height="24" style="vertical-align:middle;margin-right:6px;">
+                        <path d="M30 5C30 5 5 35 5 52a25 25 0 0050 0C55 35 30 5 30 5z" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+                    </svg>
+                    AquaSicura
+                </span>
             </div>
             <div class="nav-right">
                 <span id="nav-user" class="nav-user"></span>
                 <span id="nav-role" class="nav-badge"></span>
-                <button class="btn btn-sm btn-outline" onclick="doLogout()">Logout</button>
+                <button class="btn btn-sm btn-outline-light" onclick="doLogout()">Logout</button>
             </div>
         </nav>
 
-        <!-- Admin Tabs (only visible for Tenant Admin) -->
+        <!-- Admin Tabs -->
         <div id="admin-tabs" class="tab-bar" style="display:none">
             <button class="tab active" data-tab="dashboard" onclick="switchTab(this)">Dashboard</button>
             <button class="tab" data-tab="charts" onclick="switchTab(this)">Charts</button>
@@ -60,7 +409,7 @@
             <button class="tab" data-tab="alarms" onclick="switchTab(this)">Alarms</button>
         </div>
 
-        <!-- User Tabs (only visible for Customer User) -->
+        <!-- User Tabs -->
         <div id="user-tabs" class="tab-bar" style="display:none">
             <button class="tab active" data-tab="dashboard" onclick="switchTab(this)">My Device</button>
             <button class="tab" data-tab="charts" onclick="switchTab(this)">Charts</button>
@@ -79,7 +428,7 @@
             </div>
         </div>
 
-        <!-- Devices Tab (Admin only) -->
+        <!-- Devices Tab (Admin) -->
         <div id="tab-devices" class="tab-content">
             <div class="page-header">
                 <h2>Device Management</h2>
@@ -93,7 +442,7 @@
             </table>
         </div>
 
-        <!-- Customers Tab (Admin only) -->
+        <!-- Customers Tab (Admin) -->
         <div id="tab-customers" class="tab-content">
             <div class="page-header">
                 <h2>Customer &amp; User Management</h2>
@@ -114,7 +463,7 @@
 
             <!-- Alarm Limits -->
             <div class="alarm-section-card">
-                <h3>&#x26A0;&#xFE0F; Alarm Limits</h3>
+                <h3>Alarm Limits</h3>
                 <p class="hint">Set the acceptable range for each sensor. Values outside these limits will trigger alarms.</p>
                 <div class="alarm-limits-grid">
                     <div class="alarm-limit-group">
@@ -143,8 +492,8 @@
 
             <!-- Alarm Delay -->
             <div class="alarm-section-card">
-                <h3>&#x23F1;&#xFE0F; Alarm Delay</h3>
-                <p class="hint">How long sensor values must stay outside limits before an alarm is triggered. This avoids false alarms from brief spikes.</p>
+                <h3>Alarm Delay</h3>
+                <p class="hint">How long sensor values must stay outside limits before an alarm is triggered.</p>
                 <div class="alarm-delay-row">
                     <label for="alarm-delay"><strong>Trigger after:</strong></label>
                     <select id="alarm-delay">
@@ -161,41 +510,26 @@
 
             <!-- Notification Channels -->
             <div class="alarm-section-card">
-                <h3>&#x1F514; Notification Channels</h3>
-                <p class="hint">Choose how you want to be notified when an alarm is triggered. You can enable multiple channels.</p>
-
+                <h3>Notification Channels</h3>
+                <p class="hint">Choose how you want to be notified when an alarm is triggered.</p>
                 <div class="notif-channels">
-                    <!-- Web Notification -->
                     <div class="notif-channel-card">
                         <div class="notif-channel-header">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="notif-web" checked>
-                                <span>&#x1F310; Browser Notification</span>
-                            </label>
+                            <label class="toggle-label"><input type="checkbox" id="notif-web" checked><span>Browser Notification</span></label>
                         </div>
-                        <p class="notif-desc">Pop-up notification in your browser when the dashboard is open. Requires notification permission.</p>
+                        <p class="notif-desc">Pop-up notification in your browser when the dashboard is open.</p>
                         <button class="btn btn-sm btn-outline" id="notif-web-perm-btn" onclick="requestNotifPermission()">Grant Permission</button>
                         <span id="notif-web-perm-status" class="hint" style="margin:0"></span>
                     </div>
-
-                    <!-- Alarm List -->
                     <div class="notif-channel-card">
                         <div class="notif-channel-header">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="notif-list" checked>
-                                <span>&#x1F4CB; Alarm List</span>
-                            </label>
+                            <label class="toggle-label"><input type="checkbox" id="notif-list" checked><span>Alarm List</span></label>
                         </div>
-                        <p class="notif-desc">Log all alarms in the alarm history list below. Always recommended for record keeping.</p>
+                        <p class="notif-desc">Log all alarms in the alarm history below. Recommended for record keeping.</p>
                     </div>
-
-                    <!-- Email -->
                     <div class="notif-channel-card">
                         <div class="notif-channel-header">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="notif-email" onchange="toggleNotifField('email')">
-                                <span>&#x2709;&#xFE0F; Email</span>
-                            </label>
+                            <label class="toggle-label"><input type="checkbox" id="notif-email" onchange="toggleNotifField('email')"><span>Email</span></label>
                         </div>
                         <p class="notif-desc">Send an email alert when an alarm is triggered.</p>
                         <div class="notif-field" id="notif-email-field" style="display:none;">
@@ -203,45 +537,35 @@
                             <input type="email" id="notif-email-addr" placeholder="alerts@example.com">
                         </div>
                     </div>
-
-                    <!-- SMS -->
                     <div class="notif-channel-card">
                         <div class="notif-channel-header">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="notif-sms" onchange="toggleNotifField('sms')">
-                                <span>&#x1F4F1; SMS</span>
-                            </label>
+                            <label class="toggle-label"><input type="checkbox" id="notif-sms" onchange="toggleNotifField('sms')"><span>SMS</span></label>
                         </div>
-                        <p class="notif-desc">Send an SMS alert. Requires an SMS gateway configured on ThingsBoard.</p>
+                        <p class="notif-desc">Send an SMS alert. Requires SMS gateway on ThingsBoard.</p>
                         <div class="notif-field" id="notif-sms-field" style="display:none;">
                             <label>Phone Number:</label>
                             <input type="tel" id="notif-sms-phone" placeholder="+971 50 123 4567">
                         </div>
                     </div>
-
-                    <!-- WhatsApp (existing, kept) -->
                     <div class="notif-channel-card">
                         <div class="notif-channel-header">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="notif-whatsapp" checked disabled>
-                                <span>&#x1F4AC; WhatsApp (Device)</span>
-                            </label>
+                            <label class="toggle-label"><input type="checkbox" id="notif-whatsapp" checked disabled><span>WhatsApp (Device)</span></label>
                         </div>
-                        <p class="notif-desc">WhatsApp notifications are sent directly by the ESP32 device. This is always active and configured on the device itself.</p>
+                        <p class="notif-desc">WhatsApp notifications are sent directly by the ESP32. Always active.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Save Button -->
-            <div class="alarm-section-card" style="background:transparent;box-shadow:none;padding:0;">
+            <!-- Save -->
+            <div style="margin-bottom:20px;">
                 <button class="btn btn-primary btn-full" onclick="saveDeviceAlarmConfig()">Save All Alarm Settings</button>
                 <div id="alarm-save-status" class="status-msg"></div>
             </div>
 
-            <!-- Active Alarms List -->
+            <!-- Alarm History -->
             <div class="alarm-section-card">
                 <div class="page-header" style="margin-bottom:12px;">
-                    <h3>&#x1F6A8; Alarm History</h3>
+                    <h3>Alarm History</h3>
                     <div>
                         <button class="btn btn-sm btn-outline" onclick="loadAlarmHistory()">Refresh</button>
                         <button class="btn btn-sm btn-danger" onclick="clearAlarmHistory()">Clear All</button>
@@ -250,15 +574,7 @@
                 <div class="log-table-wrap" style="max-height:400px;overflow-y:auto;">
                     <table class="data-table" id="alarm-history-table">
                         <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Sensor</th>
-                                <th>Value</th>
-                                <th>Limit</th>
-                                <th>Severity</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
+                            <tr><th>Time</th><th>Sensor</th><th>Value</th><th>Limit</th><th>Severity</th><th>Status</th><th>Action</th></tr>
                         </thead>
                         <tbody id="alarm-history-tbody">
                             <tr><td colspan="7" class="loading">Select a device to view alarm history</td></tr>
@@ -290,32 +606,13 @@
                 </div>
                 <button class="btn btn-sm btn-primary" onclick="loadCharts()">Refresh</button>
             </div>
-
             <div class="chart-grid">
-                <div class="chart-card">
-                    <h3>pH</h3>
-                    <canvas id="chart-ph"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>TDS (ppm)</h3>
-                    <canvas id="chart-tds"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>Water Temperature (&deg;C)</h3>
-                    <canvas id="chart-temp"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>Box Temperature (&deg;C)</h3>
-                    <canvas id="chart-boxtemp"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>Flow Rate (L/min)</h3>
-                    <canvas id="chart-flow"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>Pressure (mbar)</h3>
-                    <canvas id="chart-pressure"></canvas>
-                </div>
+                <div class="chart-card"><h3>pH</h3><canvas id="chart-ph"></canvas></div>
+                <div class="chart-card"><h3>TDS (ppm)</h3><canvas id="chart-tds"></canvas></div>
+                <div class="chart-card"><h3>Water Temperature (&deg;C)</h3><canvas id="chart-temp"></canvas></div>
+                <div class="chart-card"><h3>Box Temperature (&deg;C)</h3><canvas id="chart-boxtemp"></canvas></div>
+                <div class="chart-card"><h3>Flow Rate (L/min)</h3><canvas id="chart-flow"></canvas></div>
+                <div class="chart-card"><h3>Pressure (mbar)</h3><canvas id="chart-pressure"></canvas></div>
             </div>
         </div>
 
@@ -355,16 +652,9 @@
                 <table class="data-table" id="log-table">
                     <thead>
                         <tr>
-                            <th>Timestamp</th>
-                            <th>pH</th>
-                            <th>TDS (ppm)</th>
-                            <th>Water &deg;C</th>
-                            <th>Box &deg;C</th>
-                            <th>Flow (L/min)</th>
-                            <th>Pressure</th>
-                            <th>UV</th>
-                            <th>Fan</th>
-                            <th>Errors</th>
+                            <th>Timestamp</th><th>pH</th><th>TDS (ppm)</th><th>Water &deg;C</th>
+                            <th>Box &deg;C</th><th>Flow (L/min)</th><th>Pressure</th>
+                            <th>UV</th><th>Fan</th><th>Errors</th>
                         </tr>
                     </thead>
                     <tbody id="log-tbody">
@@ -373,7 +663,6 @@
                 </table>
             </div>
         </div>
-
     </div>
 
     <!-- Add Device Modal -->

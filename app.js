@@ -1,4 +1,45 @@
-/* ── AquaSicura Web App ─ ThingsBoard REST API Frontend ──────────── */
+/* ══════════════════════════════════════════════════════════════════════
+   AquaSicura Web App — Luxury Water Filtration Monitoring
+   ThingsBoard REST API Frontend
+   ══════════════════════════════════════════════════════════════════════ */
+
+// ══════════════════════════════════════════════════════════════════════
+// LANDING PAGE — Navigation & Scroll
+// ══════════════════════════════════════════════════════════════════════
+
+function showLoginScreen() {
+    document.getElementById('landing-screen').classList.remove('active');
+    document.getElementById('app-screen').classList.remove('active');
+    document.getElementById('login-screen').classList.add('active');
+}
+
+function showLandingScreen() {
+    document.getElementById('login-screen').classList.remove('active');
+    document.getElementById('app-screen').classList.remove('active');
+    document.getElementById('landing-screen').classList.add('active');
+}
+
+function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleMobileMenu() {
+    document.getElementById('mobile-menu').classList.toggle('open');
+}
+
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.landing-nav');
+    if (nav) {
+        if (window.scrollY > 60) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    }
+});
+
+// ══════════════════════════════════════════════════════════════════════
+// APP — State & API
+// ══════════════════════════════════════════════════════════════════════
 
 // ── State ───────────────────────────────────────────────────────────
 let TB_URL   = '';          // e.g. https://thingsboard.cloud
@@ -33,6 +74,9 @@ function api(path, opts = {}) {
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    // Hide landing nav when in app
+    const landingNav = document.querySelector('.landing-nav');
+    if (landingNav) landingNav.style.display = (id === 'landing-screen') ? '' : 'none';
 }
 
 function switchTab(btn) {
@@ -108,7 +152,7 @@ function loadUserProfile() {
 function doLogout() {
     TOKEN = ''; REFRESH = ''; USER = null;
     sessionStorage.clear();
-    showScreen('login-screen');
+    showScreen('landing-screen');
 }
 
 function enterApp() {
@@ -138,7 +182,7 @@ window.addEventListener('DOMContentLoaded', () => {
         TB_URL = u;
         loadUserProfile().then(() => enterApp()).catch(() => doLogout());
     } else {
-        showScreen('login-screen');
+        showScreen('landing-screen');
     }
 });
 
