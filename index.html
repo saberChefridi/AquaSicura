@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AquaSicura - Water Filtration Monitoring</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -51,6 +53,8 @@
         <!-- Admin Tabs (only visible for Tenant Admin) -->
         <div id="admin-tabs" class="tab-bar" style="display:none">
             <button class="tab active" data-tab="dashboard" onclick="switchTab(this)">Dashboard</button>
+            <button class="tab" data-tab="charts" onclick="switchTab(this)">Charts</button>
+            <button class="tab" data-tab="log" onclick="switchTab(this)">Log</button>
             <button class="tab" data-tab="devices" onclick="switchTab(this)">Devices</button>
             <button class="tab" data-tab="customers" onclick="switchTab(this)">Customers</button>
             <button class="tab" data-tab="alarms" onclick="switchTab(this)">Alarms</button>
@@ -59,6 +63,8 @@
         <!-- User Tabs (only visible for Customer User) -->
         <div id="user-tabs" class="tab-bar" style="display:none">
             <button class="tab active" data-tab="dashboard" onclick="switchTab(this)">My Device</button>
+            <button class="tab" data-tab="charts" onclick="switchTab(this)">Charts</button>
+            <button class="tab" data-tab="log" onclick="switchTab(this)">Log</button>
             <button class="tab" data-tab="alarms" onclick="switchTab(this)">Alarms</button>
         </div>
 
@@ -138,6 +144,113 @@
                 <div id="alarm-save-status" class="status-msg"></div>
             </div>
         </div>
+
+        <!-- Charts Tab -->
+        <div id="tab-charts" class="tab-content">
+            <div class="page-header">
+                <h2>Sensor Charts</h2>
+            </div>
+            <div class="chart-controls">
+                <div class="form-group" style="display:inline-block;margin-right:12px;">
+                    <label for="chart-device-select"><strong>Device:</strong></label>
+                    <select id="chart-device-select" onchange="loadCharts()"></select>
+                </div>
+                <div class="form-group" style="display:inline-block;margin-right:12px;">
+                    <label for="chart-range"><strong>Time Range:</strong></label>
+                    <select id="chart-range" onchange="loadCharts()">
+                        <option value="3600000">Last 1 Hour</option>
+                        <option value="21600000">Last 6 Hours</option>
+                        <option value="86400000" selected>Last 24 Hours</option>
+                        <option value="604800000">Last 7 Days</option>
+                        <option value="2592000000">Last 30 Days</option>
+                    </select>
+                </div>
+                <button class="btn btn-sm btn-primary" onclick="loadCharts()">Refresh</button>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <h3>pH</h3>
+                    <canvas id="chart-ph"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>TDS (ppm)</h3>
+                    <canvas id="chart-tds"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Water Temperature (&deg;C)</h3>
+                    <canvas id="chart-temp"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Box Temperature (&deg;C)</h3>
+                    <canvas id="chart-boxtemp"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Flow Rate (L/min)</h3>
+                    <canvas id="chart-flow"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Pressure (mbar)</h3>
+                    <canvas id="chart-pressure"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Tab -->
+        <div id="tab-log" class="tab-content">
+            <div class="page-header">
+                <h2>Telemetry Log</h2>
+                <button class="btn btn-sm btn-primary" onclick="exportLogCSV()">Export CSV</button>
+            </div>
+            <div class="chart-controls">
+                <div class="form-group" style="display:inline-block;margin-right:12px;">
+                    <label for="log-device-select"><strong>Device:</strong></label>
+                    <select id="log-device-select" onchange="loadLog()"></select>
+                </div>
+                <div class="form-group" style="display:inline-block;margin-right:12px;">
+                    <label for="log-range"><strong>Time Range:</strong></label>
+                    <select id="log-range" onchange="loadLog()">
+                        <option value="3600000">Last 1 Hour</option>
+                        <option value="21600000">Last 6 Hours</option>
+                        <option value="86400000" selected>Last 24 Hours</option>
+                        <option value="604800000">Last 7 Days</option>
+                        <option value="2592000000">Last 30 Days</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:inline-block;margin-right:12px;">
+                    <label for="log-limit"><strong>Max Rows:</strong></label>
+                    <select id="log-limit" onchange="loadLog()">
+                        <option value="50">50</option>
+                        <option value="100" selected>100</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                    </select>
+                </div>
+                <button class="btn btn-sm btn-primary" onclick="loadLog()">Refresh</button>
+            </div>
+            <div class="log-table-wrap">
+                <table class="data-table" id="log-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>pH</th>
+                            <th>TDS (ppm)</th>
+                            <th>Water &deg;C</th>
+                            <th>Box &deg;C</th>
+                            <th>Flow (L/min)</th>
+                            <th>Pressure</th>
+                            <th>UV</th>
+                            <th>Fan</th>
+                            <th>Errors</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-tbody">
+                        <tr><td colspan="10" class="loading">Select a device and click Refresh</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <!-- Add Device Modal -->

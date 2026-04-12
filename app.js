@@ -558,6 +558,8 @@ switchTab = function(btn) {
     if (tab === 'devices' && IS_ADMIN) loadDevicesTable();
     if (tab === 'customers' && IS_ADMIN) loadCustomers();
     if (tab === 'alarms') populateAlarmDeviceSelector();
+    if (tab === 'charts') { populateChartDeviceSelector(); loadCharts(); }
+    if (tab === 'log')    { populateLogDeviceSelector(); loadLog(); }
 };
 
 // ── Auto-refresh every 30 seconds ───────────────────────────────────
@@ -566,3 +568,257 @@ setInterval(() => {
         refreshDashboard();
     }
 }, 30000);
+
+// ══════════════════════════════════════════════════════════════════════
+// CHARTS — Time-series sensor data using Chart.js
+// ══════════════════════════════════════════════════════════════════════
+
+const chartInstances = {};
+const CHART_COLORS = {
+    pH:       { border: '#4a6fa5', bg: 'rgba(74,111,165,0.12)' },
+    tds:      { border: '#e67e22', bg: 'rgba(230,126,34,0.12)' },
+    temp:     { border: '#e53935', bg: 'rgba(229,57,53,0.12)' },
+    boxTemp:  { border: '#8e24aa', bg: 'rgba(142,36,170,0.12)' },
+    flow:     { border: '#43a047', bg: 'rgba(67,160,71,0.12)' },
+    pressure: { border: '#00897b', bg: 'rgba(0,137,123,0.12)' }
+};
+
+function populateChartDeviceSelector() {
+    const sel = document.getElementById('chart-device-select');
+    const cur = sel.value;
+    sel.innerHTML = '';
+    allDevices.forEach(d => {
+        sel.innerHTML += '<option value="' + d.id.id + '"' + (d.id.id === cur ? ' selected' : '') + '>' + d.name + '</option>';
+    });
+}
+
+function populateLogDeviceSelector() {
+    const sel = document.getElementById('log-device-select');
+    const cur = sel.value;
+    sel.innerHTML = '';
+    allDevices.forEach(d => {
+        sel.innerHTML += '<option value="' + d.id.id + '"' + (d.id.id === cur ? ' selected' : '') + '>' + d.name + '</option>';
+    });
+}
+
+function loadCharts() {
+    const deviceId = document.getElementById('chart-device-select').value;
+    if (!deviceId) return;
+    const range = parseInt(document.getElementById('chart-range').value);
+    const endTs = Date.now();
+    const startTs = endTs - range;
+    const keys = 'pH,tds,waterTemp,boxTemp,flowRate,pressure';
+
+    api('/plugins/telemetry/DEVICE/' + deviceId + '/values/timeseries?keys=' + keys +
+        '&startTs=' + startTs + '&endTs=' + endTs + '&limit=1000&orderBy=ASC')
+    .then(ts => {
+        renderChart('chart-ph',       ts, 'pH',       'pH',              CHART_COLORS.pH);
+        renderChart('chart-tds',      ts, 'tds',      'TDS (ppm)',       CHART_COLORS.tds);
+        renderChart('chart-temp',     ts, 'waterTemp', 'Water Temp (°C)', CHART_COLORS.temp);
+        renderChart('chart-boxtemp',  ts, 'boxTemp',  'Box Temp (°C)',   CHART_COLORS.boxTemp);
+        renderChart('chart-flow',     ts, 'flowRate', 'Flow (L/min)',    CHART_COLORS.flow);
+        renderChart('chart-pressure', ts, 'pressure', 'Pressure (mbar)', CHART_COLORS.pressure);
+    })
+    .catch(err => { console.error('Chart load error:', err); });
+}
+
+function renderChart(canvasId, telemetry, key, label, colors) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    // Destroy existing chart
+    if (chartInstances[canvasId]) {
+        chartInstances[canvasId].destroy();
+        delete chartInstances[canvasId];
+    }
+
+    const raw = telemetry[key] || [];
+    if (raw.length === 0) {
+        // No data — show empty chart with message
+        chartInstances[canvasId] = new Chart(canvas, {
+            type: 'line',
+            data: { datasets: [] },
+            options: {
+                plugins: {
+                    title: { display: true, text: 'No data available', color: '#999' }
+                }
+            }
+        });
+        return;
+    }
+
+    const data = raw.map(p => ({ x: p.ts, y: parseFloat(p.value) }));
+
+    chartInstances[canvasId] = new Chart(canvas, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: label,
+                data: data,
+                borderColor: colors.border,
+                backgroundColor: colors.bg,
+                borderWidth: 2,
+                pointRadius: data.length > 200 ? 0 : 2,
+                pointHoverRadius: 4,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: { tooltipFormat: 'yyyy-MM-dd HH:mm:ss' },
+                    ticks: { maxTicksLimit: 8, font: { size: 11 } },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                y: {
+                    ticks: { font: { size: 11 } },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleFont: { size: 12 },
+                    bodyFont: { size: 12 },
+                    callbacks: {
+                        title: function(ctx) {
+                            return new Date(ctx[0].parsed.x).toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// LOG TABLE — Historical telemetry with CSV export
+// ══════════════════════════════════════════════════════════════════════
+
+let logData = [];  // cached for CSV export
+
+function loadLog() {
+    const deviceId = document.getElementById('log-device-select').value;
+    if (!deviceId) return;
+    const range = parseInt(document.getElementById('log-range').value);
+    const limit = parseInt(document.getElementById('log-limit').value);
+    const endTs = Date.now();
+    const startTs = endTs - range;
+    const keys = 'pH,tds,waterTemp,boxTemp,flowRate,pressure,uvState,fanState,totalErrors,tdsAlarm,phAlarm,tempAlarm';
+
+    const tbody = document.getElementById('log-tbody');
+    tbody.innerHTML = '<tr><td colspan="10" class="loading">Loading...</td></tr>';
+
+    api('/plugins/telemetry/DEVICE/' + deviceId + '/values/timeseries?keys=' + keys +
+        '&startTs=' + startTs + '&endTs=' + endTs + '&limit=' + limit + '&orderBy=DESC')
+    .then(ts => {
+        // Build unified time-series: collect all unique timestamps
+        const tsMap = {};
+        for (const key in ts) {
+            (ts[key] || []).forEach(p => {
+                if (!tsMap[p.ts]) tsMap[p.ts] = {};
+                tsMap[p.ts][key] = p.value;
+            });
+        }
+
+        // Sort by timestamp descending
+        const timestamps = Object.keys(tsMap).map(Number).sort((a,b) => b - a);
+        logData = timestamps.map(t => ({
+            timestamp: t,
+            ...tsMap[t]
+        }));
+
+        if (logData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="10" class="loading">No data found for this time range.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = logData.map(row => {
+            const d = new Date(row.timestamp);
+            const dateStr = d.getFullYear() + '-' +
+                String(d.getMonth()+1).padStart(2,'0') + '-' +
+                String(d.getDate()).padStart(2,'0') + ' ' +
+                String(d.getHours()).padStart(2,'0') + ':' +
+                String(d.getMinutes()).padStart(2,'0') + ':' +
+                String(d.getSeconds()).padStart(2,'0');
+
+            const hasAlarm = row.tdsAlarm === 'true' || row.phAlarm === 'true' || row.tempAlarm === 'true';
+            const cls = hasAlarm ? ' class="alarm-row"' : '';
+
+            return '<tr' + cls + '>' +
+                '<td>' + dateStr + '</td>' +
+                '<td>' + fmtVal(row.pH, 2) + '</td>' +
+                '<td>' + fmtVal(row.tds, 0) + '</td>' +
+                '<td>' + fmtVal(row.waterTemp, 1) + '</td>' +
+                '<td>' + fmtVal(row.boxTemp, 1) + '</td>' +
+                '<td>' + fmtVal(row.flowRate, 2) + '</td>' +
+                '<td>' + fmtVal(row.pressure, 1) + '</td>' +
+                '<td>' + fmtBool(row.uvState) + '</td>' +
+                '<td>' + fmtBool(row.fanState) + '</td>' +
+                '<td>' + (row.totalErrors || '0') + '</td>' +
+                '</tr>';
+        }).join('');
+    })
+    .catch(err => {
+        tbody.innerHTML = '<tr><td colspan="10" class="loading">Error: ' + err.message + '</td></tr>';
+    });
+}
+
+function fmtVal(v, decimals) {
+    if (v === undefined || v === null || v === '') return '--';
+    return parseFloat(v).toFixed(decimals);
+}
+
+function fmtBool(v) {
+    if (v === undefined || v === null) return '--';
+    if (v === 'true' || v === true) return '<span style="color:var(--success)">ON</span>';
+    return '<span style="color:var(--text-light)">OFF</span>';
+}
+
+function exportLogCSV() {
+    if (logData.length === 0) { alert('No data to export. Load a log first.'); return; }
+
+    const deviceSel = document.getElementById('log-device-select');
+    const deviceName = deviceSel.options[deviceSel.selectedIndex]?.text || 'device';
+
+    const header = 'Timestamp,pH,TDS_ppm,WaterTemp_C,BoxTemp_C,FlowRate_Lmin,Pressure_mbar,UV,Fan,Errors,TDS_Alarm,pH_Alarm,Temp_Alarm';
+    const rows = logData.map(row => {
+        const d = new Date(row.timestamp);
+        const dateStr = d.getFullYear() + '-' +
+            String(d.getMonth()+1).padStart(2,'0') + '-' +
+            String(d.getDate()).padStart(2,'0') + ' ' +
+            String(d.getHours()).padStart(2,'0') + ':' +
+            String(d.getMinutes()).padStart(2,'0') + ':' +
+            String(d.getSeconds()).padStart(2,'0');
+        return [
+            dateStr,
+            row.pH || '',
+            row.tds || '',
+            row.waterTemp || '',
+            row.boxTemp || '',
+            row.flowRate || '',
+            row.pressure || '',
+            row.uvState || '',
+            row.fanState || '',
+            row.totalErrors || '0',
+            row.tdsAlarm || '',
+            row.phAlarm || '',
+            row.tempAlarm || ''
+        ].join(',');
+    });
+
+    const csv = header + '\n' + rows.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'AquaSicura_' + deviceName + '_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}

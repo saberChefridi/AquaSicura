@@ -177,6 +177,43 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color:
 #app-screen { flex-direction: column; min-height: 100vh; }
 
 /* ── Responsive ──────────────────────────────────────────────────── */
+/* ── Chart Controls ───────────────────────────────────────────────── */
+.chart-controls {
+    background: var(--card); border-radius: var(--radius); padding: 16px;
+    margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px;
+}
+.chart-controls .form-group { margin-bottom: 0; }
+.chart-controls label { font-size: 12px; margin-bottom: 2px; }
+.chart-controls select {
+    padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-size: 13px; background: #fff;
+}
+
+/* ── Chart Grid ──────────────────────────────────────────────────── */
+.chart-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.chart-card {
+    background: var(--card); border-radius: var(--radius); padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+.chart-card h3 { font-size: 14px; color: var(--text-light); margin-bottom: 8px; }
+.chart-card canvas { width: 100% !important; max-height: 260px; }
+
+/* ── Log Table ───────────────────────────────────────────────────── */
+.log-table-wrap {
+    overflow-x: auto; background: var(--card); border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+#log-table th { position: sticky; top: 0; z-index: 2; font-size: 11px; white-space: nowrap; }
+#log-table td { font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+#log-table tr.alarm-row td { background: #fff3f3; }
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .chart-grid { grid-template-columns: 1fr; }
+}
 @media (max-width: 600px) {
     .sensor-grid { grid-template-columns: 1fr 1fr; }
     .detail-grid { grid-template-columns: 1fr 1fr; }
@@ -184,4 +221,5 @@ body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color:
     .tab { padding: 10px 12px; font-size: 13px; }
     .navbar { padding: 10px 16px; }
     .tab-content { padding: 16px; }
+    .chart-controls { flex-direction: column; align-items: stretch; }
 }
