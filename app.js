@@ -8,15 +8,78 @@
 // ══════════════════════════════════════════════════════════════════════
 
 function showLoginScreen() {
-    document.getElementById('landing-screen').classList.remove('active');
-    document.getElementById('app-screen').classList.remove('active');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('login-screen').classList.add('active');
+    // Hide landing fixed elements but keep login-bg visible
+    const landingNav = document.querySelector('.landing-nav');
+    const heroBg = document.querySelector('.hero-bg');
+    if (landingNav) landingNav.style.display = 'none';
+    if (heroBg) heroBg.style.display = 'none';
 }
 
 function showLandingScreen() {
-    document.getElementById('login-screen').classList.remove('active');
-    document.getElementById('app-screen').classList.remove('active');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('landing-screen').classList.add('active');
+    // Restore fixed elements
+    const landingNav = document.querySelector('.landing-nav');
+    const heroBg = document.querySelector('.hero-bg');
+    if (landingNav) landingNav.style.display = '';
+    if (heroBg) heroBg.style.display = '';
+}
+
+function showStoreScreen(scrollTo) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('store-screen').classList.add('active');
+    // Hide landing fixed elements (position:fixed escapes parent display:none)
+    const landingNav = document.querySelector('.landing-nav');
+    const heroBg = document.querySelector('.hero-bg');
+    if (landingNav) landingNav.style.display = 'none';
+    if (heroBg) heroBg.style.display = 'none';
+    // Scroll to top, then optionally scroll to a specific product
+    document.getElementById('store-screen').scrollTop = 0;
+    if (scrollTo) {
+        setTimeout(() => {
+            const el = document.getElementById(scrollTo);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+    }
+}
+
+function storeContact(product) {
+    document.getElementById('store-modal-product').textContent = product;
+    document.getElementById('store-modal-title').textContent =
+        product === 'General Inquiry' ? 'Contact Us' : 'Request Quote';
+    document.getElementById('store-contact-modal').classList.add('active');
+}
+
+function closeStoreModal() {
+    document.getElementById('store-contact-modal').classList.remove('active');
+}
+
+function submitStoreInquiry(e) {
+    e.preventDefault();
+    const data = {
+        product:  document.getElementById('store-modal-product').textContent,
+        name:     document.getElementById('store-name').value,
+        phone:    document.getElementById('store-phone').value,
+        email:    document.getElementById('store-email').value,
+        location: document.getElementById('store-location').value,
+        message:  document.getElementById('store-message').value
+    };
+    // For now, compose a mailto link (can be replaced with backend API later)
+    const subject = encodeURIComponent('AquaSicura Inquiry: ' + data.product);
+    const body = encodeURIComponent(
+        'Product: ' + data.product + '\n' +
+        'Name: ' + data.name + '\n' +
+        'Phone: ' + data.phone + '\n' +
+        'Email: ' + data.email + '\n' +
+        'Location: ' + data.location + '\n' +
+        'Message: ' + data.message
+    );
+    window.open('mailto:info@aquasicura.xyz?subject=' + subject + '&body=' + body);
+    closeStoreModal();
+    alert('Thank you! Your inquiry has been prepared. Please send the email that just opened, or we will contact you shortly.');
+    return false;
 }
 
 function scrollToSection(id) {
@@ -74,9 +137,12 @@ function api(path, opts = {}) {
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    // Hide landing nav when in app
+    // Hide fixed elements (landing nav & hero-bg) when not on landing page
+    const isLanding = (id === 'landing-screen');
     const landingNav = document.querySelector('.landing-nav');
-    if (landingNav) landingNav.style.display = (id === 'landing-screen') ? '' : 'none';
+    const heroBg = document.querySelector('.hero-bg');
+    if (landingNav) landingNav.style.display = isLanding ? '' : 'none';
+    if (heroBg) heroBg.style.display = isLanding ? '' : 'none';
 }
 
 function switchTab(btn) {

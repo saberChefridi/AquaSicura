@@ -32,6 +32,7 @@
             <div class="landing-nav-links">
                 <a href="#philosophy" class="nav-link" onclick="scrollToSection('philosophy')">Philosophy</a>
                 <a href="#products" class="nav-link" onclick="scrollToSection('products')">Products</a>
+                <a href="#" class="nav-link" onclick="showStoreScreen()">Store</a>
                 <a href="#mission" class="nav-link" onclick="scrollToSection('mission')">Technology</a>
                 <button class="btn btn-glass" onclick="showLoginScreen()">Dashboard</button>
             </div>
@@ -44,6 +45,7 @@
         <div class="mobile-menu" id="mobile-menu">
             <a href="#philosophy" onclick="scrollToSection('philosophy'); toggleMobileMenu();">Philosophy</a>
             <a href="#products" onclick="scrollToSection('products'); toggleMobileMenu();">Products</a>
+            <a href="#" onclick="showStoreScreen(); toggleMobileMenu();">Store</a>
             <a href="#mission" onclick="scrollToSection('mission'); toggleMobileMenu();">Technology</a>
             <a href="#" onclick="showLoginScreen(); toggleMobileMenu();">Dashboard</a>
         </div>
@@ -157,7 +159,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-luminous" onclick="scrollToSection('monitor')">Learn More</button>
+                        <button class="btn btn-luminous" onclick="showStoreScreen('store-drinking')">View in Store</button>
                     </div>
 
                     <!-- Product 2: Shower Filter -->
@@ -196,7 +198,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-glass-dark" onclick="scrollToSection('monitor')">Learn More</button>
+                        <button class="btn btn-glass-dark" onclick="showStoreScreen()">View in Store</button>
                     </div>
 
                     <!-- Product 3: Swimming Pool -->
@@ -236,7 +238,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-glass-dark" onclick="scrollToSection('monitor')">Learn More</button>
+                        <button class="btn btn-glass-dark" onclick="showStoreScreen()">View in Store</button>
                     </div>
 
                     <!-- Product 4: Compact Sink Filter -->
@@ -276,7 +278,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-glass-dark" onclick="scrollToSection('monitor')">Learn More</button>
+                        <button class="btn btn-glass-dark" onclick="showStoreScreen()">View in Store</button>
                     </div>
                 </div>
             </div>
@@ -331,12 +333,312 @@
                 <div class="footer-links">
                     <a href="#philosophy" onclick="scrollToSection('philosophy')">Philosophy</a>
                     <a href="#products" onclick="scrollToSection('products')">Products</a>
+                    <a href="#" onclick="showStoreScreen()">Store</a>
                     <a href="#mission" onclick="scrollToSection('mission')">Technology</a>
                     <a href="#" onclick="showLoginScreen()">Dashboard</a>
                 </div>
                 <div class="footer-copy">&copy; 2026 AquaSicura. Reviving the essence of water.</div>
             </div>
         </footer>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- STORE SCREEN                                                     -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="store-screen" class="screen">
+
+        <!-- Store Navigation -->
+        <nav class="store-nav">
+            <div class="store-nav-inner">
+                <button class="store-back" onclick="showLandingScreen()" title="Back to Home">&larr; Home</button>
+                <span class="store-nav-title">AquaSicura Store</span>
+                <button class="btn btn-glass" onclick="showLoginScreen()" style="padding:8px 20px;font-size:13px;">Dashboard</button>
+            </div>
+        </nav>
+
+        <!-- ── Hero / Video Header ── -->
+        <section class="store-hero">
+            <video class="store-hero-video" autoplay muted loop playsinline>
+                <source src="store-video-2.mp4" type="video/mp4">
+            </video>
+            <div class="store-hero-overlay"></div>
+            <div class="store-hero-content">
+                <div class="section-badge" style="color:var(--gold-light);">Our Solutions &amp; Pricing</div>
+                <h1 class="store-hero-title">Water Purification<br><em>Tailored for You</em></h1>
+                <p class="store-hero-sub">From residential taps to commercial pools &mdash; every drop matters. Browse our systems, view pricing, and request a free water analysis.</p>
+            </div>
+        </section>
+
+        <!-- ── Demo & Analysis Banner ── -->
+        <section class="store-demo-banner">
+            <div class="store-demo-inner">
+                <div class="store-demo-text">
+                    <div class="store-demo-badge">Special Offer</div>
+                    <h3>Water Quality Analysis &amp; Demo</h3>
+                    <p>Our certified water specialist visits your location with professional testing equipment. Full analysis of pH, TDS, contaminants, mineral content, and a live demonstration of our filtration technology &mdash; see the transformation with your own eyes.</p>
+                    <ul class="store-demo-list">
+                        <li>On-site water sampling &amp; lab-grade testing</li>
+                        <li>Detailed water quality report with recommendations</li>
+                        <li>Live AquaSicura filtration demonstration</li>
+                        <li>Custom system recommendation for your needs</li>
+                    </ul>
+                </div>
+                <div class="store-demo-price">
+                    <span class="store-price-label">Analysis &amp; Demo</span>
+                    <span class="store-price-amount">500 <small>AED</small></span>
+                    <span class="store-price-note">Fully refundable with any system purchase</span>
+                    <button class="btn btn-luminous" onclick="storeContact('Demo & Analysis')">Book Now</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Product Cards with Video BG ── -->
+        <section class="store-products-section">
+            <video class="store-section-video" autoplay muted loop playsinline>
+                <source src="store-video-1.mp4" type="video/mp4">
+            </video>
+            <div class="store-section-overlay"></div>
+
+            <div class="store-products-inner">
+
+                <!-- ═══ Product 1: Drinking Water ═══ -->
+                <div class="store-product-card store-product-hero" id="store-drinking">
+                    <div class="store-product-badge">Flagship</div>
+                    <div class="store-product-body">
+                        <div class="store-product-info">
+                            <div class="store-product-icon">
+                                <svg viewBox="0 0 120 120" fill="none"><rect x="35" y="15" width="50" height="90" rx="8" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/><path d="M45 40h30M45 55h30M45 70h30" stroke="currentColor" stroke-width=".8" opacity=".3"/><path d="M60 10C60 10 50 25 50 30a10 10 0 0020 0c0-5-10-20-10-20z" fill="rgba(201,169,110,0.15)" stroke="currentColor" stroke-width="1"/><circle cx="60" cy="85" r="8" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><path d="M56 85l3 3 5-6" stroke="currentColor" stroke-width="1" opacity=".6"/></svg>
+                            </div>
+                            <h2>Smart Drinking Water Filter</h2>
+                            <p class="store-product-tagline">The heart of clean living &mdash; intelligent purification under your sink.</p>
+                            <p class="store-product-desc">Our flagship 7-stage filtration system combines sediment pre-filtration, activated carbon adsorption, reverse osmosis, mineral re-injection, UV sterilization, and real-time IoT monitoring. Every drop passes through multiple purification barriers, emerging with ideal mineral balance, zero pathogens, and a taste that reminds you what water should be.</p>
+                            <p class="store-product-desc">The integrated AquaSicura controller continuously measures pH, TDS, temperature, flow rate, and pressure &mdash; reporting to your cloud dashboard every minute. When values deviate, you receive instant alerts via WhatsApp, email, SMS, or browser notification. It's not just filtration &mdash; it's water intelligence.</p>
+
+                            <div class="store-spec-grid">
+                                <div class="store-spec">
+                                    <strong>Installation</strong>
+                                    <p>Professional under-sink installation by certified technician. Includes all fittings, dedicated drinking faucet, and plumbing connections. Typically completed in 2&ndash;3 hours with zero structural modifications.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>Smart Monitoring</strong>
+                                    <p>Real-time pH, TDS, temperature, flow &amp; pressure sensors. Cloud dashboard at aquasicura.xyz with historical charts, CSV export, and alarm management. WhatsApp alerts for any anomaly.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>Advantages</strong>
+                                    <p>Removes 99.9% of bacteria, viruses, chlorine, heavy metals, pesticides, and microplastics. Restores essential minerals (Ca, Mg, K). UV lamp eliminates remaining pathogens. All while you monitor from anywhere.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>After-Service</strong>
+                                    <p>Annual filter replacement visit, quarterly water quality report emailed to you, UV lamp replacement every 12 months, 24/7 alarm monitoring, lifetime technical support. Optional: bi-annual full system sanitization.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="store-product-pricing">
+                            <div class="store-pricing-card">
+                                <span class="store-pricing-label">System Price</span>
+                                <span class="store-pricing-amount">12,500 <small>AED</small></span>
+                                <hr>
+                                <span class="store-pricing-label">Installation</span>
+                                <span class="store-pricing-amount-sm">3,500 <small>AED</small></span>
+                                <hr>
+                                <span class="store-pricing-total-label">Total</span>
+                                <span class="store-pricing-total">16,000 <small>AED</small></span>
+                                <button class="btn btn-luminous btn-full" onclick="storeContact('Drinking Water Filter')">Request Quote</button>
+                                <p class="store-pricing-note">Includes 1-year warranty &amp; first service visit</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ Product 2: Shower Filter ═══ -->
+                <div class="store-product-card" id="store-shower">
+                    <div class="store-product-body">
+                        <div class="store-product-info">
+                            <div class="store-product-icon">
+                                <svg viewBox="0 0 120 120" fill="none"><circle cx="60" cy="35" r="22" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/><path d="M45 50 L45 100 M55 50 L55 105 M65 50 L65 105 M75 50 L75 100" stroke="currentColor" stroke-width=".8" opacity=".3"/><path d="M50 55 L50 95 M60 55 L60 100 M70 55 L70 95" stroke="currentColor" stroke-width=".6" opacity=".2"/><circle cx="60" cy="35" r="8" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/></svg>
+                            </div>
+                            <h2>Shower Filtration System</h2>
+                            <p class="store-product-tagline">Your skin and hair deserve water as pure as nature intended.</p>
+                            <p class="store-product-desc">Chlorine and limescale in shower water cause dry skin, brittle hair, eczema flare-ups, and accelerated aging. Our inline shower filter uses a 3-stage KDF/Calcium Sulfite/Carbon media to neutralize chlorine on contact, soften hard water minerals, and remove sediment &mdash; transforming every shower into a spa-like experience.</p>
+                            <p class="store-product-desc">Dermatologist-recommended for sensitive skin. Within the first week, you'll notice softer skin, shinier hair, and no more post-shower tightness. Your glass shower doors will stay spotless longer too.</p>
+
+                            <div class="store-spec-grid">
+                                <div class="store-spec">
+                                    <strong>Installation</strong>
+                                    <p>Inline installation between your water pipe and showerhead. Universal thread adapters included. 5-minute DIY setup &mdash; no tools, no plumber, no modifications.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>Advantages</strong>
+                                    <p>Eliminates 98% of chlorine on contact. Reduces limescale buildup by 80%. Protects hair color treatments. Relieves dry skin and eczema symptoms. Prevents scale on glass and tiles.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>After-Service</strong>
+                                    <p>Replacement cartridge every 6 months (or 15,000 liters). Subscribe for automatic delivery at 15% discount. Each cartridge swap takes 30 seconds.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="store-product-pricing">
+                            <div class="store-pricing-card">
+                                <span class="store-pricing-label">System Price</span>
+                                <span class="store-pricing-amount">4,500 <small>AED</small></span>
+                                <hr>
+                                <span class="store-pricing-label">Installation</span>
+                                <span class="store-pricing-amount-sm">2,000 <small>AED</small></span>
+                                <hr>
+                                <span class="store-pricing-total-label">Total</span>
+                                <span class="store-pricing-total">6,500 <small>AED</small></span>
+                                <button class="btn btn-luminous btn-full" onclick="storeContact('Shower Filter')">Request Quote</button>
+                                <p class="store-pricing-note">Includes first replacement cartridge free</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ Product 3: Swimming Pool ═══ -->
+                <div class="store-product-card" id="store-pool">
+                    <div class="store-product-body">
+                        <div class="store-product-info">
+                            <div class="store-product-icon">
+                                <svg viewBox="0 0 120 120" fill="none"><path d="M15 60 Q30 50 45 60 Q60 70 75 60 Q90 50 105 60" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/><path d="M15 72 Q30 62 45 72 Q60 82 75 72 Q90 62 105 72" stroke="currentColor" stroke-width="1" fill="none" opacity=".35"/><path d="M15 84 Q30 74 45 84 Q60 94 75 84 Q90 74 105 84" stroke="currentColor" stroke-width=".8" fill="none" opacity=".2"/><rect x="20" y="40" width="80" height="50" rx="4" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".3"/><circle cx="60" cy="30" r="12" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/></svg>
+                            </div>
+                            <h2>Swimming Pool Purification</h2>
+                            <p class="store-product-tagline">Crystal clarity meets intelligent water management &mdash; for pools that inspire.</p>
+                            <p class="store-product-desc">Traditional pool maintenance relies on excessive chlorination that irritates eyes, damages swimwear, and creates harmful byproducts. Our commercial-grade pool purification system combines multi-stage mechanical filtration with industrial UV sterilization, reducing chlorine dependency by up to 70% while achieving superior water clarity.</p>
+                            <p class="store-product-desc">The integrated IoT monitoring tracks pH, ORP, turbidity, temperature, and chemical levels in real time. Automated dosing recommendations and cloud-connected alerts ensure your pool stays pristine 365 days a year without manual testing. Suitable for residential pools up to 150m&sup3; and commercial installations up to 500m&sup3;.</p>
+
+                            <div class="store-spec-grid">
+                                <div class="store-spec">
+                                    <strong>Installation</strong>
+                                    <p>Professional integration with existing pool pump and filtration circuit. Custom-sized UV chamber and multi-media filter vessel. Full hydraulic assessment included. Installation: 1&ndash;2 days by certified pool technician.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>Advantages</strong>
+                                    <p>70% less chlorine consumption. No red eyes or skin irritation. Crystal-clear water year-round. IoT dashboard for remote monitoring from your phone. Automated chemistry recommendations eliminate guesswork.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>Smart Monitoring</strong>
+                                    <p>Dedicated pool controller with pH, ORP, temperature, and turbidity sensors. Cloud dashboard with daily/weekly reports. WhatsApp alerts for chemistry deviations. Historical data for compliance records.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>After-Service</strong>
+                                    <p>Quarterly on-site maintenance visit. UV lamp replacement annually. Filter media refresh every 2 years. Priority response for chemistry emergencies. Full system audit every 6 months.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="store-product-pricing">
+                            <div class="store-pricing-card">
+                                <span class="store-pricing-label">System Price</span>
+                                <span class="store-pricing-amount">42,000 <small>AED</small></span>
+                                <span class="store-pricing-sub">Residential (up to 80m&sup3;)</span>
+                                <hr>
+                                <span class="store-pricing-label">Installation</span>
+                                <span class="store-pricing-amount-sm">15,000 <small>AED</small></span>
+                                <hr>
+                                <span class="store-pricing-total-label">Total from</span>
+                                <span class="store-pricing-total">56,000 <small>AED</small></span>
+                                <button class="btn btn-luminous btn-full" onclick="storeContact('Swimming Pool Filter')">Request Site Survey</button>
+                                <p class="store-pricing-note">Commercial pools priced after assessment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ Product 4: Compact Sink ═══ -->
+                <div class="store-product-card" id="store-compact">
+                    <div class="store-product-body">
+                        <div class="store-product-info">
+                            <div class="store-product-icon">
+                                <svg viewBox="0 0 120 120" fill="none"><path d="M40 30 Q60 20 80 30 L85 80 Q60 90 35 80 Z" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/><path d="M55 25 L55 15 Q60 10 65 15 L65 25" stroke="currentColor" stroke-width="1" opacity=".4"/><path d="M48 50h24M48 60h24M48 70h24" stroke="currentColor" stroke-width=".6" opacity=".3"/><circle cx="60" cy="95" r="6" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><path d="M60 89v-5" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>
+                            </div>
+                            <h2>Compact Sink Filter</h2>
+                            <p class="store-product-tagline">Maximum purification in a minimal footprint &mdash; elegance meets efficiency.</p>
+                            <p class="store-product-desc">Designed for modern apartments, office pantries, and compact kitchens where under-sink space is limited. This countertop or faucet-mounted system delivers 4-stage filtration (sediment + carbon block + ultrafiltration + post-carbon) in a beautifully minimal brushed-steel enclosure that complements any interior.</p>
+                            <p class="store-product-desc">Perfect for renters &mdash; zero permanent modifications, fully portable. Take it with you when you move. Switch between filtered and unfiltered water with an elegant lever. Flow rate of 2L/min ensures fast filling with zero compromise on purification quality.</p>
+
+                            <div class="store-spec-grid">
+                                <div class="store-spec">
+                                    <strong>Installation</strong>
+                                    <p>Attaches to any standard faucet with universal adapter kit. No drilling, no plumbing, no tools. Setup in under 5 minutes. Includes 3 adapter sizes for different faucet types.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>Advantages</strong>
+                                    <p>100% portable &mdash; take it when you move. Elegant brushed-steel design. Silent operation. No electricity required. Removes 95% of contaminants including chlorine, lead, and microplastics.</p>
+                                </div>
+                                <div class="store-spec">
+                                    <strong>After-Service</strong>
+                                    <p>Filter cartridge replacement every 3 months (or 1,500 liters). Easy twist-and-replace mechanism. Subscription delivery available at 10% discount.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="store-product-pricing">
+                            <div class="store-pricing-card">
+                                <span class="store-pricing-label">System Price</span>
+                                <span class="store-pricing-amount">4,500 <small>AED</small></span>
+                                <hr>
+                                <span class="store-pricing-label">Installation</span>
+                                <span class="store-pricing-amount-sm">Free <small>(self-install)</small></span>
+                                <hr>
+                                <span class="store-pricing-total-label">Total</span>
+                                <span class="store-pricing-total">4,500 <small>AED</small></span>
+                                <button class="btn btn-luminous btn-full" onclick="storeContact('Compact Sink Filter')">Order Now</button>
+                                <p class="store-pricing-note">Free delivery across UAE</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── Store CTA / Contact ── -->
+        <section class="store-cta">
+            <div class="store-cta-inner">
+                <h2>Not sure which system is right for you?</h2>
+                <p>Book our Water Quality Analysis &amp; Demo for just <strong>500 AED</strong> (refundable with purchase). Our specialist will test your water, recommend the ideal system, and demonstrate the difference live.</p>
+                <div class="store-cta-actions">
+                    <button class="btn btn-luminous btn-lg" onclick="storeContact('General Inquiry')">Contact Us</button>
+                    <button class="btn btn-glass-dark btn-lg" onclick="showLandingScreen()">Back to Home</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Store Footer -->
+        <footer class="landing-footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="brand-drop"></span>
+                    <span>AquaSicura</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#" onclick="showLandingScreen()">Home</a>
+                    <a href="#" onclick="showStoreScreen()">Store</a>
+                    <a href="#" onclick="showLoginScreen()">Dashboard</a>
+                </div>
+                <div class="footer-copy">&copy; 2026 AquaSicura. Reviving the essence of water.</div>
+            </div>
+        </footer>
+
+        <!-- Contact Modal -->
+        <div id="store-contact-modal" class="store-modal-overlay" onclick="if(event.target===this)closeStoreModal()">
+            <div class="store-modal">
+                <button class="store-modal-close" onclick="closeStoreModal()">&times;</button>
+                <h2 id="store-modal-title">Request Quote</h2>
+                <p class="store-modal-sub" id="store-modal-product"></p>
+                <form onsubmit="return submitStoreInquiry(event)">
+                    <label>Full Name</label>
+                    <input type="text" id="store-name" placeholder="Your name" required>
+                    <label>Phone / WhatsApp</label>
+                    <input type="tel" id="store-phone" placeholder="+971 50 123 4567" required>
+                    <label>Email</label>
+                    <input type="email" id="store-email" placeholder="your@email.com" required>
+                    <label>Location</label>
+                    <input type="text" id="store-location" placeholder="City, Area">
+                    <label>Message (optional)</label>
+                    <textarea id="store-message" rows="3" placeholder="Any special requirements..."></textarea>
+                    <button type="submit" class="btn btn-luminous btn-full" style="margin-top:16px;">Send Inquiry</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
