@@ -30,11 +30,19 @@
                 <span class="brand-text">AquaSicura</span>
             </div>
             <div class="landing-nav-links">
-                <a href="#philosophy" class="nav-link" onclick="scrollToSection('philosophy')">Philosophy</a>
-                <a href="#products" class="nav-link" onclick="scrollToSection('products')">Products</a>
-                <a href="#" class="nav-link" onclick="showStoreScreen()">Store</a>
-                <a href="#mission" class="nav-link" onclick="scrollToSection('mission')">Technology</a>
-                <button class="btn btn-glass" onclick="showLoginScreen()">Dashboard</button>
+                <a href="#philosophy" class="nav-link" onclick="scrollToSection('philosophy')" data-i18n="nav.philosophy">Philosophy</a>
+                <a href="#products" class="nav-link" onclick="scrollToSection('products')" data-i18n="nav.products">Products</a>
+                <a href="#" class="nav-link" onclick="showStoreScreen()" data-i18n="nav.store">Store</a>
+                <a href="#mission" class="nav-link" onclick="scrollToSection('mission')" data-i18n="nav.technology">Technology</a>
+                <button class="btn btn-glass" onclick="showLoginScreen()" data-i18n="nav.dashboard">Dashboard</button>
+            </div>
+            <div class="lang-switcher" id="lang-dropdown">
+                <button class="lang-btn" onclick="toggleLangDropdown(event)" id="lang-btn-label">🇬🇧</button>
+                <div class="lang-options">
+                    <button onclick="setLanguage('en')">🇬🇧 English</button>
+                    <button onclick="setLanguage('ar')">🇦🇪 عربي</button>
+                    <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                </div>
             </div>
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
                 <span></span><span></span><span></span>
@@ -43,63 +51,68 @@
 
         <!-- Mobile Menu -->
         <div class="mobile-menu" id="mobile-menu">
-            <a href="#philosophy" onclick="scrollToSection('philosophy'); toggleMobileMenu();">Philosophy</a>
-            <a href="#products" onclick="scrollToSection('products'); toggleMobileMenu();">Products</a>
-            <a href="#" onclick="showStoreScreen(); toggleMobileMenu();">Store</a>
-            <a href="#mission" onclick="scrollToSection('mission'); toggleMobileMenu();">Technology</a>
-            <a href="#" onclick="showLoginScreen(); toggleMobileMenu();">Dashboard</a>
+            <a href="#philosophy" onclick="scrollToSection('philosophy'); toggleMobileMenu();" data-i18n="nav.philosophy">Philosophy</a>
+            <a href="#products" onclick="scrollToSection('products'); toggleMobileMenu();" data-i18n="nav.products">Products</a>
+            <a href="#" onclick="showStoreScreen(); toggleMobileMenu();" data-i18n="nav.store">Store</a>
+            <a href="#mission" onclick="scrollToSection('mission'); toggleMobileMenu();" data-i18n="nav.technology">Technology</a>
+            <a href="#" onclick="showLoginScreen(); toggleMobileMenu();" data-i18n="nav.dashboard">Dashboard</a>
+            <div class="mobile-lang-row">
+                <button class="mobile-lang-btn" onclick="setLanguage('en'); toggleMobileMenu();">🇬🇧 English</button>
+                <button class="mobile-lang-btn" onclick="setLanguage('ar'); toggleMobileMenu();">🇦🇪 عربي</button>
+                <button class="mobile-lang-btn" onclick="setLanguage('it'); toggleMobileMenu();">🇮🇹 Italiano</button>
+            </div>
         </div>
 
         <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-content">
-                <div class="hero-badge">Water Filtration Intelligence</div>
+                <div class="hero-badge" data-i18n="hero.badge">Water Filtration Intelligence</div>
                 <h1 class="hero-title">
-                    <span class="title-line">The Essence</span>
-                    <span class="title-line accent">of Living Water</span>
+                    <span class="title-line" data-i18n="hero.title1">The Essence</span>
+                    <span class="title-line accent" data-i18n="hero.title2">of Living Water</span>
                 </h1>
-                <p class="hero-subtitle">
+                <p class="hero-subtitle" data-i18n="hero.subtitle">
                     In ancient times, water was revered as the source of all life &mdash;
                     a sacred element flowing with vitality. Today, we restore that reverence
                     through precision monitoring and purification.
                 </p>
                 <div class="hero-actions">
-                    <button class="btn btn-luminous" onclick="scrollToSection('philosophy')">Discover</button>
-                    <button class="btn btn-glass-dark" onclick="showLoginScreen()">Enter Dashboard</button>
+                    <button class="btn btn-luminous" onclick="scrollToSection('philosophy')" data-i18n="hero.discover">Discover</button>
+                    <button class="btn btn-glass-dark" onclick="showLoginScreen()" data-i18n="hero.enter">Enter Dashboard</button>
                 </div>
             </div>
             <div class="hero-scroll-hint" onclick="scrollToSection('philosophy')">
                 <div class="scroll-line"></div>
-                <span>Scroll</span>
+                <span data-i18n="hero.scroll">Scroll</span>
             </div>
         </section>
 
         <!-- Philosophy Section -->
         <section class="content-section" id="philosophy">
             <div class="section-inner">
-                <div class="section-badge">Philosophy</div>
-                <h2 class="section-title">Water is Life.<br><em>Yet the water we drink has lost its life.</em></h2>
+                <div class="section-badge" data-i18n="phil.badge">Philosophy</div>
+                <h2 class="section-title"><span data-i18n="phil.title">Water is Life.</span><br><em data-i18n="phil.title2">Yet the water we drink has lost its life.</em></h2>
                 <div class="philosophy-grid">
                     <div class="philosophy-card">
                         <div class="philosophy-icon">
                             <svg viewBox="0 0 48 48" fill="none"><path d="M24 4C24 4 8 20 8 30a16 16 0 0032 0C40 20 24 4 24 4z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="24" cy="30" r="6" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/></svg>
                         </div>
-                        <h3>The Ancient Greeks</h3>
-                        <p>Thales of Miletus declared water the <em>arche</em> &mdash; the fundamental principle from which all things emerge. To the ancients, water was not merely a substance but the breath of creation itself.</p>
+                        <h3 data-i18n="phil.greeks.title">The Ancient Greeks</h3>
+                        <p data-i18n="phil.greeks.text">Thales of Miletus declared water the <em>arche</em> &mdash; the fundamental principle from which all things emerge. To the ancients, water was not merely a substance but the breath of creation itself.</p>
                     </div>
                     <div class="philosophy-card">
                         <div class="philosophy-icon">
                             <svg viewBox="0 0 48 48" fill="none"><path d="M24 2v44M2 24h44M8 8l32 32M40 8L8 40" stroke="currentColor" stroke-width="1" opacity=".3"/><circle cx="24" cy="24" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/></svg>
                         </div>
-                        <h3>Dead Water</h3>
-                        <p>Modern treatment strips water of its minerals and memory. What arrives at our taps has traveled through miles of pipes, losing its structure, its minerals, its very essence. We drink, but we are not nourished.</p>
+                        <h3 data-i18n="phil.dead.title">Dead Water</h3>
+                        <p data-i18n="phil.dead.text">Modern treatment strips water of its minerals and memory. What arrives at our taps has traveled through miles of pipes, losing its structure, its minerals, its very essence. We drink, but we are not nourished.</p>
                     </div>
                     <div class="philosophy-card">
                         <div class="philosophy-icon">
                             <svg viewBox="0 0 48 48" fill="none"><path d="M12 36c0-8 12-24 12-24s12 16 12 24" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M16 34c0-5 8-16 8-16s8 11 8 16" stroke="currentColor" stroke-width="1" fill="none" opacity=".5"/><path d="M20 33c0-3 4-10 4-10s4 7 4 10" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/></svg>
                         </div>
-                        <h3>Revival</h3>
-                        <p>AquaSicura is our answer. Through multi-stage filtration, UV purification, and real-time intelligence, we do not merely clean water &mdash; we <em>revive</em> it. Restoring mineral balance, ensuring purity, bringing water back to life.</p>
+                        <h3 data-i18n="phil.revival.title">Revival</h3>
+                        <p data-i18n="phil.revival.text">AquaSicura is our answer. Through multi-stage filtration, UV purification, and real-time intelligence, we do not merely clean water &mdash; we <em>revive</em> it. Restoring mineral balance, ensuring purity, bringing water back to life.</p>
                     </div>
                 </div>
             </div>
@@ -108,17 +121,17 @@
         <!-- Quote Divider -->
         <section class="quote-section">
             <blockquote>
-                <p>&ldquo;Water is the driving force of all nature.&rdquo;</p>
-                <cite>&mdash; Leonardo da Vinci</cite>
+                <p data-i18n="quote.text">&ldquo;Water is the driving force of all nature.&rdquo;</p>
+                <cite data-i18n="quote.author">&mdash; Leonardo da Vinci</cite>
             </blockquote>
         </section>
 
         <!-- ═══ PRODUCTS / STORE ═══════════════════════════════════════ -->
         <section class="content-section section-products" id="products">
             <div class="section-inner">
-                <div class="section-badge">Our Solutions</div>
-                <h2 class="section-title">Purification,<br><em>Tailored to Every Drop.</em></h2>
-                <p class="section-intro">From the kitchen tap to the swimming pool &mdash; every water source deserves revival. Choose the solution that fits your life.</p>
+                <div class="section-badge" data-i18n="prod.badge">Our Solutions</div>
+                <h2 class="section-title"><span data-i18n="prod.title1">Purification,</span><br><em data-i18n="prod.title2">Tailored to Every Drop.</em></h2>
+                <p class="section-intro" data-i18n="prod.intro">From the kitchen tap to the swimming pool &mdash; every water source deserves revival. Choose the solution that fits your life.</p>
 
                 <div class="products-grid">
                     <!-- Product 1: Drinking Water -->
@@ -132,9 +145,9 @@
                                 <path d="M56 85l3 3 5-6" stroke="currentColor" stroke-width="1" opacity=".6"/>
                             </svg>
                         </div>
-                        <div class="product-badge">Most Popular</div>
-                        <h3>Drinking Water Filter</h3>
-                        <p class="product-tagline">Pure water, straight from your tap.</p>
+                        <div class="product-badge" data-i18n="prod.popular">Most Popular</div>
+                        <h3 data-i18n="prod.drink.name">Drinking Water Filter</h3>
+                        <p class="product-tagline" data-i18n="prod.drink.tag">Pure water, straight from your tap.</p>
                         <p class="product-desc">Our flagship multi-stage filtration system with smart monitoring. Removes chlorine, heavy metals, bacteria, and restores essential minerals for water that truly nourishes.</p>
                         <div class="product-features">
                             <div class="product-feature">
@@ -159,7 +172,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-luminous" onclick="showStoreScreen('store-drinking')">View in Store</button>
+                        <button class="btn btn-luminous" onclick="showStoreScreen('store-drinking')" data-i18n="prod.viewstore">View in Store</button>
                     </div>
 
                     <!-- Product 2: Shower Filter -->
@@ -172,8 +185,8 @@
                                 <circle cx="60" cy="35" r="8" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/>
                             </svg>
                         </div>
-                        <h3>Shower Filter</h3>
-                        <p class="product-tagline">Bathe in water that cares for your skin.</p>
+                        <h3 data-i18n="prod.shower.name">Shower Filter</h3>
+                        <p class="product-tagline" data-i18n="prod.shower.tag">Bathe in water that cares for your skin.</p>
                         <p class="product-desc">Removes chlorine, limescale, and impurities that damage skin and hair. Feel the difference from the very first shower &mdash; softer skin, shinier hair, no more dryness.</p>
                         <div class="product-features">
                             <div class="product-feature">
@@ -198,7 +211,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-glass-dark" onclick="showStoreScreen()">View in Store</button>
+                        <button class="btn btn-glass-dark" onclick="showStoreScreen()" data-i18n="prod.viewstore">View in Store</button>
                     </div>
 
                     <!-- Product 3: Swimming Pool -->
@@ -212,8 +225,8 @@
                                 <circle cx="60" cy="30" r="12" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/>
                             </svg>
                         </div>
-                        <h3>Swimming Pool Filter</h3>
-                        <p class="product-tagline">Crystal-clear water, chemical-free serenity.</p>
+                        <h3 data-i18n="prod.pool.name">Swimming Pool Filter</h3>
+                        <p class="product-tagline" data-i18n="prod.pool.tag">Crystal-clear water, chemical-free serenity.</p>
                         <p class="product-desc">Advanced multi-stage pool filtration with UV sterilization. Drastically reduces chemical usage while keeping water pristine, safe, and inviting all year round.</p>
                         <div class="product-features">
                             <div class="product-feature">
@@ -238,7 +251,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-glass-dark" onclick="showStoreScreen()">View in Store</button>
+                        <button class="btn btn-glass-dark" onclick="showStoreScreen()" data-i18n="prod.viewstore">View in Store</button>
                     </div>
 
                     <!-- Product 4: Compact Sink Filter -->
@@ -252,8 +265,8 @@
                                 <path d="M60 89v-5" stroke="currentColor" stroke-width="1" opacity=".4"/>
                             </svg>
                         </div>
-                        <h3>Compact Sink Filter</h3>
-                        <p class="product-tagline">Small space, big purification.</p>
+                        <h3 data-i18n="prod.compact.name">Compact Sink Filter</h3>
+                        <p class="product-tagline" data-i18n="prod.compact.tag">Small space, big purification.</p>
                         <p class="product-desc">Designed for small kitchens, offices, and apartments. Compact countertop or faucet-mounted design delivers the same multi-stage purification in a beautifully minimal form.</p>
                         <div class="product-features">
                             <div class="product-feature">
@@ -278,7 +291,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-glass-dark" onclick="showStoreScreen()">View in Store</button>
+                        <button class="btn btn-glass-dark" onclick="showStoreScreen()" data-i18n="prod.viewstore">View in Store</button>
                     </div>
                 </div>
             </div>
@@ -287,28 +300,28 @@
         <!-- Mission Section -->
         <section class="content-section section-light" id="mission">
             <div class="section-inner">
-                <div class="section-badge">Mission</div>
-                <h2 class="section-title">Precision Monitoring,<br>Pristine Water.</h2>
+                <div class="section-badge" data-i18n="mission.badge">Mission</div>
+                <h2 class="section-title"><span data-i18n="mission.title1">Precision Monitoring,</span><br><span data-i18n="mission.title2">Pristine Water.</span></h2>
                 <div class="features-grid">
                     <div class="feature-item">
                         <div class="feature-number">01</div>
-                        <h4>Real-Time Sensors</h4>
-                        <p>pH, TDS, temperature, flow rate, and pressure &mdash; measured every second, reported every minute. Nothing escapes our vigilance.</p>
+                        <h4 data-i18n="mission.f1.title">Real-Time Sensors</h4>
+                        <p data-i18n="mission.f1.text">pH, TDS, temperature, flow rate, and pressure &mdash; measured every second, reported every minute. Nothing escapes our vigilance.</p>
                     </div>
                     <div class="feature-item">
                         <div class="feature-number">02</div>
-                        <h4>Intelligent Alarms</h4>
-                        <p>Configurable thresholds with multi-channel notifications. Browser, email, SMS, WhatsApp &mdash; know instantly when water quality deviates.</p>
+                        <h4 data-i18n="mission.f2.title">Intelligent Alarms</h4>
+                        <p data-i18n="mission.f2.text">Configurable thresholds with multi-channel notifications. Browser, email, SMS, WhatsApp &mdash; know instantly when water quality deviates.</p>
                     </div>
                     <div class="feature-item">
                         <div class="feature-number">03</div>
-                        <h4>UV Purification</h4>
-                        <p>Automated UV lamp sterilization eliminates 99.9% of bacteria and viruses, controlled and monitored through our smart relay system.</p>
+                        <h4 data-i18n="mission.f3.title">UV Purification</h4>
+                        <p data-i18n="mission.f3.text">Automated UV lamp sterilization eliminates 99.9% of bacteria and viruses, controlled and monitored through our smart relay system.</p>
                     </div>
                     <div class="feature-item">
                         <div class="feature-number">04</div>
-                        <h4>Cloud Dashboard</h4>
-                        <p>Monitor every device from anywhere. Historical charts, exportable logs, and alarm management &mdash; all from your browser.</p>
+                        <h4 data-i18n="mission.f4.title">Cloud Dashboard</h4>
+                        <p data-i18n="mission.f4.text">Monitor every device from anywhere. Historical charts, exportable logs, and alarm management &mdash; all from your browser.</p>
                     </div>
                 </div>
             </div>
@@ -317,9 +330,9 @@
         <!-- CTA Section -->
         <section class="cta-section" id="monitor">
             <div class="cta-inner">
-                <h2>Begin Your Journey</h2>
-                <p>Access the AquaSicura monitoring dashboard to see your water quality in real time.</p>
-                <button class="btn btn-luminous btn-lg" onclick="showLoginScreen()">Enter Dashboard</button>
+                <h2 data-i18n="cta.title">Begin Your Journey</h2>
+                <p data-i18n="cta.text">Access the AquaSicura monitoring dashboard to see your water quality in real time.</p>
+                <button class="btn btn-luminous btn-lg" onclick="showLoginScreen()" data-i18n="hero.enter">Enter Dashboard</button>
             </div>
         </section>
 
@@ -331,13 +344,13 @@
                     <span>AquaSicura</span>
                 </div>
                 <div class="footer-links">
-                    <a href="#philosophy" onclick="scrollToSection('philosophy')">Philosophy</a>
-                    <a href="#products" onclick="scrollToSection('products')">Products</a>
-                    <a href="#" onclick="showStoreScreen()">Store</a>
-                    <a href="#mission" onclick="scrollToSection('mission')">Technology</a>
-                    <a href="#" onclick="showLoginScreen()">Dashboard</a>
+                    <a href="#philosophy" onclick="scrollToSection('philosophy')" data-i18n="nav.philosophy">Philosophy</a>
+                    <a href="#products" onclick="scrollToSection('products')" data-i18n="nav.products">Products</a>
+                    <a href="#" onclick="showStoreScreen()" data-i18n="nav.store">Store</a>
+                    <a href="#mission" onclick="scrollToSection('mission')" data-i18n="nav.technology">Technology</a>
+                    <a href="#" onclick="showLoginScreen()" data-i18n="nav.dashboard">Dashboard</a>
                 </div>
-                <div class="footer-copy">&copy; 2026 AquaSicura. Reviving the essence of water.</div>
+                <div class="footer-copy" data-i18n="footer.copy">&copy; 2026 AquaSicura. Reviving the essence of water.</div>
             </div>
         </footer>
     </div>
@@ -350,9 +363,19 @@
         <!-- Store Navigation -->
         <nav class="store-nav">
             <div class="store-nav-inner">
-                <button class="store-back" onclick="showLandingScreen()" title="Back to Home">&larr; Home</button>
-                <span class="store-nav-title">AquaSicura Store</span>
-                <button class="btn btn-glass" onclick="showLoginScreen()" style="padding:8px 20px;font-size:13px;">Dashboard</button>
+                <button class="store-back" onclick="showLandingScreen()" title="Back to Home" data-i18n="store.back">&larr; Home</button>
+                <span class="store-nav-title" data-i18n="store.navtitle">AquaSicura Store</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div class="lang-switcher" id="lang-dropdown-store">
+                        <button class="lang-btn" onclick="toggleLangDropdown(event, 'lang-dropdown-store')">🌐</button>
+                        <div class="lang-options">
+                            <button onclick="setLanguage('en')">🇬🇧 English</button>
+                            <button onclick="setLanguage('ar')">🇦🇪 عربي</button>
+                            <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-glass" onclick="showLoginScreen()" style="padding:8px 20px;font-size:13px;" data-i18n="nav.dashboard">Dashboard</button>
+                </div>
             </div>
         </nav>
 
@@ -363,9 +386,9 @@
             </video>
             <div class="store-hero-overlay"></div>
             <div class="store-hero-content">
-                <div class="section-badge" style="color:var(--gold-light);">Our Solutions &amp; Pricing</div>
-                <h1 class="store-hero-title">Water Purification<br><em>Tailored for You</em></h1>
-                <p class="store-hero-sub">From residential taps to commercial pools &mdash; every drop matters. Browse our systems, view pricing, and request a free water analysis.</p>
+                <div class="section-badge" style="color:var(--gold-light);" data-i18n="store.hero.badge">Our Solutions &amp; Pricing</div>
+                <h1 class="store-hero-title"><span data-i18n="store.hero.title">Water Purification</span><br><em data-i18n="store.hero.title2">Tailored for You</em></h1>
+                <p class="store-hero-sub" data-i18n="store.hero.sub">From residential taps to commercial pools &mdash; every drop matters. Browse our systems, view pricing, and request a free water analysis.</p>
             </div>
         </section>
 
@@ -373,8 +396,8 @@
         <section class="store-demo-banner">
             <div class="store-demo-inner">
                 <div class="store-demo-text">
-                    <div class="store-demo-badge">Special Offer</div>
-                    <h3>Water Quality Analysis &amp; Demo</h3>
+                    <div class="store-demo-badge" data-i18n="store.demo.badge">Special Offer</div>
+                    <h3 data-i18n="store.demo.title">Water Quality Analysis &amp; Demo</h3>
                     <p>Our certified water specialist visits your location with professional testing equipment. Full analysis of pH, TDS, contaminants, mineral content, and a live demonstration of our filtration technology &mdash; see the transformation with your own eyes.</p>
                     <ul class="store-demo-list">
                         <li>On-site water sampling &amp; lab-grade testing</li>
@@ -384,10 +407,10 @@
                     </ul>
                 </div>
                 <div class="store-demo-price">
-                    <span class="store-price-label">Analysis &amp; Demo</span>
+                    <span class="store-price-label" data-i18n="store.demo.label">Analysis &amp; Demo</span>
                     <span class="store-price-amount">500 <small>AED</small></span>
-                    <span class="store-price-note">Fully refundable with any system purchase</span>
-                    <button class="btn btn-luminous" onclick="storeContact('Demo & Analysis')">Book Now</button>
+                    <span class="store-price-note" data-i18n="store.demo.refund">Fully refundable with any system purchase</span>
+                    <button class="btn btn-luminous" onclick="storeContact('Demo & Analysis')" data-i18n="store.booknow">Book Now</button>
                 </div>
             </div>
         </section>
@@ -403,7 +426,7 @@
 
                 <!-- ═══ Product 1: Drinking Water ═══ -->
                 <div class="store-product-card store-product-hero" id="store-drinking">
-                    <div class="store-product-badge">Flagship</div>
+                    <div class="store-product-badge" data-i18n="store.flagship">Flagship</div>
                     <div class="store-product-body">
                         <div class="store-product-info">
                             <div class="store-product-icon">
@@ -435,15 +458,15 @@
                         </div>
                         <div class="store-product-pricing">
                             <div class="store-pricing-card">
-                                <span class="store-pricing-label">System Price</span>
+                                <span class="store-pricing-label" data-i18n="store.sysprice">System Price</span>
                                 <span class="store-pricing-amount">12,500 <small>AED</small></span>
                                 <hr>
-                                <span class="store-pricing-label">Installation</span>
+                                <span class="store-pricing-label" data-i18n="prod.installation">Installation</span>
                                 <span class="store-pricing-amount-sm">3,500 <small>AED</small></span>
                                 <hr>
-                                <span class="store-pricing-total-label">Total</span>
+                                <span class="store-pricing-total-label" data-i18n="store.total">Total</span>
                                 <span class="store-pricing-total">16,000 <small>AED</small></span>
-                                <button class="btn btn-luminous btn-full" onclick="storeContact('Drinking Water Filter')">Request Quote</button>
+                                <button class="btn btn-luminous btn-full" onclick="storeContact('Drinking Water Filter')" data-i18n="store.reqquote">Request Quote</button>
                                 <p class="store-pricing-note">Includes 1-year warranty &amp; first service visit</p>
                             </div>
                         </div>
@@ -479,15 +502,15 @@
                         </div>
                         <div class="store-product-pricing">
                             <div class="store-pricing-card">
-                                <span class="store-pricing-label">System Price</span>
+                                <span class="store-pricing-label" data-i18n="store.sysprice">System Price</span>
                                 <span class="store-pricing-amount">4,500 <small>AED</small></span>
                                 <hr>
-                                <span class="store-pricing-label">Installation</span>
+                                <span class="store-pricing-label" data-i18n="prod.installation">Installation</span>
                                 <span class="store-pricing-amount-sm">2,000 <small>AED</small></span>
                                 <hr>
-                                <span class="store-pricing-total-label">Total</span>
+                                <span class="store-pricing-total-label" data-i18n="store.total">Total</span>
                                 <span class="store-pricing-total">6,500 <small>AED</small></span>
-                                <button class="btn btn-luminous btn-full" onclick="storeContact('Shower Filter')">Request Quote</button>
+                                <button class="btn btn-luminous btn-full" onclick="storeContact('Shower Filter')" data-i18n="store.reqquote">Request Quote</button>
                                 <p class="store-pricing-note">Includes first replacement cartridge free</p>
                             </div>
                         </div>
@@ -527,16 +550,16 @@
                         </div>
                         <div class="store-product-pricing">
                             <div class="store-pricing-card">
-                                <span class="store-pricing-label">System Price</span>
+                                <span class="store-pricing-label" data-i18n="store.sysprice">System Price</span>
                                 <span class="store-pricing-amount">42,000 <small>AED</small></span>
                                 <span class="store-pricing-sub">Residential (up to 80m&sup3;)</span>
                                 <hr>
-                                <span class="store-pricing-label">Installation</span>
+                                <span class="store-pricing-label" data-i18n="prod.installation">Installation</span>
                                 <span class="store-pricing-amount-sm">15,000 <small>AED</small></span>
                                 <hr>
-                                <span class="store-pricing-total-label">Total from</span>
+                                <span class="store-pricing-total-label" data-i18n="store.totalfrom">Total from</span>
                                 <span class="store-pricing-total">56,000 <small>AED</small></span>
-                                <button class="btn btn-luminous btn-full" onclick="storeContact('Swimming Pool Filter')">Request Site Survey</button>
+                                <button class="btn btn-luminous btn-full" onclick="storeContact('Swimming Pool Filter')" data-i18n="store.reqsurvey">Request Site Survey</button>
                                 <p class="store-pricing-note">Commercial pools priced after assessment</p>
                             </div>
                         </div>
@@ -572,15 +595,15 @@
                         </div>
                         <div class="store-product-pricing">
                             <div class="store-pricing-card">
-                                <span class="store-pricing-label">System Price</span>
+                                <span class="store-pricing-label" data-i18n="store.sysprice">System Price</span>
                                 <span class="store-pricing-amount">4,500 <small>AED</small></span>
                                 <hr>
-                                <span class="store-pricing-label">Installation</span>
+                                <span class="store-pricing-label" data-i18n="prod.installation">Installation</span>
                                 <span class="store-pricing-amount-sm">Free <small>(self-install)</small></span>
                                 <hr>
-                                <span class="store-pricing-total-label">Total</span>
+                                <span class="store-pricing-total-label" data-i18n="store.total">Total</span>
                                 <span class="store-pricing-total">4,500 <small>AED</small></span>
-                                <button class="btn btn-luminous btn-full" onclick="storeContact('Compact Sink Filter')">Order Now</button>
+                                <button class="btn btn-luminous btn-full" onclick="storeContact('Compact Sink Filter')" data-i18n="store.ordernow">Order Now</button>
                                 <p class="store-pricing-note">Free delivery across UAE</p>
                             </div>
                         </div>
@@ -593,11 +616,11 @@
         <!-- ── Store CTA / Contact ── -->
         <section class="store-cta">
             <div class="store-cta-inner">
-                <h2>Not sure which system is right for you?</h2>
+                <h2 data-i18n="store.cta.title">Not sure which system is right for you?</h2>
                 <p>Book our Water Quality Analysis &amp; Demo for just <strong>500 AED</strong> (refundable with purchase). Our specialist will test your water, recommend the ideal system, and demonstrate the difference live.</p>
                 <div class="store-cta-actions">
-                    <button class="btn btn-luminous btn-lg" onclick="storeContact('General Inquiry')">Contact Us</button>
-                    <button class="btn btn-glass-dark btn-lg" onclick="showLandingScreen()">Back to Home</button>
+                    <button class="btn btn-luminous btn-lg" onclick="storeContact('General Inquiry')" data-i18n="store.contactus">Contact Us</button>
+                    <button class="btn btn-glass-dark btn-lg" onclick="showLandingScreen()" data-i18n="store.backhome">Back to Home</button>
                 </div>
             </div>
         </section>
@@ -610,11 +633,11 @@
                     <span>AquaSicura</span>
                 </div>
                 <div class="footer-links">
-                    <a href="#" onclick="showLandingScreen()">Home</a>
-                    <a href="#" onclick="showStoreScreen()">Store</a>
-                    <a href="#" onclick="showLoginScreen()">Dashboard</a>
+                    <a href="#" onclick="showLandingScreen()" data-i18n="nav.home">Home</a>
+                    <a href="#" onclick="showStoreScreen()" data-i18n="nav.store">Store</a>
+                    <a href="#" onclick="showLoginScreen()" data-i18n="nav.dashboard">Dashboard</a>
                 </div>
-                <div class="footer-copy">&copy; 2026 AquaSicura. Reviving the essence of water.</div>
+                <div class="footer-copy" data-i18n="footer.copy">&copy; 2026 AquaSicura. Reviving the essence of water.</div>
             </div>
         </footer>
 
@@ -622,20 +645,20 @@
         <div id="store-contact-modal" class="store-modal-overlay" onclick="if(event.target===this)closeStoreModal()">
             <div class="store-modal">
                 <button class="store-modal-close" onclick="closeStoreModal()">&times;</button>
-                <h2 id="store-modal-title">Request Quote</h2>
+                <h2 id="store-modal-title" data-i18n="modal.title">Request Quote</h2>
                 <p class="store-modal-sub" id="store-modal-product"></p>
                 <form onsubmit="return submitStoreInquiry(event)">
-                    <label>Full Name</label>
+                    <label data-i18n="modal.name">Full Name</label>
                     <input type="text" id="store-name" placeholder="Your name" required>
-                    <label>Phone / WhatsApp</label>
+                    <label data-i18n="modal.phone">Phone / WhatsApp</label>
                     <input type="tel" id="store-phone" placeholder="+971 50 123 4567" required>
-                    <label>Email</label>
+                    <label data-i18n="modal.email">Email</label>
                     <input type="email" id="store-email" placeholder="your@email.com" required>
-                    <label>Location</label>
+                    <label data-i18n="modal.location">Location</label>
                     <input type="text" id="store-location" placeholder="City, Area">
-                    <label>Message (optional)</label>
+                    <label data-i18n="modal.message">Message (optional)</label>
                     <textarea id="store-message" rows="3" placeholder="Any special requirements..."></textarea>
-                    <button type="submit" class="btn btn-luminous btn-full" style="margin-top:16px;">Send Inquiry</button>
+                    <button type="submit" class="btn btn-luminous btn-full" style="margin-top:16px;" data-i18n="modal.send">Send Inquiry</button>
                 </form>
             </div>
         </div>
@@ -658,23 +681,23 @@
                         <path d="M30 18C30 18 14 38 14 48a16 16 0 0032 0C46 38 30 18 30 18z" fill="rgba(112,146,190,0.1)" stroke="rgba(112,146,190,0.3)" stroke-width="1"/>
                     </svg>
                 </div>
-                <h1>AquaSicura</h1>
-                <p class="subtitle">Water Filtration Monitoring</p>
+                <h1 data-i18n="login.title">AquaSicura</h1>
+                <p class="subtitle" data-i18n="login.subtitle">Water Filtration Monitoring</p>
             </div>
             <form id="login-form" onsubmit="return doLogin(event)">
                 <div class="form-group">
-                    <label for="login-email">Email</label>
+                    <label for="login-email" data-i18n="login.email">Email</label>
                     <input type="email" id="login-email" placeholder="admin@aquasicura.com" required>
                 </div>
                 <div class="form-group">
-                    <label for="login-password">Password</label>
+                    <label for="login-password" data-i18n="login.password">Password</label>
                     <input type="password" id="login-password" placeholder="Password" required>
                 </div>
                 <div class="form-group">
-                    <label for="login-server">ThingsBoard Server</label>
+                    <label for="login-server" data-i18n="login.server">ThingsBoard Server</label>
                     <input type="text" id="login-server" value="thingsboard.cloud" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-full" id="login-btn">Sign In</button>
+                <button type="submit" class="btn btn-primary btn-full" id="login-btn" data-i18n="login.signin">Sign In</button>
                 <p id="login-error" class="error-text" style="display:none"></p>
             </form>
         </div>
@@ -697,33 +720,41 @@
             <div class="nav-right">
                 <span id="nav-user" class="nav-user"></span>
                 <span id="nav-role" class="nav-badge"></span>
-                <button class="btn btn-sm btn-outline-light" onclick="doLogout()">Logout</button>
+                <div class="lang-switcher" id="lang-dropdown-app">
+                    <button class="lang-btn" onclick="toggleLangDropdown(event, 'lang-dropdown-app')">🌐</button>
+                    <div class="lang-options">
+                        <button onclick="setLanguage('en')">🇬🇧 English</button>
+                        <button onclick="setLanguage('ar')">🇦🇪 عربي</button>
+                        <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-outline-light" onclick="doLogout()" data-i18n="nav.logout">Logout</button>
             </div>
         </nav>
 
         <!-- Admin Tabs -->
         <div id="admin-tabs" class="tab-bar" style="display:none">
-            <button class="tab active" data-tab="dashboard" onclick="switchTab(this)">Dashboard</button>
-            <button class="tab" data-tab="charts" onclick="switchTab(this)">Charts</button>
-            <button class="tab" data-tab="log" onclick="switchTab(this)">Log</button>
-            <button class="tab" data-tab="devices" onclick="switchTab(this)">Devices</button>
-            <button class="tab" data-tab="customers" onclick="switchTab(this)">Customers</button>
-            <button class="tab" data-tab="alarms" onclick="switchTab(this)">Alarms</button>
+            <button class="tab active" data-tab="dashboard" onclick="switchTab(this)" data-i18n="tab.dashboard">Dashboard</button>
+            <button class="tab" data-tab="charts" onclick="switchTab(this)" data-i18n="tab.charts">Charts</button>
+            <button class="tab" data-tab="log" onclick="switchTab(this)" data-i18n="tab.log">Log</button>
+            <button class="tab" data-tab="devices" onclick="switchTab(this)" data-i18n="tab.devices">Devices</button>
+            <button class="tab" data-tab="customers" onclick="switchTab(this)" data-i18n="tab.customers">Customers</button>
+            <button class="tab" data-tab="alarms" onclick="switchTab(this)" data-i18n="tab.alarms">Alarms</button>
         </div>
 
         <!-- User Tabs -->
         <div id="user-tabs" class="tab-bar" style="display:none">
-            <button class="tab active" data-tab="dashboard" onclick="switchTab(this)">My Device</button>
-            <button class="tab" data-tab="charts" onclick="switchTab(this)">Charts</button>
-            <button class="tab" data-tab="log" onclick="switchTab(this)">Log</button>
-            <button class="tab" data-tab="alarms" onclick="switchTab(this)">Alarms</button>
+            <button class="tab active" data-tab="dashboard" onclick="switchTab(this)" data-i18n="tab.mydevice">My Device</button>
+            <button class="tab" data-tab="charts" onclick="switchTab(this)" data-i18n="tab.charts">Charts</button>
+            <button class="tab" data-tab="log" onclick="switchTab(this)" data-i18n="tab.log">Log</button>
+            <button class="tab" data-tab="alarms" onclick="switchTab(this)" data-i18n="tab.alarms">Alarms</button>
         </div>
 
         <!-- Dashboard Tab -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="page-header">
-                <h2 id="dashboard-title">All Devices</h2>
-                <button class="btn btn-sm btn-primary" onclick="refreshDashboard()">Refresh</button>
+                <h2 id="dashboard-title" data-i18n="dash.alldevices">All Devices</h2>
+                <button class="btn btn-sm btn-primary" onclick="refreshDashboard()" data-i18n="dash.refresh">Refresh</button>
             </div>
             <div id="device-cards" class="device-grid">
                 <p class="loading">Loading devices...</p>
@@ -1033,6 +1064,7 @@
         </div>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
