@@ -892,6 +892,10 @@ body {
 .map-marker-icon {
     transform: rotate(45deg); font-size: 18px; line-height: 1;
 }
+.map-marker-pin.map-marker-unlocated {
+    background: #5a6577; border-color: #999; opacity: 0.7;
+    border-style: dashed;
+}
 .map-marker-label {
     position: absolute; top: 44px; left: 50%; transform: translateX(-50%);
     white-space: nowrap; font-size: 10px; font-weight: 700;

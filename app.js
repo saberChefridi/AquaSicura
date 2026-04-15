@@ -1360,23 +1360,34 @@ function initOrRefreshMap() {
     mapMarkers.forEach(m => deviceMap.removeLayer(m));
     mapMarkers = [];
 
-    // Add markers for each device with location
+    // Add markers for ALL devices — use Dubai default if no coordinates set
+    const DUBAI_CENTER_LAT = 25.2048;
+    const DUBAI_CENTER_LNG = 55.2708;
     const bounds = [];
-    allDevices.forEach(d => {
+    allDevices.forEach((d, idx) => {
         const attrs = allDeviceAttrs[d.id.id] || {};
-        const lat = parseFloat(attrs.latitude);
-        const lng = parseFloat(attrs.longitude);
-        if (!lat || !lng || (lat === 0 && lng === 0)) return;
+        let lat = parseFloat(attrs.latitude);
+        let lng = parseFloat(attrs.longitude);
+        let hasLocation = (lat && lng && !(lat === 0 && lng === 0));
+
+        if (!hasLocation) {
+            // Place unlocated devices spread around Dubai so they don't stack
+            const angle = (idx * 137.508) * Math.PI / 180; // golden angle spread
+            const radius = 0.015 + (idx % 5) * 0.008;
+            lat = DUBAI_CENTER_LAT + radius * Math.cos(angle);
+            lng = DUBAI_CENTER_LNG + radius * Math.sin(angle);
+        }
 
         const filterType = attrs.filterType || 'Unknown';
         const icon = FILTER_TYPE_ICONS[filterType] || '📡';
         const address = attrs.address || '';
         const custName = d.customerTitle || '';
 
-        // Custom icon
+        // Custom icon — dim style for unlocated devices
+        const pinClass = hasLocation ? 'map-marker-pin' : 'map-marker-pin map-marker-unlocated';
         const markerIcon = L.divIcon({
             className: 'device-map-marker',
-            html: `<div class="map-marker-pin"><span class="map-marker-icon">${icon}</span></div><div class="map-marker-label">${d.name}</div>`,
+            html: `<div class="${pinClass}"><span class="map-marker-icon">${icon}</span></div><div class="map-marker-label">${d.name}</div>`,
             iconSize: [40, 52],
             iconAnchor: [20, 52],
             popupAnchor: [0, -52]
@@ -1385,6 +1396,8 @@ function initOrRefreshMap() {
         const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(deviceMap);
 
         // Popup with device info
+        const locationNote = hasLocation ? '<p><strong>Coordinates:</strong> ' + lat.toFixed(4) + ', ' + lng.toFixed(4) + '</p>'
+            : '<p style="color:var(--warn);font-style:italic;">📍 No address set — showing approximate Dubai location</p>';
         const popupHtml = `
             <div class="map-popup">
                 <h4>${icon} ${d.name}</h4>
@@ -1392,7 +1405,7 @@ function initOrRefreshMap() {
                 ${attrs.filterRef ? '<p><strong>Ref:</strong> ' + attrs.filterRef + '</p>' : ''}
                 ${custName ? '<p><strong>Customer:</strong> ' + custName + '</p>' : ''}
                 ${address ? '<p><strong>Address:</strong> ' + address + '</p>' : ''}
-                <p><strong>Coordinates:</strong> ${lat.toFixed(4)}, ${lng.toFixed(4)}</p>
+                ${locationNote}
                 <button class="btn btn-sm btn-primary" onclick="mapGoToDevice('${d.id.id}')">View Device</button>
             </div>
         `;
