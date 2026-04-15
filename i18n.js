@@ -182,6 +182,21 @@ const TRANSLATIONS = {
 "dash.loading":         { en:"Loading devices...", ar:"\u062c\u0627\u0631\u064a \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0623\u062c\u0647\u0632\u0629...", it:"Caricamento dispositivi..." },
 "dash.exportcsv":       { en:"Export CSV",        ar:"\u062a\u0635\u062f\u064a\u0631 CSV", it:"Esporta CSV" },
 
+// ─── MAP & DEVICE INFO ───────────────────────────────────────────────
+"tab.map":              { en:"Map",              ar:"\u0627\u0644\u062e\u0631\u064a\u0637\u0629",  it:"Mappa" },
+"map.title":            { en:"Device Map",       ar:"\u062e\u0631\u064a\u0637\u0629 \u0627\u0644\u0623\u062c\u0647\u0632\u0629", it:"Mappa Dispositivi" },
+"dev.name":             { en:"Device Name",      ar:"\u0627\u0633\u0645 \u0627\u0644\u062c\u0647\u0627\u0632", it:"Nome Dispositivo" },
+"dev.filtertype":       { en:"Filter Type",      ar:"\u0646\u0648\u0639 \u0627\u0644\u0641\u0644\u062a\u0631", it:"Tipo di Filtro" },
+"dev.filterref":        { en:"Filter Reference", ar:"\u0645\u0631\u062c\u0639 \u0627\u0644\u0641\u0644\u062a\u0631", it:"Riferimento Filtro" },
+"dev.address":          { en:"Installation Address", ar:"\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u062a\u0631\u0643\u064a\u0628", it:"Indirizzo Installazione" },
+"dev.lat":              { en:"Latitude",         ar:"\u062e\u0637 \u0627\u0644\u0639\u0631\u0636", it:"Latitudine" },
+"dev.lng":              { en:"Longitude",        ar:"\u062e\u0637 \u0627\u0644\u0637\u0648\u0644", it:"Longitudine" },
+"dev.assigncust":       { en:"Assign to Customer", ar:"\u062a\u0639\u064a\u064a\u0646 \u0644\u0644\u0639\u0645\u064a\u0644", it:"Assegna al Cliente" },
+"dev.addtitle":         { en:"Add New Device",   ar:"\u0625\u0636\u0627\u0641\u0629 \u062c\u0647\u0627\u0632 \u062c\u062f\u064a\u062f", it:"Aggiungi Nuovo Dispositivo" },
+"dev.editinfo":         { en:"Edit Device Info", ar:"\u062a\u0639\u062f\u064a\u0644 \u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0627\u0644\u062c\u0647\u0627\u0632", it:"Modifica Info Dispositivo" },
+"dev.saveinfo":         { en:"Save Device Info", ar:"\u062d\u0641\u0638 \u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0627\u0644\u062c\u0647\u0627\u0632", it:"Salva Info Dispositivo" },
+"dev.active":           { en:"Active",           ar:"\u0646\u0634\u0637",      it:"Attivo" },
+
 // ─── LANGUAGE SELECTOR ───────────────────────────────────────────────
 "lang.en":              { en:"English",  ar:"English",  it:"English" },
 "lang.ar":              { en:"\u0639\u0631\u0628\u064a", ar:"\u0639\u0631\u0628\u064a", it:"Arabo" },

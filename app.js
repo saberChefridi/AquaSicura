@@ -151,6 +151,11 @@ function switchTab(btn) {
     btn.classList.add('active');
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    // Tab-specific init
+    const tab = btn.dataset.tab;
+    if (tab === 'map') { setTimeout(() => initOrRefreshMap(), 100); }
+    if (tab === 'devices' && IS_ADMIN) { loadDevicesTable(); }
+    if (tab === 'customers' && IS_ADMIN) { loadCustomers(); }
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -254,6 +259,28 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ── Dashboard ───────────────────────────────────────────────────────
 let allDevices = [];  // cache for alarm tab selector
+let allDeviceAttrs = {};  // cache: deviceId -> {filterType, filterRef, address, latitude, longitude}
+const DEVICE_ATTR_KEYS = 'filterType,filterRef,address,latitude,longitude';
+const FILTER_TYPE_ICONS = {
+    'Drinking Water Filter': '💧',
+    'Shower Filter': '🚿',
+    'Swimming Pool Filter': '🏊',
+    'Compact Sink Filter': '🔧'
+};
+
+function fetchDeviceAttrs(deviceId) {
+    return api('/plugins/telemetry/DEVICE/' + deviceId + '/values/attributes/SERVER_SCOPE?keys=' + DEVICE_ATTR_KEYS)
+        .then(attrs => {
+            const map = {};
+            (attrs || []).forEach(a => { map[a.key] = a.value; });
+            allDeviceAttrs[deviceId] = map;
+            return map;
+        })
+        .catch(() => {
+            allDeviceAttrs[deviceId] = {};
+            return {};
+        });
+}
 
 function refreshDashboard() {
     const container = document.getElementById('device-cards');
@@ -273,17 +300,19 @@ function refreshDashboard() {
             container.innerHTML = '<p class="loading">No devices found.</p>';
             return;
         }
-        // Fetch latest telemetry for each device
+        // Fetch latest telemetry AND server attributes for each device
         return Promise.all(devices.map(d =>
-            api('/plugins/telemetry/DEVICE/' + d.id.id + '/values/timeseries?keys=pH,tds,waterTemp,boxTemp,flowRate,pressure,tdsAlarm,phAlarm,tempAlarm,tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax')
-                .then(ts => ({ device: d, telemetry: ts }))
-                .catch(() => ({ device: d, telemetry: {} }))
+            Promise.all([
+                api('/plugins/telemetry/DEVICE/' + d.id.id + '/values/timeseries?keys=pH,tds,waterTemp,boxTemp,flowRate,pressure,tdsAlarm,phAlarm,tempAlarm,tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax')
+                    .catch(() => ({})),
+                fetchDeviceAttrs(d.id.id)
+            ]).then(([ts, attrs]) => ({ device: d, telemetry: ts, attrs: attrs }))
         ));
     })
     .then(results => {
         if (!results) return;
         container.innerHTML = '';
-        results.forEach(r => container.appendChild(buildDeviceCard(r.device, r.telemetry)));
+        results.forEach(r => container.appendChild(buildDeviceCard(r.device, r.telemetry, r.attrs)));
         populateAlarmDeviceSelector();
     })
     .catch(err => {
@@ -296,7 +325,7 @@ function tv(telemetry, key) {
     return telemetry[key][0].value;
 }
 
-function buildDeviceCard(device, ts) {
+function buildDeviceCard(device, ts, attrs) {
     const card = document.createElement('div');
     const ph   = tv(ts, 'pH');
     const tds  = tv(ts, 'tds');
@@ -312,14 +341,27 @@ function buildDeviceCard(device, ts) {
     const lastTs = ts && ts['pH'] && ts['pH'][0] ? ts['pH'][0].ts : null;
     const isOnline = lastTs && (Date.now() - lastTs < 7200000); // 2h threshold
 
+    attrs = attrs || {};
+    const filterType = attrs.filterType || '';
+    const filterIcon = FILTER_TYPE_ICONS[filterType] || '📡';
+    const address = attrs.address || '';
+    const custName = device.customerTitle || '';
+
     card.className = 'device-card' + (anyAlarm ? ' alarm-active' : '');
     card.onclick = () => showDeviceDetail(device, ts);
 
     card.innerHTML = `
         <div class="device-card-header">
-            <h3>${device.name}</h3>
+            <div>
+                <h3>${filterIcon} ${device.name}</h3>
+                ${filterType ? '<span class="device-filter-badge">' + filterType + '</span>' : ''}
+            </div>
             <span class="device-status ${isOnline ? 'online' : 'offline'}">${isOnline ? 'Online' : 'Offline'}</span>
         </div>
+        ${(address || custName) ? '<div class="device-card-meta">' +
+            (custName ? '<span class="device-meta-item">👤 ' + custName + '</span>' : '') +
+            (address ? '<span class="device-meta-item">📍 ' + address + '</span>' : '') +
+        '</div>' : ''}
         <div class="sensor-grid">
             <div class="sensor-item ${phA ? 'alarm' : ''}">
                 <div class="sensor-value">${ph !== null ? parseFloat(ph).toFixed(1) : '--'}</div>
@@ -343,10 +385,25 @@ function buildDeviceCard(device, ts) {
     return card;
 }
 
+let currentDetailDevice = null;
+
 function showDeviceDetail(device, ts) {
+    currentDetailDevice = device;
     document.getElementById('detail-device-name').textContent = device.name;
     const grid = document.getElementById('detail-grid');
+    const attrs = allDeviceAttrs[device.id.id] || {};
 
+    // ── Device Info Bar ──
+    const infoBar = document.getElementById('detail-info-bar');
+    const infoItems = [];
+    if (attrs.filterType) infoItems.push('<span class="info-chip">' + (FILTER_TYPE_ICONS[attrs.filterType]||'') + ' ' + attrs.filterType + '</span>');
+    if (attrs.filterRef) infoItems.push('<span class="info-chip">🏷️ ' + attrs.filterRef + '</span>');
+    if (device.customerTitle) infoItems.push('<span class="info-chip">👤 ' + device.customerTitle + '</span>');
+    if (attrs.address) infoItems.push('<span class="info-chip">📍 ' + attrs.address + '</span>');
+    if (attrs.latitude && attrs.longitude) infoItems.push('<span class="info-chip">🌐 ' + parseFloat(attrs.latitude).toFixed(4) + ', ' + parseFloat(attrs.longitude).toFixed(4) + '</span>');
+    infoBar.innerHTML = infoItems.length ? infoItems.join('') : '<span class="info-chip" style="opacity:.5">No device info configured</span>';
+
+    // ── Sensor Grid ──
     const keys = [
         { key: 'pH',       label: 'pH',          unit: '',     alarm: 'phAlarm' },
         { key: 'tds',      label: 'TDS',         unit: ' ppm', alarm: 'tdsAlarm' },
@@ -371,21 +428,103 @@ function showDeviceDetail(device, ts) {
         .join('');
     document.getElementById('detail-alarms').innerHTML = limitsHtml ? '<p style="font-size:13px;color:#777;margin-bottom:4px;">Current Alarm Limits:</p>' + limitsHtml : '';
 
+    // ── Edit Section (admin only) ──
+    const editSection = document.getElementById('detail-edit-section');
+    if (IS_ADMIN) {
+        editSection.style.display = 'block';
+        document.getElementById('edit-device-filter-type').value = attrs.filterType || 'Drinking Water Filter';
+        document.getElementById('edit-device-filter-ref').value = attrs.filterRef || '';
+        document.getElementById('edit-device-address').value = attrs.address || '';
+        document.getElementById('edit-device-lat').value = attrs.latitude || '';
+        document.getElementById('edit-device-lng').value = attrs.longitude || '';
+        document.getElementById('edit-device-result').textContent = '';
+        // Populate customer dropdown
+        api('/customers?pageSize=100&page=0&sortProperty=title&sortOrder=ASC').then(page => {
+            const sel = document.getElementById('edit-device-customer');
+            sel.innerHTML = '<option value="">-- Unassigned --</option>';
+            (page.data || []).forEach(c => {
+                const selected = (device.customerId && device.customerId.id === c.id.id) ? ' selected' : '';
+                sel.innerHTML += `<option value="${c.id.id}"${selected}>${c.title}</option>`;
+            });
+        });
+    } else {
+        editSection.style.display = 'none';
+    }
+
     openModal('modal-device-detail');
+}
+
+function saveDeviceInfo() {
+    if (!currentDetailDevice) return;
+    const deviceId = currentDetailDevice.id.id;
+    const result = document.getElementById('edit-device-result');
+    result.textContent = 'Saving...'; result.className = 'status-msg';
+
+    const attrData = {
+        filterType: document.getElementById('edit-device-filter-type').value,
+        filterRef: document.getElementById('edit-device-filter-ref').value.trim(),
+        address: document.getElementById('edit-device-address').value.trim(),
+        latitude: parseFloat(document.getElementById('edit-device-lat').value) || 0,
+        longitude: parseFloat(document.getElementById('edit-device-lng').value) || 0
+    };
+
+    const newCustomerId = document.getElementById('edit-device-customer').value;
+    const currentCustomerId = currentDetailDevice.customerId ? currentDetailDevice.customerId.id : '';
+
+    // Save server-side attributes
+    const saveAttrs = api('/plugins/telemetry/DEVICE/' + deviceId + '/SERVER_SCOPE', {
+        method: 'POST',
+        body: JSON.stringify(attrData)
+    });
+
+    // Handle customer reassignment
+    let custPromise = Promise.resolve();
+    if (newCustomerId !== currentCustomerId) {
+        if (currentCustomerId && currentCustomerId !== '13814000-1dd2-11b2-8080-808080808080') {
+            // Unassign from current customer first
+            custPromise = api('/customer/device/' + deviceId, { method: 'DELETE' }).catch(() => {});
+        }
+        if (newCustomerId) {
+            custPromise = custPromise.then(() =>
+                api('/customer/' + newCustomerId + '/device/' + deviceId, { method: 'POST' })
+            );
+        }
+    }
+
+    Promise.all([saveAttrs, custPromise]).then(() => {
+        result.textContent = 'Device info saved successfully!';
+        result.className = 'status-msg ok';
+        allDeviceAttrs[deviceId] = attrData;
+        refreshDashboard();
+        loadDevicesTable();
+    }).catch(err => {
+        result.textContent = 'Error: ' + err.message;
+        result.className = 'status-msg err';
+    });
 }
 
 // ── Devices Tab (Admin) ─────────────────────────────────────────────
 function loadDevicesTable() {
     api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC').then(page => {
+        const devices = page.data || [];
+        // Fetch attrs for all devices
+        return Promise.all(devices.map(d =>
+            fetchDeviceAttrs(d.id.id).then(attrs => ({ device: d, attrs }))
+        ));
+    }).then(results => {
         const tbody = document.getElementById('devices-tbody');
         tbody.innerHTML = '';
-        (page.data || []).forEach(d => {
+        results.forEach(({ device: d, attrs }) => {
             const tr = document.createElement('tr');
             const custName = d.customerTitle || '-';
             const isActive = d.active !== false;
+            const filterType = attrs.filterType || '-';
+            const address = attrs.address || '-';
+            const filterIcon = FILTER_TYPE_ICONS[attrs.filterType] || '';
             tr.innerHTML = `
-                <td>${d.name}</td>
-                <td>${d.type || 'AquaSicura'}</td>
+                <td><strong>${d.name}</strong>${attrs.filterRef ? '<br><small style="color:var(--text-light)">' + attrs.filterRef + '</small>' : ''}</td>
+                <td>${filterIcon} ${filterType}</td>
+                <td>${address}</td>
                 <td>${custName}</td>
                 <td>${isActive ? '<span style="color:var(--success)">Yes</span>' : '<span style="color:var(--danger)">No</span>'}</td>
                 <td>
@@ -400,11 +539,16 @@ function loadDevicesTable() {
 
 function openAddDeviceModal() {
     document.getElementById('new-device-name').value = '';
+    document.getElementById('new-device-filter-type').value = 'Drinking Water Filter';
+    document.getElementById('new-device-filter-ref').value = '';
+    document.getElementById('new-device-address').value = '';
+    document.getElementById('new-device-lat').value = '';
+    document.getElementById('new-device-lng').value = '';
     document.getElementById('add-device-result').textContent = '';
     // populate customer dropdown
     api('/customers?pageSize=100&page=0&sortProperty=title&sortOrder=ASC').then(page => {
         const sel = document.getElementById('new-device-customer');
-        sel.innerHTML = '<option value="">-- None --</option>';
+        sel.innerHTML = '<option value="">-- None (unassigned) --</option>';
         (page.data || []).forEach(c => {
             sel.innerHTML += `<option value="${c.id.id}">${c.title}</option>`;
         });
@@ -415,6 +559,11 @@ function openAddDeviceModal() {
 function addDevice() {
     const name = document.getElementById('new-device-name').value.trim();
     const customerId = document.getElementById('new-device-customer').value;
+    const filterType = document.getElementById('new-device-filter-type').value;
+    const filterRef = document.getElementById('new-device-filter-ref').value.trim();
+    const address = document.getElementById('new-device-address').value.trim();
+    const lat = parseFloat(document.getElementById('new-device-lat').value) || 0;
+    const lng = parseFloat(document.getElementById('new-device-lng').value) || 0;
     const result = document.getElementById('add-device-result');
     if (!name) { result.textContent = 'Name is required'; result.className = 'status-msg err'; return; }
 
@@ -435,13 +584,21 @@ function addDevice() {
         }).then(() => dev);
     })
     .then(dev => {
+        // Save device info as server-side attributes
+        const devAttrs = { filterType, filterRef, address, latitude: lat, longitude: lng };
+        return api('/plugins/telemetry/DEVICE/' + dev.id.id + '/SERVER_SCOPE', {
+            method: 'POST',
+            body: JSON.stringify(devAttrs)
+        }).then(() => dev);
+    })
+    .then(dev => {
         // Get the access token
         return api('/device/' + dev.id.id + '/credentials').then(cred => {
             result.className = 'status-msg ok';
             result.innerHTML = 'Device created!<br>Access Token: <strong>' + cred.credentialsId + '</strong>' +
-                '<br>Default alarm limits applied: TDS ' + DEFAULT_ALARMS.tdsAlarmMin + '\u2013' + DEFAULT_ALARMS.tdsAlarmMax +
-                ' ppm, pH ' + DEFAULT_ALARMS.phAlarmMin + '\u2013' + DEFAULT_ALARMS.phAlarmMax +
-                ', Temp ' + DEFAULT_ALARMS.tempAlarmMin + '\u2013' + DEFAULT_ALARMS.tempAlarmMax + '\u00b0C' +
+                '<br>Filter: ' + filterType + (filterRef ? ' (' + filterRef + ')' : '') +
+                (address ? '<br>Address: ' + address : '') +
+                '<br>Default alarm limits applied.' +
                 '<br><em>Copy this token and paste it into the device config page.</em>';
             loadDevicesTable();
             refreshDashboard();
@@ -1170,4 +1327,107 @@ function exportLogCSV() {
     a.download = 'AquaSicura_' + deviceName + '_' + new Date().toISOString().slice(0,10) + '.csv';
     a.click();
     URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// MAP VIEW
+// ══════════════════════════════════════════════════════════════════════
+let deviceMap = null;
+let mapMarkers = [];
+
+function initOrRefreshMap() {
+    const container = document.getElementById('map-container');
+    if (!container) return;
+
+    if (!deviceMap) {
+        // Initialize Leaflet map centered on Dubai
+        deviceMap = L.map('map-container', {
+            center: [25.2048, 55.2708],
+            zoom: 11,
+            zoomControl: true,
+            scrollWheelZoom: true
+        });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(deviceMap);
+    }
+
+    // Invalidate size in case container was hidden
+    deviceMap.invalidateSize();
+
+    // Clear existing markers
+    mapMarkers.forEach(m => deviceMap.removeLayer(m));
+    mapMarkers = [];
+
+    // Add markers for each device with location
+    const bounds = [];
+    allDevices.forEach(d => {
+        const attrs = allDeviceAttrs[d.id.id] || {};
+        const lat = parseFloat(attrs.latitude);
+        const lng = parseFloat(attrs.longitude);
+        if (!lat || !lng || (lat === 0 && lng === 0)) return;
+
+        const filterType = attrs.filterType || 'Unknown';
+        const icon = FILTER_TYPE_ICONS[filterType] || '📡';
+        const address = attrs.address || '';
+        const custName = d.customerTitle || '';
+
+        // Custom icon
+        const markerIcon = L.divIcon({
+            className: 'device-map-marker',
+            html: `<div class="map-marker-pin"><span class="map-marker-icon">${icon}</span></div><div class="map-marker-label">${d.name}</div>`,
+            iconSize: [40, 52],
+            iconAnchor: [20, 52],
+            popupAnchor: [0, -52]
+        });
+
+        const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(deviceMap);
+
+        // Popup with device info
+        const popupHtml = `
+            <div class="map-popup">
+                <h4>${icon} ${d.name}</h4>
+                <p><strong>Type:</strong> ${filterType}</p>
+                ${attrs.filterRef ? '<p><strong>Ref:</strong> ' + attrs.filterRef + '</p>' : ''}
+                ${custName ? '<p><strong>Customer:</strong> ' + custName + '</p>' : ''}
+                ${address ? '<p><strong>Address:</strong> ' + address + '</p>' : ''}
+                <p><strong>Coordinates:</strong> ${lat.toFixed(4)}, ${lng.toFixed(4)}</p>
+                <button class="btn btn-sm btn-primary" onclick="mapGoToDevice('${d.id.id}')">View Device</button>
+            </div>
+        `;
+        marker.bindPopup(popupHtml, { maxWidth: 280 });
+        mapMarkers.push(marker);
+        bounds.push([lat, lng]);
+    });
+
+    // Fit bounds if we have markers
+    if (bounds.length > 0) {
+        if (bounds.length === 1) {
+            deviceMap.setView(bounds[0], 15);
+        } else {
+            deviceMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+        }
+    }
+}
+
+function refreshMap() {
+    // Re-fetch device data then update map
+    refreshDashboard();
+    setTimeout(() => initOrRefreshMap(), 1500);
+}
+
+function mapGoToDevice(deviceId) {
+    // Find the device and its telemetry, switch to dashboard and open detail
+    const device = allDevices.find(d => d.id.id === deviceId);
+    if (!device) return;
+
+    // Fetch telemetry for this device
+    api('/plugins/telemetry/DEVICE/' + deviceId + '/values/timeseries?keys=pH,tds,waterTemp,boxTemp,flowRate,pressure,tdsAlarm,phAlarm,tempAlarm,tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax')
+        .then(ts => {
+            showDeviceDetail(device, ts);
+        })
+        .catch(() => {
+            showDeviceDetail(device, {});
+        });
 }
