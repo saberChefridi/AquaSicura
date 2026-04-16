@@ -655,7 +655,7 @@ function openAddCustomerModal() {
     openModal('modal-add-customer');
 }
 
-function addCustomerAndUser() {
+async function addCustomerAndUser() {
     const name     = document.getElementById('new-customer-name').value.trim();
     const email    = document.getElementById('new-user-email').value.trim();
     const password = document.getElementById('new-user-password').value;
@@ -669,16 +669,17 @@ function addCustomerAndUser() {
     if (!password || password.length < 6) { result.textContent = 'Password must be at least 6 characters'; result.className = 'status-msg err'; return; }
     if (!deviceId) { result.textContent = 'Please select a device to assign'; result.className = 'status-msg err'; return; }
 
-    result.textContent = 'Creating customer...'; result.className = 'status-msg';
+    try {
+        // Step 1: Create customer
+        result.innerHTML = '⏳ Step 1/4: Creating customer...'; result.className = 'status-msg';
+        const cust = await api('/customer', { method: 'POST', body: JSON.stringify({ title: name }) });
 
-    // 1. Create customer
-    api('/customer', { method: 'POST', body: JSON.stringify({ title: name }) })
-    .then(cust => {
-        // 2. Assign device to this customer
-        return api('/customer/' + cust.id.id + '/device/' + deviceId, { method: 'POST' }).then(() => cust);
-    })
-    .then(cust => {
-        // 3. Create user under this customer
+        // Step 2: Assign device to customer
+        result.innerHTML = '⏳ Step 2/4: Assigning device...';
+        await api('/customer/' + cust.id.id + '/device/' + deviceId, { method: 'POST' });
+
+        // Step 3: Create user account
+        result.innerHTML = '⏳ Step 3/4: Creating user account...';
         const userBody = {
             email: email,
             firstName: first || email.split('@')[0],
@@ -686,53 +687,77 @@ function addCustomerAndUser() {
             authority: 'CUSTOMER_USER',
             customerId: cust.id
         };
-        return api('/user?sendActivationMail=false', { method: 'POST', body: JSON.stringify(userBody) }).then(user => ({ cust, user }));
-    })
-    .then(({ cust, user }) => {
-        // 4. Get activation link and activate with password
-        return api('/user/' + user.id.id + '/activationLink').then(link => {
-            // link is a full URL string like "https://host/api/noauth/activate?activateToken=xxx"
-            // or could be a UI link like "https://host/login/createPassword?activateToken=xxx"
-            // Extract the activateToken parameter from it
-            let activateToken = '';
+        const user = await api('/user?sendActivationMail=false', { method: 'POST', body: JSON.stringify(userBody) });
+
+        // Step 4: Activate user with password
+        result.innerHTML = '⏳ Step 4/4: Setting password...';
+        let activateToken = '';
+        try {
+            const link = await api('/user/' + user.id.id + '/activationLink');
+            // Extract token — link could be URL string in various formats
+            const cleanLink = String(link).replace(/^"|"$/g, '').trim();
             try {
-                // Clean the link — ThingsBoard may return it with or without quotes
-                const cleanLink = link.replace(/^"|"$/g, '').trim();
-                const url = new URL(cleanLink);
-                activateToken = url.searchParams.get('activateToken');
-            } catch(e) {
-                // Fallback: try regex extraction
-                const match = link.match(/activateToken=([^&"]+)/);
-                if (match) activateToken = match[1];
+                activateToken = new URL(cleanLink).searchParams.get('activateToken');
+            } catch(e) {}
+            if (!activateToken) {
+                const m = cleanLink.match(/activateToken=([^&"'\s]+)/);
+                if (m) activateToken = m[1];
             }
-            if (!activateToken) throw new Error('Could not extract activation token from: ' + link);
-            // 5. Activate user with the chosen password (noauth endpoint — no Bearer token)
-            return fetch(TB_URL + '/api/noauth/activate', {
+        } catch(e) {
+            // activationLink endpoint may not exist on some TB versions
+        }
+
+        if (activateToken) {
+            // Activate with password via noauth endpoint
+            const activateResp = await fetch(TB_URL + '/api/noauth/activate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ activateToken: activateToken, password: password })
-            }).then(r => {
-                if (!r.ok) return r.text().then(t => { throw new Error('Failed to set password: ' + t); });
-                return { cust, user };
             });
-        });
-    })
-    .then(({ cust, user }) => {
-        result.className = 'status-msg ok';
-        const deviceName = allDevices.find(d => d.id.id === deviceId)?.name || deviceId;
-        result.innerHTML =
-            '<strong>Customer created successfully!</strong><br><br>' +
-            '<table style="width:100%;font-size:13px;border-collapse:collapse;">' +
-            '<tr><td style="padding:4px 8px;color:var(--text-light);">Customer:</td><td style="padding:4px 8px;"><strong>' + name + '</strong></td></tr>' +
-            '<tr><td style="padding:4px 8px;color:var(--text-light);">Device:</td><td style="padding:4px 8px;">' + deviceName + '</td></tr>' +
-            '<tr><td style="padding:4px 8px;color:var(--text-light);">Login Email:</td><td style="padding:4px 8px;"><strong>' + email + '</strong></td></tr>' +
-            '<tr><td style="padding:4px 8px;color:var(--text-light);">Password:</td><td style="padding:4px 8px;"><strong>' + password + '</strong></td></tr>' +
-            '</table>' +
-            '<br><em>The customer can now log in at aquasicura.xyz with these credentials to see their device.</em>';
+            if (!activateResp.ok) {
+                const errText = await activateResp.text();
+                throw new Error('Password activation failed: ' + errText);
+            }
+            // Success — password set
+            result.className = 'status-msg ok';
+            const deviceName = allDevices.find(d => d.id.id === deviceId)?.name || deviceId;
+            result.innerHTML =
+                '<strong>✅ Customer created successfully!</strong><br><br>' +
+                '<table style="width:100%;font-size:13px;border-collapse:collapse;">' +
+                '<tr><td style="padding:4px 8px;color:var(--text-light);">Customer:</td><td style="padding:4px 8px;"><strong>' + name + '</strong></td></tr>' +
+                '<tr><td style="padding:4px 8px;color:var(--text-light);">Device:</td><td style="padding:4px 8px;">' + deviceName + '</td></tr>' +
+                '<tr><td style="padding:4px 8px;color:var(--text-light);">Login Email:</td><td style="padding:4px 8px;"><strong>' + email + '</strong></td></tr>' +
+                '<tr><td style="padding:4px 8px;color:var(--text-light);">Password:</td><td style="padding:4px 8px;"><strong>' + password + '</strong></td></tr>' +
+                '</table>' +
+                '<br><em>The customer can now log in at aquasicura.xyz with these credentials.</em>';
+        } else {
+            // Fallback: activation link method didn't work, try direct user credential update
+            // ThingsBoard allows admins to use changePassword if logged in as that user, but since
+            // we can't do that, show the activation link for manual use
+            result.className = 'status-msg ok';
+            const deviceName = allDevices.find(d => d.id.id === deviceId)?.name || deviceId;
+            // Try getting activation link as text to show to admin
+            let linkText = '';
+            try {
+                linkText = await api('/user/' + user.id.id + '/activationLink');
+            } catch(e) {}
+            result.innerHTML =
+                '<strong>✅ Customer & user created!</strong><br><br>' +
+                '<table style="width:100%;font-size:13px;border-collapse:collapse;">' +
+                '<tr><td style="padding:4px 8px;color:var(--text-light);">Customer:</td><td style="padding:4px 8px;"><strong>' + name + '</strong></td></tr>' +
+                '<tr><td style="padding:4px 8px;color:var(--text-light);">Device:</td><td style="padding:4px 8px;">' + deviceName + '</td></tr>' +
+                '<tr><td style="padding:4px 8px;color:var(--text-light);">Email:</td><td style="padding:4px 8px;"><strong>' + email + '</strong></td></tr>' +
+                '</table>' +
+                (linkText ? '<br>⚠️ Could not set password automatically. Send this activation link to the customer to set their password:<br><textarea style="width:100%;height:50px;font-size:11px;margin-top:6px;" readonly>' + linkText + '</textarea>' :
+                '<br>⚠️ Could not set password automatically. The customer needs to use the "Forgot Password" flow to set their password.') +
+                '<br><em>The customer will use <strong>' + email + '</strong> to log in.</em>';
+        }
         loadCustomers();
         refreshDashboard();
-    })
-    .catch(err => { result.textContent = 'Error: ' + err.message; result.className = 'status-msg err'; });
+    } catch(err) {
+        result.textContent = 'Error: ' + err.message;
+        result.className = 'status-msg err';
+    }
 }
 
 function openAddUserToCustomer(customerId, customerTitle) {
