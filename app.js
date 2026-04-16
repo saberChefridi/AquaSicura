@@ -691,16 +691,28 @@ function addCustomerAndUser() {
     .then(({ cust, user }) => {
         // 4. Get activation link and activate with password
         return api('/user/' + user.id.id + '/activationLink').then(link => {
-            // Extract activation token from URL
-            const activateToken = new URL(link).searchParams.get('activateToken');
-            if (!activateToken) throw new Error('Could not get activation token');
-            // 5. Activate user with the chosen password
-            return fetch(TB_URL + '/api/noauth/activate?sendActivationMail=false', {
+            // link is a full URL string like "https://host/api/noauth/activate?activateToken=xxx"
+            // or could be a UI link like "https://host/login/createPassword?activateToken=xxx"
+            // Extract the activateToken parameter from it
+            let activateToken = '';
+            try {
+                // Clean the link — ThingsBoard may return it with or without quotes
+                const cleanLink = link.replace(/^"|"$/g, '').trim();
+                const url = new URL(cleanLink);
+                activateToken = url.searchParams.get('activateToken');
+            } catch(e) {
+                // Fallback: try regex extraction
+                const match = link.match(/activateToken=([^&"]+)/);
+                if (match) activateToken = match[1];
+            }
+            if (!activateToken) throw new Error('Could not extract activation token from: ' + link);
+            // 5. Activate user with the chosen password (noauth endpoint — no Bearer token)
+            return fetch(TB_URL + '/api/noauth/activate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ activateToken: activateToken, password: password })
             }).then(r => {
-                if (!r.ok) throw new Error('Failed to set password');
+                if (!r.ok) return r.text().then(t => { throw new Error('Failed to set password: ' + t); });
                 return { cust, user };
             });
         });
