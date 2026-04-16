@@ -182,6 +182,14 @@ const TRANSLATIONS = {
 "dash.loading":         { en:"Loading devices...", ar:"\u062c\u0627\u0631\u064a \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0623\u062c\u0647\u0632\u0629...", it:"Caricamento dispositivi..." },
 "dash.exportcsv":       { en:"Export CSV",        ar:"\u062a\u0635\u062f\u064a\u0631 CSV", it:"Esporta CSV" },
 
+// ─── CUSTOMER MANAGEMENT ─────────────────────────────────────────────
+"cust.addtitle":        { en:"Add New Customer", ar:"إضافة عميل جديد", it:"Aggiungi Nuovo Cliente" },
+"cust.name":            { en:"Customer Name",    ar:"اسم العميل",     it:"Nome Cliente" },
+"cust.firstname":       { en:"First Name",       ar:"الاسم الأول",    it:"Nome" },
+"cust.lastname":        { en:"Last Name",        ar:"اسم العائلة",    it:"Cognome" },
+"cust.selectdevice":    { en:"Select Device to Assign", ar:"اختر الجهاز للتعيين", it:"Seleziona Dispositivo da Assegnare" },
+"cust.create":          { en:"Create Customer",  ar:"إنشاء العميل",   it:"Crea Cliente" },
+
 // ─── MAP & DEVICE INFO ───────────────────────────────────────────────
 "tab.map":              { en:"Map",              ar:"\u0627\u0644\u062e\u0631\u064a\u0637\u0629",  it:"Mappa" },
 "map.title":            { en:"Device Map",       ar:"\u062e\u0631\u064a\u0637\u0629 \u0627\u0644\u0623\u062c\u0647\u0632\u0629", it:"Mappa Dispositivi" },

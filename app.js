@@ -438,15 +438,6 @@ function showDeviceDetail(device, ts) {
         document.getElementById('edit-device-lat').value = attrs.latitude || '';
         document.getElementById('edit-device-lng').value = attrs.longitude || '';
         document.getElementById('edit-device-result').textContent = '';
-        // Populate customer dropdown
-        api('/customers?pageSize=100&page=0&sortProperty=title&sortOrder=ASC').then(page => {
-            const sel = document.getElementById('edit-device-customer');
-            sel.innerHTML = '<option value="">-- Unassigned --</option>';
-            (page.data || []).forEach(c => {
-                const selected = (device.customerId && device.customerId.id === c.id.id) ? ' selected' : '';
-                sel.innerHTML += `<option value="${c.id.id}"${selected}>${c.title}</option>`;
-            });
-        });
     } else {
         editSection.style.display = 'none';
     }
@@ -468,30 +459,11 @@ function saveDeviceInfo() {
         longitude: parseFloat(document.getElementById('edit-device-lng').value) || 0
     };
 
-    const newCustomerId = document.getElementById('edit-device-customer').value;
-    const currentCustomerId = currentDetailDevice.customerId ? currentDetailDevice.customerId.id : '';
-
     // Save server-side attributes
-    const saveAttrs = api('/plugins/telemetry/DEVICE/' + deviceId + '/SERVER_SCOPE', {
+    api('/plugins/telemetry/DEVICE/' + deviceId + '/SERVER_SCOPE', {
         method: 'POST',
         body: JSON.stringify(attrData)
-    });
-
-    // Handle customer reassignment
-    let custPromise = Promise.resolve();
-    if (newCustomerId !== currentCustomerId) {
-        if (currentCustomerId && currentCustomerId !== '13814000-1dd2-11b2-8080-808080808080') {
-            // Unassign from current customer first
-            custPromise = api('/customer/device/' + deviceId, { method: 'DELETE' }).catch(() => {});
-        }
-        if (newCustomerId) {
-            custPromise = custPromise.then(() =>
-                api('/customer/' + newCustomerId + '/device/' + deviceId, { method: 'POST' })
-            );
-        }
-    }
-
-    Promise.all([saveAttrs, custPromise]).then(() => {
+    }).then(() => {
         result.textContent = 'Device info saved successfully!';
         result.className = 'status-msg ok';
         allDeviceAttrs[deviceId] = attrData;
@@ -545,20 +517,11 @@ function openAddDeviceModal() {
     document.getElementById('new-device-lat').value = '';
     document.getElementById('new-device-lng').value = '';
     document.getElementById('add-device-result').textContent = '';
-    // populate customer dropdown
-    api('/customers?pageSize=100&page=0&sortProperty=title&sortOrder=ASC').then(page => {
-        const sel = document.getElementById('new-device-customer');
-        sel.innerHTML = '<option value="">-- None (unassigned) --</option>';
-        (page.data || []).forEach(c => {
-            sel.innerHTML += `<option value="${c.id.id}">${c.title}</option>`;
-        });
-    });
     openModal('modal-add-device');
 }
 
 function addDevice() {
     const name = document.getElementById('new-device-name').value.trim();
-    const customerId = document.getElementById('new-device-customer').value;
     const filterType = document.getElementById('new-device-filter-type').value;
     const filterRef = document.getElementById('new-device-filter-ref').value.trim();
     const address = document.getElementById('new-device-address').value.trim();
@@ -569,13 +532,6 @@ function addDevice() {
 
     const body = { name: name, type: 'AquaSicura' };
     api('/device', { method: 'POST', body: JSON.stringify(body) })
-    .then(dev => {
-        // If customer selected, assign the device
-        if (customerId) {
-            return api('/customer/' + customerId + '/device/' + dev.id.id, { method: 'POST' }).then(() => dev);
-        }
-        return dev;
-    })
     .then(dev => {
         // Set default alarm limits as shared attributes
         return api('/plugins/telemetry/DEVICE/' + dev.id.id + '/SHARED_SCOPE', {
@@ -675,32 +631,54 @@ function loadCustomers() {
 
 function openAddCustomerModal() {
     document.getElementById('new-customer-name').value = '';
+    document.getElementById('new-customer-name').readOnly = false;
     document.getElementById('new-user-email').value = '';
+    document.getElementById('new-user-password').value = '';
     document.getElementById('new-user-first').value = '';
     document.getElementById('new-user-last').value = '';
     document.getElementById('add-customer-result').textContent = '';
+    // Populate device dropdown with unassigned devices only
+    api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC').then(page => {
+        const sel = document.getElementById('new-customer-device');
+        sel.innerHTML = '<option value="">-- Select a device --</option>';
+        const NULL_CUSTOMER = '13814000-1dd2-11b2-8080-808080808080';
+        (page.data || []).forEach(d => {
+            // Show only devices not assigned to any customer (customerId is null or system default)
+            const isUnassigned = !d.customerId || d.customerId.id === NULL_CUSTOMER;
+            if (isUnassigned) {
+                const attrs = allDeviceAttrs[d.id.id] || {};
+                const filterIcon = FILTER_TYPE_ICONS[attrs.filterType] || '📡';
+                sel.innerHTML += `<option value="${d.id.id}">${filterIcon} ${d.name}</option>`;
+            }
+        });
+    });
     openModal('modal-add-customer');
 }
 
 function addCustomerAndUser() {
-    const name  = document.getElementById('new-customer-name').value.trim();
-    const email = document.getElementById('new-user-email').value.trim();
-    const first = document.getElementById('new-user-first').value.trim();
-    const last  = document.getElementById('new-user-last').value.trim();
-    const result = document.getElementById('add-customer-result');
+    const name     = document.getElementById('new-customer-name').value.trim();
+    const email    = document.getElementById('new-user-email').value.trim();
+    const password = document.getElementById('new-user-password').value;
+    const first    = document.getElementById('new-user-first').value.trim();
+    const last     = document.getElementById('new-user-last').value.trim();
+    const deviceId = document.getElementById('new-customer-device').value;
+    const result   = document.getElementById('add-customer-result');
 
     if (!name) { result.textContent = 'Customer name is required'; result.className = 'status-msg err'; return; }
+    if (!email) { result.textContent = 'Email is required for customer login'; result.className = 'status-msg err'; return; }
+    if (!password || password.length < 6) { result.textContent = 'Password must be at least 6 characters'; result.className = 'status-msg err'; return; }
+    if (!deviceId) { result.textContent = 'Please select a device to assign'; result.className = 'status-msg err'; return; }
+
+    result.textContent = 'Creating customer...'; result.className = 'status-msg';
 
     // 1. Create customer
     api('/customer', { method: 'POST', body: JSON.stringify({ title: name }) })
     .then(cust => {
-        if (!email) {
-            result.textContent = 'Customer created (no user account).';
-            result.className = 'status-msg ok';
-            loadCustomers();
-            return;
-        }
-        // 2. Create user under this customer
+        // 2. Assign device to this customer
+        return api('/customer/' + cust.id.id + '/device/' + deviceId, { method: 'POST' }).then(() => cust);
+    })
+    .then(cust => {
+        // 3. Create user under this customer
         const userBody = {
             email: email,
             firstName: first || email.split('@')[0],
@@ -708,29 +686,47 @@ function addCustomerAndUser() {
             authority: 'CUSTOMER_USER',
             customerId: cust.id
         };
-        return api('/user?sendActivationMail=true', { method: 'POST', body: JSON.stringify(userBody) }).then(user => {
-            // 3. Get activation link
-            return api('/user/' + user.id.id + '/activationLink').then(link => {
-                result.className = 'status-msg ok';
-                result.innerHTML = 'Customer &amp; user created!<br>' +
-                    'Activation link (send to user):<br><textarea style="width:100%;height:60px;font-size:12px;" readonly>' + link + '</textarea>' +
-                    '<br><em>The user must open this link to set their password.</em>';
-                loadCustomers();
+        return api('/user?sendActivationMail=false', { method: 'POST', body: JSON.stringify(userBody) }).then(user => ({ cust, user }));
+    })
+    .then(({ cust, user }) => {
+        // 4. Get activation link and activate with password
+        return api('/user/' + user.id.id + '/activationLink').then(link => {
+            // Extract activation token from URL
+            const activateToken = new URL(link).searchParams.get('activateToken');
+            if (!activateToken) throw new Error('Could not get activation token');
+            // 5. Activate user with the chosen password
+            return fetch(TB_URL + '/api/noauth/activate?sendActivationMail=false', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ activateToken: activateToken, password: password })
+            }).then(r => {
+                if (!r.ok) throw new Error('Failed to set password');
+                return { cust, user };
             });
         });
+    })
+    .then(({ cust, user }) => {
+        result.className = 'status-msg ok';
+        const deviceName = allDevices.find(d => d.id.id === deviceId)?.name || deviceId;
+        result.innerHTML =
+            '<strong>Customer created successfully!</strong><br><br>' +
+            '<table style="width:100%;font-size:13px;border-collapse:collapse;">' +
+            '<tr><td style="padding:4px 8px;color:var(--text-light);">Customer:</td><td style="padding:4px 8px;"><strong>' + name + '</strong></td></tr>' +
+            '<tr><td style="padding:4px 8px;color:var(--text-light);">Device:</td><td style="padding:4px 8px;">' + deviceName + '</td></tr>' +
+            '<tr><td style="padding:4px 8px;color:var(--text-light);">Login Email:</td><td style="padding:4px 8px;"><strong>' + email + '</strong></td></tr>' +
+            '<tr><td style="padding:4px 8px;color:var(--text-light);">Password:</td><td style="padding:4px 8px;"><strong>' + password + '</strong></td></tr>' +
+            '</table>' +
+            '<br><em>The customer can now log in at aquasicura.xyz with these credentials to see their device.</em>';
+        loadCustomers();
+        refreshDashboard();
     })
     .catch(err => { result.textContent = 'Error: ' + err.message; result.className = 'status-msg err'; });
 }
 
 function openAddUserToCustomer(customerId, customerTitle) {
-    // reuse the modal with pre-filled customer
+    openAddCustomerModal();
     document.getElementById('new-customer-name').value = customerTitle;
     document.getElementById('new-customer-name').readOnly = true;
-    document.getElementById('add-customer-result').textContent = '';
-    openModal('modal-add-customer');
-    // Override the submit to only create user
-    // Actually, the modal will create a customer with same name — ThingsBoard will update existing by title
-    // For simplicity, just open the modal
 }
 
 function deleteCustomer(id, title) {

@@ -878,6 +878,12 @@ body {
 .form-row {
     display: flex; gap: 12px;
 }
+.form-section-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--gold-dark); font-weight: 700; margin: 18px 0 8px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+.form-section-label:first-of-type { margin-top: 4px; }
 
 /* ── Map View ───────────────────────────────────────────────────── */
 .device-map-marker {
