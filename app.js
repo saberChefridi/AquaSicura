@@ -299,7 +299,33 @@ function refreshDashboard() {
 
     let devicesPromise;
     if (IS_ADMIN) {
-        devicesPromise = api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+        // TB PE: devices re-assigned to customers are no longer under /tenant/devices.
+        // Fetch tenant-owned devices first, then merge in every customer's devices.
+        devicesPromise = (async () => {
+            const seenIds = new Set();
+            const merged  = [];
+
+            // 1. Tenant-owned devices
+            try {
+                const tp = await api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+                (tp.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
+            } catch(e) {}
+
+            // 2. Customer-owned devices (PE moves ownership on assign)
+            try {
+                const cp = await api('/customers?pageSize=200&page=0');
+                await Promise.all((cp.data || []).map(c =>
+                    api('/customer/' + c.id.id + '/devices?pageSize=100&page=0')
+                        .then(p => (p.data || []).forEach(d => {
+                            if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); }
+                        }))
+                        .catch(() => {})
+                ));
+            } catch(e) {}
+
+            merged.sort((a, b) => a.name.localeCompare(b.name));
+            return { data: merged };
+        })();
     } else {
         // Customer user: fetch only their assigned device stored in additionalInfo.deviceId
         // Avoids PE permission checks on the customer entity itself
@@ -499,8 +525,24 @@ function saveDeviceInfo() {
 
 // ── Devices Tab (Admin) ─────────────────────────────────────────────
 function loadDevicesTable() {
-    api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC').then(page => {
-        const devices = page.data || [];
+    // Same merged fetch as refreshDashboard admin path (PE moves ownership to customer)
+    (async () => {
+        const seenIds = new Set(), merged = [];
+        try {
+            const tp = await api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+            (tp.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
+        } catch(e) {}
+        try {
+            const cp = await api('/customers?pageSize=200&page=0');
+            await Promise.all((cp.data || []).map(c =>
+                api('/customer/' + c.id.id + '/devices?pageSize=100&page=0')
+                    .then(p => (p.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } }))
+                    .catch(() => {})
+            ));
+        } catch(e) {}
+        merged.sort((a, b) => a.name.localeCompare(b.name));
+        return merged;
+    })().then(devices => {
         // Fetch attrs for all devices
         return Promise.all(devices.map(d =>
             fetchDeviceAttrs(d.id.id).then(attrs => ({ device: d, attrs }))
