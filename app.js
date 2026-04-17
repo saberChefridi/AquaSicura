@@ -300,22 +300,29 @@ function refreshDashboard() {
     let devicesPromise;
     if (IS_ADMIN) {
         // TB PE: devices re-assigned to customers are no longer under /tenant/devices.
-        // Fetch tenant-owned devices first, then merge in every customer's devices.
+        // Strategy: try deviceInfos (includes customer-owned) first, then fall back to
+        // tenant list merged with per-customer lists.
         devicesPromise = (async () => {
             const seenIds = new Set();
             const merged  = [];
 
-            // 1. Tenant-owned devices
+            // 1. Try /tenant/deviceInfos — returns all devices with customerTitle embedded
+            try {
+                const di = await api('/tenant/deviceInfos?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+                (di.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
+            } catch(e) {}
+
+            // 2. Tenant-owned devices (in case deviceInfos missed any)
             try {
                 const tp = await api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
                 (tp.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
             } catch(e) {}
 
-            // 2. Customer-owned devices (PE moves ownership on assign)
+            // 3. Customer-owned devices (PE moves ownership on assign)
             try {
-                const cp = await api('/customers?pageSize=200&page=0');
+                const cp = await api('/customers?pageSize=200&page=0&sortProperty=title&sortOrder=ASC');
                 await Promise.all((cp.data || []).map(c =>
-                    api('/customer/' + c.id.id + '/devices?pageSize=100&page=0')
+                    api('/customer/' + c.id.id + '/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC')
                         .then(p => (p.data || []).forEach(d => {
                             if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); }
                         }))
@@ -529,17 +536,20 @@ function saveDeviceInfo() {
 
 // ── Devices Tab (Admin) ─────────────────────────────────────────────
 function loadDevicesTable() {
-    // Same merged fetch as refreshDashboard admin path (PE moves ownership to customer)
     (async () => {
         const seenIds = new Set(), merged = [];
+        try {
+            const di = await api('/tenant/deviceInfos?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+            (di.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
+        } catch(e) {}
         try {
             const tp = await api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
             (tp.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
         } catch(e) {}
         try {
-            const cp = await api('/customers?pageSize=200&page=0');
+            const cp = await api('/customers?pageSize=200&page=0&sortProperty=title&sortOrder=ASC');
             await Promise.all((cp.data || []).map(c =>
-                api('/customer/' + c.id.id + '/devices?pageSize=100&page=0')
+                api('/customer/' + c.id.id + '/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC')
                     .then(p => (p.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } }))
                     .catch(() => {})
             ));
@@ -716,7 +726,7 @@ function openAddCustomerModal() {
             if (isUnassigned) {
                 const attrs = allDeviceAttrs[d.id.id] || {};
                 const filterIcon = FILTER_TYPE_ICONS[attrs.filterType] || '📡';
-                sel.innerHTML += `<option value="${d.id.id}">${filterIcon} ${d.name}</option>`;
+                sel.innerHTML += `<option value="${d.id.id}" data-name="${d.name}">${filterIcon} ${d.name}</option>`;
             }
         });
     });
@@ -756,7 +766,12 @@ async function addCustomerAndUser() {
             customerId: cust.id,
             additionalInfo: {
                 deviceId:   deviceId,
-                deviceName: (allDevices.find(d => d.id.id === deviceId) || {}).name || ''
+                deviceName: (() => {
+                    // Read the real name from the dropdown data-name attribute (most reliable)
+                    const sel = document.getElementById('new-customer-device');
+                    const opt = sel && sel.options[sel.selectedIndex];
+                    return (opt && opt.dataset.name) || (allDevices.find(d => d.id.id === deviceId) || {}).name || '';
+                })()
             }
         };
         const user = await api('/user?sendActivationMail=false', { method: 'POST', body: JSON.stringify(userBody) });
