@@ -213,10 +213,17 @@ function doLogin(e) {
     return false;
 }
 
+// Emails that are always treated as full admin regardless of TB authority
+const SUPER_ADMIN_EMAILS = ['saber.chefridi@yahoo.com'];
+
 function loadUserProfile() {
     return api('/auth/user').then(u => {
         USER = u;
-        IS_ADMIN = (u.authority === 'TENANT_ADMIN');
+        IS_ADMIN = (
+            u.authority === 'TENANT_ADMIN' ||
+            u.authority === 'SYS_ADMIN' ||
+            SUPER_ADMIN_EMAILS.includes((u.email || '').toLowerCase())
+        );
     });
 }
 
@@ -299,9 +306,12 @@ function refreshDashboard() {
         const deviceId = USER.additionalInfo && USER.additionalInfo.deviceId;
         if (deviceId) {
             devicesPromise = api('/device/' + deviceId).then(d => ({ data: [d] }));
-        } else {
+        } else if (USER.customerId && USER.customerId.id) {
             // Fallback: try customer-scoped listing (may fail on TB PE)
             devicesPromise = api('/customer/' + USER.customerId.id + '/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+        } else {
+            // No device assigned yet — show empty dashboard
+            devicesPromise = Promise.resolve({ data: [] });
         }
     }
 
