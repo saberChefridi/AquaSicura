@@ -227,6 +227,10 @@ function doLogout() {
 }
 
 function enterApp() {
+    // Clear device cache so admin data never leaks into a customer session
+    allDevices = [];
+    allDeviceAttrs = {};
+
     showScreen('app-screen');
     document.getElementById('nav-user').textContent = USER.email || '';
     document.getElementById('nav-role').textContent = IS_ADMIN ? 'Admin' : 'User';
@@ -290,7 +294,7 @@ function refreshDashboard() {
     if (IS_ADMIN) {
         devicesPromise = api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
     } else {
-        devicesPromise = api('/customer/' + USER.customerId.id + '/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+        devicesPromise = api('/customer/me/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
     }
 
     devicesPromise.then(page => {
