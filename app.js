@@ -327,16 +327,20 @@ function refreshDashboard() {
             return { data: merged };
         })();
     } else {
-        // Customer user: fetch only their assigned device stored in additionalInfo.deviceId
-        // Avoids PE permission checks on the customer entity itself
-        const deviceId = USER.additionalInfo && USER.additionalInfo.deviceId;
+        // Customer user — TB PE denies GET /api/device/{id} for CUSTOMER_USER (403).
+        // Build a synthetic device object from stored additionalInfo instead.
+        const info = USER.additionalInfo || {};
+        const deviceId   = info.deviceId;
+        const deviceName = info.deviceName || deviceId || 'My Device';
         if (deviceId) {
-            devicesPromise = api('/device/' + deviceId).then(d => ({ data: [d] }));
-        } else if (USER.customerId && USER.customerId.id) {
-            // Fallback: try customer-scoped listing (may fail on TB PE)
-            devicesPromise = api('/customer/' + USER.customerId.id + '/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+            const syntheticDevice = {
+                id:            { id: deviceId, entityType: 'DEVICE' },
+                name:          deviceName,
+                customerTitle: USER.firstName || USER.email.split('@')[0],
+                active:        true
+            };
+            devicesPromise = Promise.resolve({ data: [syntheticDevice] });
         } else {
-            // No device assigned yet — show empty dashboard
             devicesPromise = Promise.resolve({ data: [] });
         }
     }
@@ -750,7 +754,10 @@ async function addCustomerAndUser() {
             lastName: last || '',
             authority: 'CUSTOMER_USER',
             customerId: cust.id,
-            additionalInfo: { deviceId: deviceId }
+            additionalInfo: {
+                deviceId:   deviceId,
+                deviceName: (allDevices.find(d => d.id.id === deviceId) || {}).name || ''
+            }
         };
         const user = await api('/user?sendActivationMail=false', { method: 'POST', body: JSON.stringify(userBody) });
 
