@@ -294,7 +294,15 @@ function refreshDashboard() {
     if (IS_ADMIN) {
         devicesPromise = api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
     } else {
-        devicesPromise = api('/customer/me/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+        // Customer user: fetch only their assigned device stored in additionalInfo.deviceId
+        // Avoids PE permission checks on the customer entity itself
+        const deviceId = USER.additionalInfo && USER.additionalInfo.deviceId;
+        if (deviceId) {
+            devicesPromise = api('/device/' + deviceId).then(d => ({ data: [d] }));
+        } else {
+            // Fallback: try customer-scoped listing (may fail on TB PE)
+            devicesPromise = api('/customer/' + USER.customerId.id + '/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
+        }
     }
 
     devicesPromise.then(page => {
@@ -689,7 +697,8 @@ async function addCustomerAndUser() {
             firstName: first || email.split('@')[0],
             lastName: last || '',
             authority: 'CUSTOMER_USER',
-            customerId: cust.id
+            customerId: cust.id,
+            additionalInfo: { deviceId: deviceId }
         };
         const user = await api('/user?sendActivationMail=false', { method: 'POST', body: JSON.stringify(userBody) });
 
