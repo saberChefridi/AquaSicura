@@ -674,9 +674,11 @@ async function addCustomerAndUser() {
         result.innerHTML = '⏳ Step 1/4: Creating customer...'; result.className = 'status-msg';
         const cust = await api('/customer', { method: 'POST', body: JSON.stringify({ title: name }) });
 
-        // Step 2: Assign device to customer
+        // Step 2: Assign device to customer — fetch device, inject customerId, save back
         result.innerHTML = '⏳ Step 2/4: Assigning device...';
-        await api('/customer/' + cust.id.id + '/device/' + deviceId, { method: 'POST' });
+        const deviceObj = await api('/device/' + deviceId);
+        deviceObj.customerId = { entityType: 'CUSTOMER', id: cust.id.id };
+        await api('/device', { method: 'POST', body: JSON.stringify(deviceObj) });
 
         // Step 3: Create user account
         result.innerHTML = '⏳ Step 3/4: Creating user account...';
