@@ -10,18 +10,15 @@
 // ── Nav helper: show or hide the universal nav ─────────────────────
 function _navShow(scrolled) {
     const nav = document.querySelector('.landing-nav');
-    const mm  = document.getElementById('mobile-menu');
     if (!nav) return;
     nav.style.display = '';
     if (scrolled) nav.classList.add('scrolled');
     else          nav.classList.remove('scrolled');
-    if (mm && mm.classList.contains('open')) mm.classList.remove('open');
 }
 function _navHide() {
     const nav = document.querySelector('.landing-nav');
-    const mm  = document.getElementById('mobile-menu');
     if (nav) nav.style.display = 'none';
-    if (mm && mm.classList.contains('open')) mm.classList.remove('open');
+    closeMobileMenu();
 }
 
 function showLoginScreen() {
@@ -136,6 +133,9 @@ function scrollToSection(id) {
 
 function toggleMobileMenu() {
     document.getElementById('mobile-menu').classList.toggle('open');
+}
+function closeMobileMenu() {
+    document.getElementById('mobile-menu').classList.remove('open');
 }
 
 // Navbar scroll effect
