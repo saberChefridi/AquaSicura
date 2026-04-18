@@ -1931,8 +1931,12 @@ body {
     .cp-hero { padding: 110px 24px 60px; }
     .cp-hero h1 { font-size: clamp(32px, 8vw, 48px); }
     .cp-hero .cp-lede { font-size: 16px; }
-    .books-grid { padding: 40px 20px 80px; gap: 56px 24px; }
-    .book-cover { width: 200px; height: 290px; padding: 28px 16px; }
+    /* books: 2 columns on tablets, smaller covers */
+    .books-grid { padding: 40px 20px 80px; gap: 48px 20px; }
+    .book-cover { width: 170px; height: 250px; padding: 24px 14px; }
+    .book-title { font-size: 15px; letter-spacing: 0.5px; }
+    .book-meta h3 { font-size: 18px; }
+    .book-meta p { font-size: 14px; }
     .manuscript { padding: 40px 26px; }
     .manuscript::before { inset: 10px; }
     .manuscript::after { inset: 16px; }
@@ -1941,6 +1945,33 @@ body {
     .gallery-row.reverse .painting-plaque { order: 1; }
     .painting-frame img { height: 280px; }
     .painting-plaque { padding: 0 6px; }
+}
+
+/* ── Books: force 2-column grid on all phones ─────────────────── */
+@media (max-width: 600px) {
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 32px 14px 60px;
+        gap: 40px 12px;
+    }
+    .book-cover {
+        width: 138px; height: 200px;
+        padding: 18px 10px;
+        transform: none !important;   /* remove 3-D tilt — too tight on phones */
+        box-shadow: 0 14px 30px rgba(0,0,0,0.35),
+                    inset 4px 0 0 rgba(0,0,0,0.18);
+    }
+    .book-card:hover .book-cover { transform: translateY(-4px) !important; }
+    .book-ornament { font-size: 15px; margin-bottom: 6px; }
+    .book-title { font-size: 13px; letter-spacing: 0; line-height: 1.1; }
+    .book-title .sub { font-size: 9px; letter-spacing: 1px; }
+    .book-author { font-size: 9px; letter-spacing: 1px; }
+    .book-year { font-size: 8px; }
+    .book-meta { max-width: 100%; }
+    .book-meta h3 { font-size: 15px; }
+    .book-meta .by { font-size: 12px; }
+    .book-meta p { font-size: 13px; line-height: 1.55; }
+    .book-meta blockquote { font-size: 12px; padding: 6px 10px; }
 }
 
 [dir="rtl"] .book-cover { transform: rotateY(10deg); transform-origin: right center; }
