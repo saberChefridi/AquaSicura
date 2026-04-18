@@ -352,10 +352,16 @@ function refreshDashboard() {
             container.innerHTML = '<p class="loading">No devices found.</p>';
             return;
         }
-        // Fetch latest telemetry AND server attributes for each device
+        // Fetch latest telemetry AND server attributes for each device.
+        // Use explicit time-range + limit=1 orderBy=DESC so TB PE entity-group-shared
+        // devices return data the same way as the charts/log tabs do.
+        const nowTs   = Date.now();
+        const weekAgo = nowTs - 7 * 86400000;
+        const tlKeys  = 'pH,tds,waterTemp,boxTemp,flowRate,pressure,tdsAlarm,phAlarm,tempAlarm,tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax';
         return Promise.all(devices.map(d =>
             Promise.all([
-                api('/plugins/telemetry/DEVICE/' + d.id.id + '/values/timeseries?keys=pH,tds,waterTemp,boxTemp,flowRate,pressure,tdsAlarm,phAlarm,tempAlarm,tdsAlarmMin,tdsAlarmMax,phAlarmMin,phAlarmMax,tempAlarmMin,tempAlarmMax')
+                api('/plugins/telemetry/DEVICE/' + d.id.id + '/values/timeseries?keys=' + tlKeys +
+                    '&startTs=' + weekAgo + '&endTs=' + nowTs + '&limit=1&orderBy=DESC')
                     .catch(() => ({})),
                 fetchDeviceAttrs(d.id.id)
             ]).then(([ts, attrs]) => ({ device: d, telemetry: ts, attrs: attrs }))
