@@ -847,6 +847,7 @@ body {
 .sensor-label { font-size: 10px; color: var(--text-light); letter-spacing: 0.5px; text-transform: uppercase; }
 .sensor-item.alarm .sensor-value { color: var(--danger); }
 .device-card-footer { margin-top: 14px; font-size: 11px; color: var(--text-light); }
+.no-data-notice { margin: 8px 0 2px; font-size: 12px; color: var(--text-light); font-style: italic; text-align: center; }
 
 .device-filter-badge {
     display: inline-block; font-size: 10px; padding: 3px 10px; border-radius: 10px;

@@ -299,34 +299,27 @@ function refreshDashboard() {
 
     let devicesPromise;
     if (IS_ADMIN) {
-        // TB PE: devices re-assigned to customers are no longer under /tenant/devices.
-        // Strategy: try deviceInfos (includes customer-owned) first, then fall back to
-        // tenant list merged with per-customer lists.
+        // Admin: fetch all devices. With entity-group assignment devices stay tenant-owned,
+        // so /tenant/deviceInfos returns everything. The per-customer fallback covers any
+        // devices that were previously moved via the owner API.
         devicesPromise = (async () => {
             const seenIds = new Set();
             const merged  = [];
 
-            // 1. Try /tenant/deviceInfos — returns all devices with customerTitle embedded
-            try {
-                const di = await api('/tenant/deviceInfos?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
-                (di.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
-            } catch(e) {}
+            const add = list => (list || []).forEach(d => {
+                if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); }
+            });
 
-            // 2. Tenant-owned devices (in case deviceInfos missed any)
-            try {
-                const tp = await api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
-                (tp.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
-            } catch(e) {}
-
-            // 3. Customer-owned devices (PE moves ownership on assign)
+            // 1. deviceInfos returns all tenant devices with customerTitle already embedded
+            try { add((await api('/tenant/deviceInfos?pageSize=100&page=0&sortProperty=name&sortOrder=ASC')).data); } catch(e) {}
+            // 2. plain devices list as backup
+            try { add((await api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC')).data); } catch(e) {}
+            // 3. per-customer sweep for any owner-API-transferred devices
             try {
                 const cp = await api('/customers?pageSize=200&page=0&sortProperty=title&sortOrder=ASC');
                 await Promise.all((cp.data || []).map(c =>
-                    api('/customer/' + c.id.id + '/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC')
-                        .then(p => (p.data || []).forEach(d => {
-                            if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); }
-                        }))
-                        .catch(() => {})
+                    api('/customer/' + c.id.id + '/devices?pageSize=100&page=0')
+                        .then(p => add(p.data)).catch(() => {})
                 ));
             } catch(e) {}
 
@@ -435,6 +428,7 @@ function buildDeviceCard(device, ts, attrs) {
                 <div class="sensor-label">Water &deg;C ${tempA ? '(!!)' : ''}</div>
             </div>
         </div>
+        ${ph === null && tds === null && temp === null ? '<div class="no-data-notice">⏳ Waiting for first device reading…</div>' : ''}
         <div class="device-card-footer">
             ${bTemp !== null ? 'Box: ' + parseFloat(bTemp).toFixed(1) + '&deg;C &nbsp;|&nbsp; ' : ''}
             ${flow !== null ? 'Flow: ' + parseFloat(flow).toFixed(1) + ' L/min &nbsp;|&nbsp; ' : ''}
@@ -538,20 +532,13 @@ function saveDeviceInfo() {
 function loadDevicesTable() {
     (async () => {
         const seenIds = new Set(), merged = [];
-        try {
-            const di = await api('/tenant/deviceInfos?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
-            (di.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
-        } catch(e) {}
-        try {
-            const tp = await api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC');
-            (tp.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
-        } catch(e) {}
+        const add = list => (list || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } });
+        try { add((await api('/tenant/deviceInfos?pageSize=100&page=0&sortProperty=name&sortOrder=ASC')).data); } catch(e) {}
+        try { add((await api('/tenant/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC')).data); } catch(e) {}
         try {
             const cp = await api('/customers?pageSize=200&page=0&sortProperty=title&sortOrder=ASC');
             await Promise.all((cp.data || []).map(c =>
-                api('/customer/' + c.id.id + '/devices?pageSize=100&page=0&sortProperty=name&sortOrder=ASC')
-                    .then(p => (p.data || []).forEach(d => { if (!seenIds.has(d.id.id)) { seenIds.add(d.id.id); merged.push(d); } }))
-                    .catch(() => {})
+                api('/customer/' + c.id.id + '/devices?pageSize=100&page=0').then(p => add(p.data)).catch(() => {})
             ));
         } catch(e) {}
         merged.sort((a, b) => a.name.localeCompare(b.name));
@@ -752,9 +739,27 @@ async function addCustomerAndUser() {
         result.innerHTML = '⏳ Step 1/4: Creating customer...'; result.className = 'status-msg';
         const cust = await api('/customer', { method: 'POST', body: JSON.stringify({ title: name }) });
 
-        // Step 2: Assign device to customer — TB PE owner API
-        result.innerHTML = '⏳ Step 2/4: Assigning device...';
-        await api('/owner/CUSTOMER/' + cust.id.id + '/DEVICE/' + deviceId, { method: 'POST' });
+        // Step 2: Give customer access to device via entity group (device stays tenant-owned)
+        // This is the TB PE way that does NOT transfer ownership, so admin always sees all devices.
+        result.innerHTML = '⏳ Step 2/4: Assigning device access...';
+        let assignedOk = false;
+        try {
+            // Get customer's DEVICE entity groups (TB PE creates an "All" group per customer)
+            const groups = await api('/entityGroups/CUSTOMER/' + cust.id.id + '/DEVICE');
+            const grpList = Array.isArray(groups) ? groups : [];
+            const allGroup = grpList.find(g => g.name === 'All') || grpList[0];
+            if (allGroup && allGroup.id && allGroup.id.id) {
+                await api('/entityGroup/' + allGroup.id.id + '/addEntities', {
+                    method: 'POST',
+                    body: JSON.stringify([{ id: deviceId, entityType: 'DEVICE' }])
+                });
+                assignedOk = true;
+            }
+        } catch(e) { /* entity group API unavailable in this TB build */ }
+        if (!assignedOk) {
+            // Fallback: owner API (device will move to customer scope; admin uses merged fetch)
+            await api('/owner/CUSTOMER/' + cust.id.id + '/DEVICE/' + deviceId, { method: 'POST' });
+        }
 
         // Step 3: Create user account
         result.innerHTML = '⏳ Step 3/4: Creating user account...';
