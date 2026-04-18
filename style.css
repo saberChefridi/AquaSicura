@@ -2334,3 +2334,53 @@ body {
 [dir="rtl"] .ai-analyser-header { flex-direction: row-reverse; }
 [dir="rtl"] .ai-param-row { direction: rtl; }
 [dir="rtl"] .ai-verdict-row { flex-direction: row-reverse; }
+
+/* ══════════════════════════════════════════════════════════════════
+   STORE CURRENCY TOGGLE
+   ══════════════════════════════════════════════════════════════════ */
+
+.currency-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: 12px 32px;
+    background: rgba(15,22,35,0.72);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(6px);
+}
+.currency-bar-label {
+    font-family: var(--font-sans);
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+}
+.currency-pill {
+    display: flex;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 22px;
+    padding: 3px;
+    gap: 2px;
+}
+.currency-btn {
+    font-family: var(--font-sans);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 5px 18px;
+    border-radius: 18px;
+    border: none; cursor: pointer;
+    background: transparent;
+    color: rgba(255,255,255,0.45);
+    transition: all 0.2s ease;
+}
+.currency-btn.active {
+    background: var(--gold);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(201,169,110,0.5);
+}
+.currency-btn:hover:not(.active) { color: rgba(255,255,255,0.82); }
+
+@media (max-width: 600px) {
+    .currency-bar { padding: 10px 20px; }
+}
+[dir="rtl"] .currency-bar { justify-content: flex-start; }

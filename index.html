@@ -573,12 +573,21 @@
                 </div>
                 <div class="store-demo-price">
                     <span class="store-price-label" data-i18n="store.demo.label">Analysis &amp; Demo</span>
-                    <span class="store-price-amount">500 <small>AED</small></span>
+                    <span class="store-price-amount" data-price-aed="500">500 <small>AED</small></span>
                     <span class="store-price-note" data-i18n="store.demo.refund">Fully refundable with any system purchase</span>
                     <button class="btn btn-luminous" onclick="storeContact('Demo & Analysis')" data-i18n="store.booknow">Book Now</button>
                 </div>
             </div>
         </section>
+
+        <!-- ── Currency Toggle ── -->
+        <div class="currency-bar">
+            <span class="currency-bar-label" data-i18n="store.currency.label">Currency</span>
+            <div class="currency-pill">
+                <button class="currency-btn active" data-cur="AED" onclick="setStoreCurrency('AED')">AED</button>
+                <button class="currency-btn" data-cur="USD" onclick="setStoreCurrency('USD')">USD $</button>
+            </div>
+        </div>
 
         <!-- ── Product Cards with Video BG ── -->
         <section class="store-products-section">
@@ -624,13 +633,13 @@
                         <div class="store-product-pricing">
                             <div class="store-pricing-card">
                                 <span class="store-pricing-label" data-i18n="store.sysprice">System Price</span>
-                                <span class="store-pricing-amount">12,500 <small>AED</small></span>
+                                <span class="store-pricing-amount" data-price-aed="12500">12,500 <small>AED</small></span>
                                 <hr>
                                 <span class="store-pricing-label" data-i18n="prod.installation">Installation</span>
-                                <span class="store-pricing-amount-sm">3,500 <small>AED</small></span>
+                                <span class="store-pricing-amount-sm" data-price-aed="3500">3,500 <small>AED</small></span>
                                 <hr>
                                 <span class="store-pricing-total-label" data-i18n="store.total">Total</span>
-                                <span class="store-pricing-total">16,000 <small>AED</small></span>
+                                <span class="store-pricing-total" data-price-aed="16000">16,000 <small>AED</small></span>
                                 <button class="btn btn-luminous btn-full" onclick="storeContact('Drinking Water Filter')" data-i18n="store.reqquote">Request Quote</button>
                                 <p class="store-pricing-note">Includes 1-year warranty &amp; first service visit</p>
                             </div>
@@ -668,13 +677,13 @@
                         <div class="store-product-pricing">
                             <div class="store-pricing-card">
                                 <span class="store-pricing-label" data-i18n="store.sysprice">System Price</span>
-                                <span class="store-pricing-amount">4,500 <small>AED</small></span>
+                                <span class="store-pricing-amount" data-price-aed="4500">4,500 <small>AED</small></span>
                                 <hr>
                                 <span class="store-pricing-label" data-i18n="prod.installation">Installation</span>
-                                <span class="store-pricing-amount-sm">2,000 <small>AED</small></span>
+                                <span class="store-pricing-amount-sm" data-price-aed="2000">2,000 <small>AED</small></span>
                                 <hr>
                                 <span class="store-pricing-total-label" data-i18n="store.total">Total</span>
-                                <span class="store-pricing-total">6,500 <small>AED</small></span>
+                                <span class="store-pricing-total" data-price-aed="6500">6,500 <small>AED</small></span>
                                 <button class="btn btn-luminous btn-full" onclick="storeContact('Shower Filter')" data-i18n="store.reqquote">Request Quote</button>
                                 <p class="store-pricing-note">Includes first replacement cartridge free</p>
                             </div>
@@ -716,14 +725,14 @@
                         <div class="store-product-pricing">
                             <div class="store-pricing-card">
                                 <span class="store-pricing-label" data-i18n="store.sysprice">System Price</span>
-                                <span class="store-pricing-amount">42,000 <small>AED</small></span>
+                                <span class="store-pricing-amount" data-price-aed="42000">42,000 <small>AED</small></span>
                                 <span class="store-pricing-sub">Residential (up to 80m&sup3;)</span>
                                 <hr>
                                 <span class="store-pricing-label" data-i18n="prod.installation">Installation</span>
-                                <span class="store-pricing-amount-sm">15,000 <small>AED</small></span>
+                                <span class="store-pricing-amount-sm" data-price-aed="15000">15,000 <small>AED</small></span>
                                 <hr>
                                 <span class="store-pricing-total-label" data-i18n="store.totalfrom">Total from</span>
-                                <span class="store-pricing-total">56,000 <small>AED</small></span>
+                                <span class="store-pricing-total" data-price-aed="56000">56,000 <small>AED</small></span>
                                 <button class="btn btn-luminous btn-full" onclick="storeContact('Swimming Pool Filter')" data-i18n="store.reqsurvey">Request Site Survey</button>
                                 <p class="store-pricing-note">Commercial pools priced after assessment</p>
                             </div>
@@ -761,13 +770,13 @@
                         <div class="store-product-pricing">
                             <div class="store-pricing-card">
                                 <span class="store-pricing-label" data-i18n="store.sysprice">System Price</span>
-                                <span class="store-pricing-amount">4,500 <small>AED</small></span>
+                                <span class="store-pricing-amount" data-price-aed="4500">4,500 <small>AED</small></span>
                                 <hr>
                                 <span class="store-pricing-label" data-i18n="prod.installation">Installation</span>
                                 <span class="store-pricing-amount-sm">Free <small>(self-install)</small></span>
                                 <hr>
                                 <span class="store-pricing-total-label" data-i18n="store.total">Total</span>
-                                <span class="store-pricing-total">4,500 <small>AED</small></span>
+                                <span class="store-pricing-total" data-price-aed="4500">4,500 <small>AED</small></span>
                                 <button class="btn btn-luminous btn-full" onclick="storeContact('Compact Sink Filter')" data-i18n="store.ordernow">Order Now</button>
                                 <p class="store-pricing-note">Free delivery across UAE</p>
                             </div>
@@ -782,7 +791,7 @@
         <section class="store-cta">
             <div class="store-cta-inner">
                 <h2 data-i18n="store.cta.title">Not sure which system is right for you?</h2>
-                <p>Book our Water Quality Analysis &amp; Demo for just <strong>500 AED</strong> (refundable with purchase). Our specialist will test your water, recommend the ideal system, and demonstrate the difference live.</p>
+                <p>Book our Water Quality Analysis &amp; Demo for just <strong><span data-price-aed="500">500 <small>AED</small></span></strong> (refundable with purchase). Our specialist will test your water, recommend the ideal system, and demonstrate the difference live.</p>
                 <div class="store-cta-actions">
                     <button class="btn btn-luminous btn-lg" onclick="storeContact('General Inquiry')" data-i18n="store.contactus">Contact Us</button>
                     <button class="btn btn-glass-dark btn-lg" onclick="showLandingScreen()" data-i18n="store.backhome">Back to Home</button>

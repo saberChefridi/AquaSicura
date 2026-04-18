@@ -68,6 +68,27 @@ function showArtScreen()        { _showClassicScreen('art-screen'); loadWikiArtI
 function showScienceScreen()    { _showClassicScreen('science-screen'); }
 
 // ══════════════════════════════════════════════════════════════════════
+// STORE CURRENCY SWITCHER
+// ══════════════════════════════════════════════════════════════════════
+const AED_TO_USD = 1 / 3.6725;   // UAE dirham fixed peg
+
+function setStoreCurrency(cur) {
+    document.querySelectorAll('.currency-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.cur === cur);
+    });
+    document.querySelectorAll('[data-price-aed]').forEach(function(el) {
+        var aed = parseFloat(el.getAttribute('data-price-aed'));
+        if (isNaN(aed)) return;
+        if (cur === 'USD') {
+            var usd = Math.round(aed * AED_TO_USD);
+            el.innerHTML = usd.toLocaleString('en-US') + ' <small>USD</small>';
+        } else {
+            el.innerHTML = aed.toLocaleString('en-AE') + ' <small>AED</small>';
+        }
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════════
 // AI WATER QUALITY ANALYSER
 // ══════════════════════════════════════════════════════════════════════
 

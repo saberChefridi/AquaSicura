@@ -15,6 +15,7 @@ const TRANSLATIONS = {
 "nav.literature":       { en:"Literature",   ar:"\u0627\u0644\u0623\u062f\u0628",                                 it:"Letteratura" },
 "nav.hydration":        { en:"Hydration",    ar:"\u0627\u0644\u0625\u0631\u062a\u0648\u0627\u0621",               it:"Idratazione" },
 "nav.art":              { en:"Art",          ar:"\u0627\u0644\u0641\u0646",                                         it:"Arte" },
+"store.currency.label": { en:"Currency", ar:"\u0627\u0644\u0639\u0645\u0644\u0629", it:"Valuta" },
 "nav.science":          { en:"Science",      ar:"\u0627\u0644\u0639\u0644\u0645",                                     it:"Scienza" },
 
 // ─── HERO SECTION ────────────────────────────────────────────────────
