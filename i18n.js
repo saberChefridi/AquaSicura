@@ -614,7 +614,7 @@ function applyTranslations() {
         if (t) {
             const val = t[currentLang] || t.en;
             // Use innerHTML for any value that contains HTML markup
-            if (val.includes('<')) {
+            if (val.includes('<') || val.includes('&')) {
                 el.innerHTML = val;
             } else {
                 el.textContent = val;
