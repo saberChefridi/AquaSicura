@@ -65,6 +65,7 @@ function _showClassicScreen(screenId) {
 function showLiteratureScreen() { _showClassicScreen('literature-screen'); }
 function showHydrationScreen()  { _showClassicScreen('hydration-screen'); }
 function showArtScreen()        { _showClassicScreen('art-screen'); loadWikiArtImages(); }
+function showScienceScreen()    { _showClassicScreen('science-screen'); }
 
 // ── Wikimedia Commons API — load correct thumbnail URLs for Art page ─
 function loadWikiArtImages() {

@@ -15,6 +15,7 @@ const TRANSLATIONS = {
 "nav.literature":       { en:"Literature",   ar:"\u0627\u0644\u0623\u062f\u0628",                                 it:"Letteratura" },
 "nav.hydration":        { en:"Hydration",    ar:"\u0627\u0644\u0625\u0631\u062a\u0648\u0627\u0621",               it:"Idratazione" },
 "nav.art":              { en:"Art",          ar:"\u0627\u0644\u0641\u0646",                                         it:"Arte" },
+"nav.science":          { en:"Science",      ar:"\u0627\u0644\u0639\u0644\u0645",                                     it:"Scienza" },
 
 // ─── HERO SECTION ────────────────────────────────────────────────────
 "hero.badge":           { en:"Water Filtration Intelligence",
@@ -486,7 +487,89 @@ const TRANSLATIONS = {
 // Art closing quote
 "art.closing":          { en:"&ldquo;In every drop of water there is a story of life.&rdquo;<cite>&mdash; A closing meditation</cite>",
                           ar:"&ldquo;في كل قطرة ماء قصة حياة.&rdquo;<cite>&mdash; تأمل ختامي</cite>",
-                          it:"&ldquo;In ogni goccia d'acqua c'è una storia di vita.&rdquo;<cite>&mdash; Una meditazione finale</cite>" }
+                          it:"&ldquo;In ogni goccia d'acqua c'è una storia di vita.&rdquo;<cite>&mdash; Una meditazione finale</cite>" },
+
+// ─── SCIENCE PAGE ────────────────────────────────────────────────────
+"sci.hero.badge":       { en:"The Process",          ar:"\u0627\u0644\u0639\u0645\u0644\u064a\u0629",                  it:"Il Processo" },
+"sci.hero.h1.strong":   { en:"The Science of",       ar:"\u0639\u0644\u0645",                                          it:"La Scienza dell\u2019" },
+"sci.hero.h1.rest":     { en:"Living Water",          ar:"\u0627\u0644\u0645\u064a\u0627\u0647 \u0627\u0644\u062d\u064a\u0629", it:"Acqua Viva" },
+"sci.hero.lede":        { en:"Eight precision stages. One proprietary secret. The result is not filtered water \u2014 it is revived water.",
+                          ar:"\u062b\u0645\u0627\u0646\u064a \u0645\u0631\u0627\u062d\u0644 \u062f\u0642\u064a\u0642\u0629. \u0633\u0631 \u062e\u0627\u0635 \u0648\u0627\u062d\u062f. \u0627\u0644\u0646\u062a\u064a\u062c\u0629 \u0644\u064a\u0633\u062a \u0645\u0627\u0621\u064b \u0645\u0641\u0644\u062a\u0631\u064b\u0627 \u2014 \u0625\u0646\u0647\u0627 \u0645\u0627\u0621 \u0645\u062d\u064a\u064a.",
+                          it:"Otto stadi di precisione. Un segreto proprietario. Il risultato non \u00e8 acqua filtrata \u2014 \u00e8 acqua rivitalizzata." },
+// Stage 1
+"sci.s1.label":         { en:"Stage One",    ar:"\u0627\u0644\u0645\u0631\u062d\u0644\u0629 \u0627\u0644\u0623\u0648\u0644\u0649",  it:"Fase Uno" },
+"sci.s1.h3":            { en:"Pre-Filtration",
+                          ar:"\u0627\u0644\u062a\u0631\u0634\u064a\u062d \u0627\u0644\u0645\u0633\u0628\u0642",
+                          it:"Pre-Filtrazione" },
+"sci.s1.desc":          { en:"Water enters the system through a multi-stage sediment barrier. Particles, rust, and suspended solids down to 5 microns are captured before treatment begins \u2014 protecting the precision stages that follow.",
+                          ar:"\u064a\u062f\u062e\u0644 \u0627\u0644\u0645\u0627\u0621 \u0627\u0644\u0646\u0638\u0627\u0645 \u0639\u0628\u0631 \u062d\u0627\u062c\u0632 \u0631\u0633\u0648\u0628\u064a\u0627\u062a \u0645\u062a\u0639\u062f\u062f \u0627\u0644\u0645\u0631\u0627\u062d\u0644. \u062a\u064f\u062d\u062c\u0632 \u0627\u0644\u062c\u0633\u064a\u0645\u0627\u062a \u0648\u0627\u0644\u0635\u062f\u0623 \u0648\u0627\u0644\u0645\u0648\u0627\u062f \u0627\u0644\u0635\u0644\u0628\u0629 \u0627\u0644\u0639\u0627\u0644\u0642\u0629 \u062d\u062a\u0649 5 \u0645\u064a\u0643\u0631\u0648\u0646 \u0642\u0628\u0644 \u0628\u062f\u0621 \u0627\u0644\u0645\u0639\u0627\u0644\u062c\u0629.",
+                          it:"L\u2019acqua entra nel sistema attraverso una barriera sedimentaria a pi\u00f9 stadi. Particelle, ruggine e solidi sospesi fino a 5 micron vengono catturati prima che il trattamento inizi \u2014 proteggendo le fasi di precisione che seguono." },
+// Stage 2
+"sci.s2.label":         { en:"Stage Two",    ar:"\u0627\u0644\u0645\u0631\u062d\u0644\u0629 \u0627\u0644\u062b\u0627\u0646\u064a\u0629",  it:"Fase Due" },
+"sci.s2.h3":            { en:"Activated Carbon Filtration",
+                          ar:"\u062a\u0631\u0634\u064a\u062d \u0627\u0644\u0643\u0631\u0628\u0648\u0646 \u0627\u0644\u0645\u0646\u0634\u0637",
+                          it:"Filtrazione a Carbone Attivo" },
+"sci.s2.desc":          { en:"A dense bed of granular activated carbon \u2014 produced from coconut shell \u2014 adsorbs chlorine, chloramines, herbicides, and dissolved organic compounds. Taste and odour are erased. The carbon\u2019s microscopic pore structure provides millions of square centimetres of contact surface per gram.",
+                          ar:"\u0637\u0628\u0642\u0629 \u0643\u062b\u064a\u0641\u0629 \u0645\u0646 \u0627\u0644\u0643\u0631\u0628\u0648\u0646 \u0627\u0644\u0645\u0646\u0634\u0637 \u0627\u0644\u062d\u0628\u064a\u0628\u064a \u0627\u0644\u0645\u0633\u062a\u062e\u0644\u0635 \u0645\u0646 \u0642\u0634\u0631\u0629 \u062c\u0648\u0632 \u0627\u0644\u0647\u0646\u062f \u062a\u0645\u062a\u0635 \u0627\u0644\u0643\u0644\u0648\u0631 \u0648\u0627\u0644\u0645\u0628\u064a\u062f\u0627\u062a \u0648\u0627\u0644\u0645\u0631\u0643\u0628\u0627\u062a \u0627\u0644\u0639\u0636\u0648\u064a\u0629 \u0627\u0644\u0645\u0630\u0627\u0628\u0629. \u064a\u062e\u062a\u0641\u064a \u0627\u0644\u0637\u0639\u0645 \u0648\u0627\u0644\u0631\u0627\u0626\u062d\u0629 \u062a\u0645\u0627\u0645\u064b\u0627.",
+                          it:"Un letto denso di carbone attivo granulare \u2014 prodotto da guscio di cocco \u2014 assorbe cloro, cloramine, erbicidi e composti organici disciolti. Sapore e odore vengono eliminati completamente." },
+// Stage 3
+"sci.s3.label":         { en:"Stage Three",  ar:"\u0627\u0644\u0645\u0631\u062d\u0644\u0629 \u0627\u0644\u062b\u0627\u0644\u062b\u0629",  it:"Fase Tre" },
+"sci.s3.h3":            { en:"Reverse Osmosis",
+                          ar:"\u0627\u0644\u062a\u0646\u0627\u0636\u062d \u0627\u0644\u0639\u0643\u0633\u064a",
+                          it:"Osmosi Inversa" },
+"sci.s3.desc":          { en:"At the heart of the system, a semi-permeable membrane with pores of 0.0001 micron rejects up to 99% of dissolved salts, heavy metals, bacteria, viruses, and pharmaceutical residues. Only pure water molecules pass through. Nothing harmful remains.",
+                          ar:"\u0641\u064a \u0642\u0644\u0628 \u0627\u0644\u0646\u0638\u0627\u0645\u060c \u063a\u0634\u0627\u0621 \u0634\u0628\u0647 \u0646\u0627\u0641\u0630 \u0628\u0645\u0633\u0627\u0645 0.0001 \u0645\u064a\u0643\u0631\u0648\u0646 \u064a\u0631\u0641\u0636 99% \u0645\u0646 \u0627\u0644\u0623\u0645\u0644\u0627\u062d \u0627\u0644\u0645\u0630\u0627\u0628\u0629 \u0648\u0627\u0644\u0645\u0639\u0627\u062f\u0646 \u0627\u0644\u062b\u0642\u064a\u0644\u0629 \u0648\u0627\u0644\u0628\u0643\u062a\u064a\u0631\u064a\u0627 \u0648\u0627\u0644\u0641\u064a\u0631\u0648\u0633\u0627\u062a. \u0644\u0627 \u064a\u0645\u0631 \u0633\u0648\u0649 \u062c\u0632\u064a\u0626\u0627\u062a \u0627\u0644\u0645\u0627\u0621 \u0627\u0644\u0646\u0642\u064a.",
+                          it:"Al cuore del sistema, una membrana semipermeabile con pori da 0,0001 micron respinge fino al 99% di sali disciolti, metalli pesanti, batteri, virus e residui farmaceutici. Solo molecole d\u2019acqua pura passano attraverso." },
+// Stage 4
+"sci.s4.label":         { en:"Stage Four",   ar:"\u0627\u0644\u0645\u0631\u062d\u0644\u0629 \u0627\u0644\u0631\u0627\u0628\u0639\u0629",  it:"Fase Quattro" },
+"sci.s4.h3":            { en:"UV Sterilisation",
+                          ar:"\u0627\u0644\u062a\u0639\u0642\u064a\u0645 \u0628\u0627\u0644\u0623\u0634\u0639\u0629 \u0641\u0648\u0642 \u0627\u0644\u0628\u0646\u0641\u0633\u062c\u064a\u0629",
+                          it:"Sterilizzazione UV" },
+"sci.s4.desc":          { en:"Post-membrane water passes through a calibrated UV-C chamber. Ultraviolet light at 254 nm disrupts the DNA of any surviving microorganism \u2014 eliminating pathogens without chemistry, without residue, without altering the water\u2019s mineral balance.",
+                          ar:"\u064a\u0645\u0631 \u0627\u0644\u0645\u0627\u0621 \u0628\u0639\u062f \u0627\u0644\u063a\u0634\u0627\u0621 \u0639\u0628\u0631 \u063a\u0631\u0641\u0629 \u0623\u0634\u0639\u0629 UV-C \u0645\u0639\u0627\u064a\u0631\u0629. \u0627\u0644\u0636\u0648\u0621 \u0641\u0648\u0642 \u0627\u0644\u0628\u0646\u0641\u0633\u062c\u064a \u0639\u0646\u062f 254 \u0646\u0627\u0646\u0648\u0645\u062a\u0631 \u064a\u062f\u0645\u0631 \u0627\u0644\u062d\u0645\u0636 \u0627\u0644\u0646\u0648\u0648\u064a \u0644\u0623\u064a \u0643\u0627\u0626\u0646 \u062f\u0642\u064a\u0642 \u0646\u0627\u062c\u064a \u2014 \u0628\u062f\u0648\u0646 \u0643\u064a\u0645\u064a\u0627\u0621 \u0648\u0644\u0627 \u0645\u062e\u0644\u0641\u0627\u062a.",
+                          it:"L\u2019acqua post-membrana attraversa una camera UV-C calibrata. La luce ultravioletta a 254 nm distrugge il DNA di qualsiasi microrganismo sopravvissuto \u2014 eliminando agenti patogeni senza chimica, senza residui." },
+// Stage 5
+"sci.s5.label":         { en:"Stage Five",   ar:"\u0627\u0644\u0645\u0631\u062d\u0644\u0629 \u0627\u0644\u062e\u0627\u0645\u0633\u0629",  it:"Fase Cinque" },
+"sci.s5.h3":            { en:"Thermal Exchange",
+                          ar:"\u0627\u0644\u062a\u0628\u0627\u062f\u0644 \u0627\u0644\u062d\u0631\u0627\u0631\u064a",
+                          it:"Scambio Termico" },
+"sci.s5.desc":          { en:"A compact heat-exchange module brings the water to the ideal service temperature \u2014 chilled, ambient, or gently warm \u2014 using energy recovered from within the system itself. Temperature is not merely comfort: it is part of the sensory and physiological experience of water.",
+                          ar:"\u0648\u062d\u062f\u0629 \u062a\u0628\u0627\u062f\u0644 \u062d\u0631\u0627\u0631\u064a \u0645\u062f\u0645\u062c\u0629 \u062a\u062c\u0644\u0628 \u0627\u0644\u0645\u0627\u0621 \u0625\u0644\u0649 \u062f\u0631\u062c\u0629 \u0627\u0644\u062d\u0631\u0627\u0631\u0629 \u0627\u0644\u0645\u062b\u0644\u0649 \u2014 \u0628\u0627\u0631\u062f\u064b\u0627 \u0623\u0648 \u0641\u0627\u062a\u0631\u064b\u0627 \u0623\u0648 \u062f\u0627\u0641\u0626\u064b\u0627 \u2014 \u0628\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0637\u0627\u0642\u0629 \u0645\u0633\u062a\u0639\u0627\u062f\u0629 \u0645\u0646 \u062f\u0627\u062e\u0644 \u0627\u0644\u0646\u0638\u0627\u0645 \u0646\u0641\u0633\u0647.",
+                          it:"Un modulo compatto di scambio termico porta l\u2019acqua alla temperatura di servizio ideale \u2014 fredda, ambiente o tiepida \u2014 utilizzando energia recuperata dall\u2019interno del sistema stesso." },
+// Factor X
+"sci.sx.label":         { en:"Proprietary Stage", ar:"\u0645\u0631\u062d\u0644\u0629 \u062d\u0635\u0631\u064a\u0629",                    it:"Fase Proprietaria" },
+"sci.sx.h3":            { en:"Factor X \u2014 Our Proudest Secret",
+                          ar:"\u0627\u0644\u0639\u0627\u0645\u0644 X \u2014 \u0633\u0631\u0646\u0627 \u0627\u0644\u0623\u0639\u0638",
+                          it:"Fattore X \u2014 Il Nostro Pi\u00f9 Fiero Segreto" },
+"sci.sx.desc":          { en:"Between sterilisation and mineral dosing lies a proprietary process we simply call Factor X. It is the result of years of research and the reason AquaSicura water carries a character unlike any other. Its mechanism is protected. What it delivers \u2014 a measurable difference in the water\u2019s structure, vitality, and sensory profile \u2014 is unmistakable.",
+                          ar:"\u0628\u064a\u0646 \u0627\u0644\u062a\u0639\u0642\u064a\u0645 \u0648\u062c\u0631\u0639\u0629 \u0627\u0644\u0645\u0639\u0627\u062f\u0646 \u062a\u0643\u0645\u0646 \u0639\u0645\u0644\u064a\u0629 \u062e\u0627\u0635\u0629 \u0646\u0633\u0645\u064a\u0647\u0627 \u0627\u0644\u0639\u0627\u0645\u0644 X. \u0647\u064a \u062b\u0645\u0631\u0629 \u0633\u0646\u0648\u0627\u062a \u0645\u0646 \u0627\u0644\u0628\u062d\u062b \u0648\u0627\u0644\u0633\u0628\u0628 \u0641\u064a \u062a\u0645\u064a\u0632 \u0645\u064a\u0627\u0647 \u0623\u0643\u0648\u0627\u0633\u064a\u0643\u0648\u0631\u0627. \u0622\u0644\u064a\u062a\u0647\u0627 \u0645\u062d\u0645\u064a\u0629. \u0645\u0627 \u062a\u0642\u062f\u0645\u0647 \u2014 \u0641\u0631\u0642 \u0642\u0627\u0628\u0644 \u0644\u0644\u0642\u064a\u0627\u0633 \u2014 \u0644\u0627 \u064a\u0645\u0643\u0646 \u0625\u063a\u0641\u0627\u0644\u0647.",
+                          it:"Tra la sterilizzazione e il dosaggio minerale si trova un processo proprietario che chiamiamo semplicemente Fattore X. \u00c8 il frutto di anni di ricerca e il motivo per cui l\u2019acqua AquaSicura ha un carattere ineguagliabile. Il suo meccanismo \u00e8 protetto. Ci\u00f2 che produce \u2014 una differenza misurabile nella struttura, vitalit\u00e0 e profilo sensoriale dell\u2019acqua \u2014 \u00e8 inconfondibile." },
+"sci.sx.badge":         { en:"Know-How Protected \u00b7 Patent Pending",
+                          ar:"\u0645\u062d\u0645\u064a \u062d\u0642\u0648\u0642 \u0627\u0644\u0645\u0644\u0643\u064a\u0629 \u00b7 \u0628\u0631\u0627\u0621\u0629 \u0627\u062e\u062a\u0631\u0627\u0639 \u0645\u0639\u0644\u0642\u0629",
+                          it:"Know-How Protetto \u00b7 Brevetto in Attesa" },
+// Stage 6
+"sci.s6.label":         { en:"Stage Six",    ar:"\u0627\u0644\u0645\u0631\u062d\u0644\u0629 \u0627\u0644\u0633\u0627\u062f\u0633\u0629",  it:"Fase Sei" },
+"sci.s6.h3":            { en:"Precision Mineral Dosing",
+                          ar:"\u062c\u0631\u0639\u0629 \u0627\u0644\u0645\u0639\u0627\u062f\u0646 \u0628\u062f\u0642\u0629",
+                          it:"Dosaggio Minerale di Precisione" },
+"sci.s6.desc":          { en:"Pure water is healthy water, but living water requires minerals. Micro-dosing pumps re-introduce a precise, medically calibrated blend of calcium, magnesium, potassium, and trace electrolytes. Each batch is validated by in-line sensors. The result is water that nourishes, not merely hydrates.",
+                          ar:"\u0627\u0644\u0645\u0627\u0621 \u0627\u0644\u0646\u0642\u064a \u0645\u0627\u0621 \u0635\u062d\u064a\u060c \u0644\u0643\u0646 \u0627\u0644\u0645\u0627\u0621 \u0627\u0644\u062d\u064a \u064a\u062a\u0637\u0644\u0628 \u0645\u0639\u0627\u062f\u0646. \u0636\u062e\u0627\u062a \u0627\u0644\u062c\u0631\u0639\u0627\u062a \u0627\u0644\u062f\u0642\u064a\u0642\u0629 \u062a\u0639\u064a\u062f \u062e\u0644\u064a\u0637\u064b\u0627 \u0645\u0639\u0627\u064a\u0631\u064b\u0627 \u0637\u0628\u064a\u064b\u0627 \u0645\u0646 \u0627\u0644\u0643\u0627\u0644\u0633\u064a\u0648\u0645 \u0648\u0627\u0644\u0645\u063a\u0646\u064a\u0633\u064a\u0648\u0645 \u0648\u0627\u0644\u0628\u0648\u062a\u0627\u0633\u064a\u0648\u0645. \u0627\u0644\u0646\u062a\u064a\u062c\u0629 \u0645\u0627\u0621 \u064a\u063a\u0630\u064a\u060c \u0644\u0627 \u0645\u062c\u0631\u062f \u0645\u0627\u0621 \u064a\u0631\u0637\u0628.",
+                          it:"L\u2019acqua pura \u00e8 acqua sana, ma l\u2019acqua viva richiede minerali. Pompe di micro-dosaggio reintroducono una miscela precisa di calcio, magnesio, potassio ed elettroliti in traccia. Ogni lotto viene validato da sensori in linea." },
+// Stage 7
+"sci.s7.label":         { en:"Stage Seven",  ar:"\u0627\u0644\u0645\u0631\u062d\u0644\u0629 \u0627\u0644\u0633\u0627\u0628\u0639\u0629",  it:"Fase Sette" },
+"sci.s7.h3":            { en:"Real-Time Intelligence",
+                          ar:"\u0630\u0643\u0627\u0621 \u0641\u0648\u0631\u064a",
+                          it:"Intelligenza in Tempo Reale" },
+"sci.s7.desc":          { en:"Distributed sensors monitor pH, TDS, temperature, pressure, UV intensity, flow rate, and mineral concentration \u2014 continuously, simultaneously, in real time. An embedded intelligence layer analyses every parameter, adjusts dosing and filtration on the fly, and alerts operators the moment any value drifts outside its optimal range. Every litre is validated before it is delivered.",
+                          ar:"\u062d\u0633\u0627\u0633\u0627\u062a \u0645\u0648\u0632\u0639\u0629 \u062a\u0631\u0627\u0642\u0628 \u062f\u0631\u062c\u0629 \u0627\u0644\u062d\u0645\u0648\u0636\u064a\u0629 \u0648\u0627\u0644\u0645\u0648\u0627\u062f \u0627\u0644\u0630\u0627\u0626\u0628\u0629 \u0648\u0627\u0644\u062d\u0631\u0627\u0631\u0629 \u0648\u0627\u0644\u0636\u063a\u0637 \u0648\u0634\u062f\u0629 \u0627\u0644\u0623\u0634\u0639\u0629 \u0641\u0648\u0642 \u0627\u0644\u0628\u0646\u0641\u0633\u062c\u064a\u0629 \u0648\u0645\u0639\u062f\u0644 \u0627\u0644\u062a\u062f\u0641\u0642 \u0648\u062a\u0631\u0643\u064a\u0632 \u0627\u0644\u0645\u0639\u0627\u062f\u0646 \u2014 \u0628\u0635\u0641\u0629 \u0645\u0633\u062a\u0645\u0631\u0629 \u0648\u0641\u0648\u0631\u064a\u0629. \u0643\u0644 \u0644\u062a\u0631 \u064a\u062e\u0636\u0639 \u0644\u0644\u062a\u062d\u0642\u0642 \u0642\u0628\u0644 \u062a\u0633\u0644\u064a\u0645\u0647.",
+                          it:"Sensori distribuiti monitorano pH, TDS, temperatura, pressione, intensit\u00e0 UV, portata e concentrazione minerale \u2014 in continuo, simultaneamente, in tempo reale. Uno strato di intelligenza analizza ogni parametro, regola dosaggio e filtrazione al volo, e avvisa gli operatori non appena un valore esce dal suo range ottimale." },
+// Closing
+"sci.closing.quote":    { en:"&ldquo;The result is not filtered water. It is revived water.&rdquo;",
+                          ar:"&ldquo;\u0627\u0644\u0646\u062a\u064a\u062c\u0629 \u0644\u064a\u0633\u062a \u0645\u0627\u0621\u064b \u0645\u0641\u0644\u062a\u0631\u064b\u0627. \u0625\u0646\u0647 \u0645\u0627\u0621 \u0645\u062d\u064a\u064a.&rdquo;",
+                          it:"&ldquo;Il risultato non \u00e8 acqua filtrata. \u00c8 acqua rivitalizzata.&rdquo;" },
+"sci.closing.cite":     { en:"&mdash; AquaSicura \u00b7 The Science of Living Water",
+                          ar:"&mdash; \u0623\u0643\u0648\u0627\u0633\u064a\u0643\u0648\u0631\u0627 \u00b7 \u0639\u0644\u0645 \u0627\u0644\u0645\u064a\u0627\u0647 \u0627\u0644\u062d\u064a\u0629",
+                          it:"&mdash; AquaSicura \u00b7 La Scienza dell\u2019Acqua Viva" }
 };
 
 // ─── Current Language ────────────────────────────────────────────────

@@ -1983,3 +1983,239 @@ body {
 [dir="rtl"] .manuscript ul li { padding: 5px 30px 5px 0; }
 [dir="rtl"] .manuscript ul li::before { left: auto; right: 4px; }
 [dir="rtl"] .manuscript .aside { border-left: none; border-right: 2px solid var(--gold); }
+
+/* ══════════════════════════════════════════════════════════════════
+   SCIENCE PAGE
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Hero */
+.sci-hero {
+    min-height: 58vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 32px 72px;
+    background: radial-gradient(ellipse at 50% 60%, rgba(30,58,100,0.55) 0%, transparent 70%),
+                var(--navy);
+    position: relative;
+    overflow: hidden;
+}
+.sci-hero::before {
+    content:'';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Ccircle cx='300' cy='300' r='280' fill='none' stroke='rgba(112,146,190,0.07)' stroke-width='1'/%3E%3Ccircle cx='300' cy='300' r='220' fill='none' stroke='rgba(112,146,190,0.05)' stroke-width='1'/%3E%3Ccircle cx='300' cy='300' r='160' fill='none' stroke='rgba(112,146,190,0.04)' stroke-width='1'/%3E%3C/svg%3E") center/700px no-repeat;
+    opacity: 0.6;
+}
+.sci-hero .cp-badge {
+    position: relative; z-index: 1;
+}
+.sci-hero h1 {
+    position: relative; z-index: 1;
+    font-family: var(--font-serif);
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 400;
+    color: var(--cream);
+    line-height: 1.15;
+    margin: 0 0 24px;
+}
+.sci-hero h1 strong {
+    color: var(--gold);
+    font-weight: 700;
+}
+.sci-hero p {
+    position: relative; z-index: 1;
+    font-family: var(--font-sans);
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--text-mid);
+    max-width: 640px;
+    line-height: 1.7;
+}
+
+/* Flow layout */
+.sci-flow-wrap {
+    background: var(--bg);
+    padding: 80px 0 100px;
+}
+.sci-flow {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+}
+/* Vertical connector line */
+.sci-flow::before {
+    content: '';
+    position: absolute;
+    left: calc(32px + 26px);   /* align with center of num circle */
+    top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(112,146,190,0.25) 8%,
+        rgba(112,146,190,0.25) 92%,
+        transparent 100%);
+}
+
+/* Each step */
+.sci-step {
+    display: flex;
+    gap: 28px;
+    margin-bottom: 64px;
+    position: relative;
+}
+.sci-step:last-child { margin-bottom: 0; }
+
+/* Step number circle */
+.sci-num-wrap {
+    flex: 0 0 52px;
+    display: flex; flex-direction: column; align-items: center;
+}
+.sci-num {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--bg-mid);
+    border: 2px solid rgba(112,146,190,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-sans);
+    font-size: 15px; font-weight: 700;
+    color: var(--blue-light);
+    letter-spacing: 1px;
+    position: relative; z-index: 1;
+    transition: border-color 0.3s;
+}
+.sci-step:hover .sci-num {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+/* Step body */
+.sci-step-body {
+    flex: 1;
+    padding-top: 10px;
+    padding-bottom: 8px;
+}
+.sci-stage-label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px;
+}
+.sci-step-body h3 {
+    font-family: var(--font-serif);
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 600;
+    color: var(--cream);
+    margin: 0 0 10px;
+}
+.sci-step-body p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.75;
+    margin: 0;
+}
+
+/* SVG icon in step */
+.sci-icon {
+    margin-bottom: 14px;
+    display: block;
+    opacity: 0.85;
+}
+
+/* ── Factor X special step ─────────────────────────────────────── */
+.sci-step.step-factorx .sci-num {
+    background: linear-gradient(135deg, rgba(201,169,110,0.2), rgba(201,169,110,0.05));
+    border-color: var(--gold);
+    color: var(--gold);
+    font-size: 20px;
+    font-weight: 900;
+}
+.sci-step.step-factorx .sci-step-body {
+    background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, transparent 60%);
+    border: 1px solid rgba(201,169,110,0.25);
+    border-radius: 12px;
+    padding: 22px 24px;
+}
+.sci-step.step-factorx .sci-stage-label {
+    color: var(--gold-dark);
+}
+.sci-step.step-factorx h3 {
+    color: var(--gold);
+}
+.sci-step.step-factorx p {
+    color: var(--text-dim);
+}
+.factorx-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 7px 16px;
+    border-radius: 20px;
+    background: rgba(201,169,110,0.12);
+    border: 1px solid rgba(201,169,110,0.35);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+.factorx-badge svg { opacity: 0.85; }
+
+/* Closing section */
+.sci-closing {
+    background: linear-gradient(160deg, rgba(10,15,25,1) 0%, rgba(15,25,45,1) 100%);
+    padding: 90px 32px;
+    text-align: center;
+}
+.sci-closing-inner {
+    max-width: 680px;
+    margin: 0 auto;
+}
+.sci-closing blockquote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(20px, 3vw, 28px);
+    color: var(--cream);
+    line-height: 1.55;
+    margin: 0 0 20px;
+    opacity: 0.9;
+}
+.sci-closing cite {
+    display: block;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.75;
+}
+.sci-orb {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, rgba(112,146,190,0.35), rgba(112,146,190,0.05));
+    border: 1px solid rgba(112,146,190,0.25);
+    margin: 0 auto 32px;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sci-hero { padding: 110px 24px 60px; }
+    .sci-flow { padding: 0 20px; }
+    .sci-flow::before { left: calc(20px + 26px); }
+    .sci-step { gap: 18px; margin-bottom: 48px; }
+    .sci-step.step-factorx .sci-step-body { padding: 16px 18px; }
+    .sci-closing { padding: 60px 24px; }
+}
+@media (max-width: 480px) {
+    .sci-num { width: 44px; height: 44px; font-size: 13px; }
+    .sci-flow::before { left: calc(20px + 22px); }
+    .sci-step-body h3 { font-size: 18px; }
+}
+[dir="rtl"] .sci-flow::before { left: auto; right: calc(32px + 26px); }
+@media (max-width: 768px) {
+    [dir="rtl"] .sci-flow::before { right: calc(20px + 26px); left: auto; }
+}
