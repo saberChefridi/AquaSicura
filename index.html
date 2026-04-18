@@ -1932,6 +1932,58 @@
             <!-- Sensor Grid -->
             <div class="detail-grid" id="detail-grid"></div>
             <div id="detail-alarms" style="margin-top:16px;"></div>
+            <!-- AI Water Quality Analyser -->
+            <div class="ai-analyser" id="ai-analyser">
+                <div class="ai-analyser-header">
+                    <span class="ai-badge">AI</span>
+                    <h4 data-i18n="ai.title">AI Real-Time Analyser</h4>
+                    <span id="ai-source-badge" class="ai-source-badge ai-live"></span>
+                </div>
+                <div class="ai-main">
+                    <!-- Gauge -->
+                    <div class="ai-gauge-wrap">
+                        <svg id="ai-gauge-svg" viewBox="0 0 220 128" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Subtle zone gradient bands behind track -->
+                            <path d="M 22,115 A 88,88 0 0,1 88,35" stroke="rgba(192,57,43,0.18)" stroke-width="14" fill="none" stroke-linecap="butt"/>
+                            <path d="M 88,35 A 88,88 0 0,1 132,35" stroke="rgba(251,140,0,0.18)" stroke-width="14" fill="none" stroke-linecap="butt"/>
+                            <path d="M 132,35 A 88,88 0 0,1 198,115" stroke="rgba(39,174,96,0.18)" stroke-width="14" fill="none" stroke-linecap="butt"/>
+                            <!-- Tick marks at 0, 25, 50, 75, 100 -->
+                            <line x1="22" y1="115" x2="32" y2="115" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                            <line x1="48" y1="53" x2="55" y2="60" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                            <line x1="110" y1="27" x2="110" y2="37" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                            <line x1="172" y1="53" x2="165" y2="60" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                            <line x1="198" y1="115" x2="188" y2="115" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                            <!-- Tick labels -->
+                            <text x="22" y="126" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.22)" font-family="Inter,Arial,sans-serif">0</text>
+                            <text x="36" y="44"  text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.22)" font-family="Inter,Arial,sans-serif">25</text>
+                            <text x="110" y="18" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.22)" font-family="Inter,Arial,sans-serif">50</text>
+                            <text x="184" y="44" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.22)" font-family="Inter,Arial,sans-serif">75</text>
+                            <text x="198" y="126" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.22)" font-family="Inter,Arial,sans-serif">100</text>
+                            <!-- Background track -->
+                            <path d="M 22,115 A 88,88 0 0,1 198,115" stroke="rgba(255,255,255,0.09)" stroke-width="16" fill="none" stroke-linecap="round"/>
+                            <!-- Colored score arc -->
+                            <path id="ai-arc" d="M 22,115 A 88,88 0 0,1 198,115" stroke="#27ae60" stroke-width="16" fill="none" stroke-linecap="round" stroke-dasharray="0 277" style="transition:stroke-dasharray 1s ease,stroke 1s ease;"/>
+                            <!-- Glow dot at arc tip -->
+                            <circle id="ai-needle-dot" cx="22" cy="115" r="9" fill="#27ae60" opacity="0.85" style="transition:all 1s ease;filter:drop-shadow(0 0 5px #27ae60);"/>
+                            <circle id="ai-needle-inner" cx="22" cy="115" r="4" fill="white" opacity="0.9" style="transition:all 1s ease;"/>
+                            <!-- Score number -->
+                            <text id="ai-score-num" x="110" y="89" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="700" fill="rgba(255,255,255,0.9)" font-family="Inter,Arial,sans-serif" style="transition:fill 1s ease;">--</text>
+                            <text x="110" y="107" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.3)" font-family="Inter,Arial,sans-serif" letter-spacing="2">/100</text>
+                        </svg>
+                        <div id="ai-quality-label" class="ai-quality-label" style="color:rgba(255,255,255,0.4)">—</div>
+                    </div>
+                    <!-- Parameter bars -->
+                    <div class="ai-params" id="ai-params"></div>
+                </div>
+                <!-- Drinkability verdict -->
+                <div class="ai-verdict-row">
+                    <div id="ai-verdict-icon" class="ai-verdict-icon">—</div>
+                    <div id="ai-verdict-text" class="ai-verdict-text"></div>
+                </div>
+                <!-- Text analysis -->
+                <div id="ai-text-result" class="ai-text-result"></div>
+            </div>
+
             <!-- Edit Device Info (admin only) -->
             <div id="detail-edit-section" style="display:none;margin-top:20px;border-top:1px solid var(--border);padding-top:20px;">
                 <h4 style="margin-bottom:12px;" data-i18n="dev.editinfo">Edit Device Info</h4>

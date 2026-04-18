@@ -67,6 +67,269 @@ function showHydrationScreen()  { _showClassicScreen('hydration-screen'); }
 function showArtScreen()        { _showClassicScreen('art-screen'); loadWikiArtImages(); }
 function showScienceScreen()    { _showClassicScreen('science-screen'); }
 
+// ══════════════════════════════════════════════════════════════════════
+// AI WATER QUALITY ANALYSER
+// ══════════════════════════════════════════════════════════════════════
+
+// i18n helper for the analyser (supports {placeholder} substitution)
+function aT(key, vars) {
+    const rec = TRANSLATIONS[key];
+    if (!rec) return key;
+    let s = rec[currentLang] || rec.en || key;
+    if (vars) s = s.replace(/\{(\w+)\}/g, function(_, k) {
+        return vars[k] !== undefined ? vars[k] : '{' + k + '}';
+    });
+    return s;
+}
+
+// Plausibility ranges — values outside are wire-break / sensor fault
+const SENSOR_RANGES = { ph: [0, 14], tds: [0, 5000], temp: [-100, 150] };
+function isPlausibleSensor(key, value) {
+    const v = parseFloat(value);
+    if (isNaN(v)) return false;
+    const r = SENSOR_RANGES[key];
+    return r ? v >= r[0] && v <= r[1] : true;
+}
+
+// Per-parameter quality scores (0–100)
+function phScore(v) {
+    if (v >= 6.5 && v <= 8.5)  return 100;
+    if ((v >= 6.0 && v < 6.5) || (v > 8.5 && v <= 9.0))  return 78;
+    if ((v >= 5.5 && v < 6.0) || (v > 9.0 && v <= 10.0)) return 55;
+    if ((v >= 5.0 && v < 5.5) || (v > 10.0 && v <= 12.0))return 32;
+    if ((v >= 4.0 && v < 5.0) || (v > 12.0))              return 12;
+    return 5;
+}
+function tdsScore(v) {
+    if (v <= 150)  return 100;
+    if (v <= 300)  return 90;
+    if (v <= 500)  return 75;
+    if (v <= 900)  return 48;
+    if (v <= 1200) return 28;
+    return 10;
+}
+function tempScore(v) {
+    if (v >= 5  && v <= 25) return 100;
+    if (v >= 0  && v <  5)  return 80;
+    if (v > 25  && v <= 35) return 75;
+    if (v > 35  && v <= 45) return 48;
+    if (v > 45  && v <= 60) return 28;
+    if (v < 0   && v >= -10)return 55;
+    return 18;
+}
+
+function scoreToColor(s) {
+    if (s >= 85) return '#27ae60';
+    if (s >= 70) return '#8bc34a';
+    if (s >= 55) return '#fdd835';
+    if (s >= 40) return '#fb8c00';
+    if (s >= 20) return '#f4511e';
+    return '#c0392b';
+}
+function scoreToLabel(s) {
+    if (s >= 85) return aT('ai.quality.excellent');
+    if (s >= 70) return aT('ai.quality.good');
+    if (s >= 55) return aT('ai.quality.fair');
+    if (s >= 40) return aT('ai.quality.poor');
+    if (s >= 20) return aT('ai.quality.bad');
+    return aT('ai.quality.dangerous');
+}
+
+function formatDataAge(ms) {
+    const m = Math.round(ms / 60000);
+    if (m < 60)   return aT('ai.ago.min',  { n: m });
+    const h = Math.round(ms / 3600000);
+    if (h < 48)   return aT('ai.ago.hour', { n: h });
+    return              aT('ai.ago.day',   { n: Math.round(ms / 86400000) });
+}
+
+function getMostRecentTelemetryTs(ts) {
+    let best = 0;
+    ['pH', 'tds', 'waterTemp'].forEach(function(k) {
+        if (ts && ts[k] && ts[k][0] && ts[k][0].ts > best) best = ts[k][0].ts;
+    });
+    return best || null;
+}
+
+function _aiSetGaugeNoData() {
+    const arc = document.getElementById('ai-arc');
+    if (!arc) return;
+    arc.setAttribute('stroke', 'rgba(255,255,255,0.12)');
+    arc.setAttribute('stroke-dasharray', '0 277');
+    ['ai-needle-dot', 'ai-needle-inner'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) { el.setAttribute('cx', '22'); el.setAttribute('cy', '115'); }
+    });
+    document.getElementById('ai-needle-dot').setAttribute('fill', 'rgba(255,255,255,0.18)');
+    var scoreEl = document.getElementById('ai-score-num');
+    scoreEl.textContent = '--';
+    scoreEl.setAttribute('fill', 'rgba(255,255,255,0.28)');
+    var ql = document.getElementById('ai-quality-label');
+    ql.textContent = aT('ai.source.none');
+    ql.style.color = 'rgba(255,255,255,0.35)';
+    document.getElementById('ai-params').innerHTML = '';
+    document.getElementById('ai-verdict-icon').textContent = '—';
+    document.getElementById('ai-verdict-icon').className = 'ai-verdict-icon';
+    document.getElementById('ai-verdict-text').textContent = aT('ai.nodata');
+    document.getElementById('ai-text-result').innerHTML =
+        '<span class="ai-note">' + aT('ai.text.nodata') + '</span>';
+}
+
+function _aiUpdateGauge(score) {
+    const color    = scoreToColor(score);
+    const R        = 88, CX = 110, CY = 115;
+    const totalLen = Math.PI * R;          // ≈ 276.46
+    const filled   = (score / 100) * totalLen;
+    const alpha    = Math.PI * (1 - score / 100);
+    const nx       = (CX + R * Math.cos(alpha)).toFixed(1);
+    const ny       = (CY - R * Math.sin(alpha)).toFixed(1);
+
+    var arc = document.getElementById('ai-arc');
+    arc.setAttribute('stroke', color);
+    arc.setAttribute('stroke-dasharray', filled.toFixed(1) + ' ' + (totalLen + 10).toFixed(1));
+
+    ['ai-needle-dot', 'ai-needle-inner'].forEach(function(id) {
+        var el = document.getElementById(id); if (!el) return;
+        el.setAttribute('cx', nx); el.setAttribute('cy', ny);
+    });
+    document.getElementById('ai-needle-dot').setAttribute('fill', color);
+
+    var scoreEl = document.getElementById('ai-score-num');
+    scoreEl.textContent = score;
+    scoreEl.setAttribute('fill', color);
+
+    var ql = document.getElementById('ai-quality-label');
+    ql.textContent = scoreToLabel(score);
+    ql.style.color = color;
+}
+
+function analyseWaterQuality(ts) {
+    if (!document.getElementById('ai-arc')) return;
+
+    // ── Raw readings ──────────────────────────────────────────────────
+    var raw = {
+        ph:   tv(ts, 'pH'),
+        tds:  tv(ts, 'tds'),
+        temp: tv(ts, 'waterTemp')
+    };
+
+    // ── Plausibility filter ───────────────────────────────────────────
+    var plausible = {};
+    if (raw.ph   !== null && isPlausibleSensor('ph',   raw.ph))   plausible.ph   = parseFloat(raw.ph);
+    if (raw.tds  !== null && isPlausibleSensor('tds',  raw.tds))  plausible.tds  = parseFloat(raw.tds);
+    if (raw.temp !== null && isPlausibleSensor('temp', raw.temp)) plausible.temp = parseFloat(raw.temp);
+
+    // ── Offline / age check ───────────────────────────────────────────
+    var latestTs   = getMostRecentTelemetryTs(ts);
+    var ageMs      = latestTs ? (Date.now() - latestTs) : null;
+    var isOffline  = ageMs !== null && ageMs > 2 * 3600 * 1000;
+    var noPlausible = Object.keys(plausible).length === 0;
+
+    // ── Source badge ──────────────────────────────────────────────────
+    var srcBadge = document.getElementById('ai-source-badge');
+    if (noPlausible || latestTs === null) {
+        srcBadge.textContent = aT('ai.source.none');
+        srcBadge.className   = 'ai-source-badge ai-offline';
+    } else if (isOffline) {
+        srcBadge.textContent = aT('ai.source.last', { t: formatDataAge(ageMs) });
+        srcBadge.className   = 'ai-source-badge ai-lastrecord';
+    } else {
+        srcBadge.textContent = aT('ai.source.live');
+        srcBadge.className   = 'ai-source-badge ai-live';
+    }
+
+    if (noPlausible) { _aiSetGaugeNoData(); return; }
+
+    // ── Weighted score: pH×3, TDS×2, temp×1 ──────────────────────────
+    var WEIGHTS = { ph: 3, tds: 2, temp: 1 };
+    var scoreMap = {};
+    if (plausible.ph   !== undefined) scoreMap.ph   = phScore(plausible.ph);
+    if (plausible.tds  !== undefined) scoreMap.tds  = tdsScore(plausible.tds);
+    if (plausible.temp !== undefined) scoreMap.temp = tempScore(plausible.temp);
+
+    var wsum = 0, wtotal = 0;
+    Object.keys(scoreMap).forEach(function(k) {
+        wsum   += scoreMap[k] * WEIGHTS[k];
+        wtotal += WEIGHTS[k];
+    });
+    var finalScore = wtotal > 0 ? Math.round(wsum / wtotal) : 0;
+
+    // ── Gauge ─────────────────────────────────────────────────────────
+    _aiUpdateGauge(finalScore);
+
+    // ── Parameter bars ────────────────────────────────────────────────
+    var paramDefs = [
+        { key: 'ph',   labelKey: 'ai.param.ph',   unit: '',     fmt: function(v){ return v.toFixed(2); } },
+        { key: 'tds',  labelKey: 'ai.param.tds',  unit: ' ppm', fmt: function(v){ return Math.round(v); } },
+        { key: 'temp', labelKey: 'ai.param.temp', unit: '°C',   fmt: function(v){ return v.toFixed(1); } }
+    ];
+    document.getElementById('ai-params').innerHTML = paramDefs
+        .filter(function(p){ return plausible[p.key] !== undefined; })
+        .map(function(p) {
+            var s = scoreMap[p.key], c = scoreToColor(s);
+            return '<div class="ai-param-row">' +
+                '<span class="ai-param-name">' + aT(p.labelKey) + '</span>' +
+                '<span class="ai-param-value">' + p.fmt(plausible[p.key]) + p.unit + '</span>' +
+                '<div class="ai-bar-track"><div class="ai-bar-fill" style="width:' + s + '%;background:' + c + '"></div></div>' +
+                '<span class="ai-param-score" style="color:' + c + '">' + s + '</span>' +
+                '</div>';
+        }).join('');
+
+    // ── Drinkability verdict ──────────────────────────────────────────
+    var icon  = document.getElementById('ai-verdict-icon');
+    var vtext = document.getElementById('ai-verdict-text');
+    if (finalScore >= 55) {
+        icon.textContent = '✓'; icon.className = 'ai-verdict-icon ai-verdict-ok';
+        vtext.textContent = aT('ai.drinkable');
+    } else if (finalScore >= 35) {
+        icon.textContent = '⚠'; icon.className = 'ai-verdict-icon ai-verdict-warn';
+        vtext.textContent = aT('ai.caution');
+    } else {
+        icon.textContent = '✗'; icon.className = 'ai-verdict-icon ai-verdict-bad';
+        vtext.textContent = aT('ai.notdrinkable');
+    }
+
+    // ── Text analysis ─────────────────────────────────────────────────
+    var textParts = [];
+
+    // Offline note
+    if (isOffline && latestTs) {
+        textParts.push('<span class="ai-note">⏱ ' +
+            aT('ai.text.lastdata', { t: formatDataAge(ageMs) }) + '</span>');
+    }
+    // Implausible sensor warnings
+    if (raw.ph   !== null && !isPlausibleSensor('ph',   raw.ph))
+        textParts.push('<span class="ai-note">⚠ ' + aT('ai.text.implausible_ph')   + '</span>');
+    if (raw.tds  !== null && !isPlausibleSensor('tds',  raw.tds))
+        textParts.push('<span class="ai-note">⚠ ' + aT('ai.text.implausible_tds')  + '</span>');
+    if (raw.temp !== null && !isPlausibleSensor('temp', raw.temp))
+        textParts.push('<span class="ai-note">⚠ ' + aT('ai.text.implausible_temp') + '</span>');
+
+    // Main verdict sentence
+    var mainText = aT(
+        finalScore >= 85 ? 'ai.text.excellent' :
+        finalScore >= 70 ? 'ai.text.good'      :
+        finalScore >= 55 ? 'ai.text.fair'       :
+        finalScore >= 40 ? 'ai.text.poor'       :
+                           'ai.text.dangerous'
+    );
+
+    // Append "based on …" list
+    var usedParts = [];
+    if (plausible.ph   !== undefined) usedParts.push(aT('ai.text.phval',   { v: plausible.ph.toFixed(2) }));
+    if (plausible.tds  !== undefined) usedParts.push(aT('ai.text.tdsval',  { v: Math.round(plausible.tds) }));
+    if (plausible.temp !== undefined) usedParts.push(aT('ai.text.tempval', { v: plausible.temp.toFixed(1) }));
+    if (usedParts.length)
+        mainText += ' ' + aT('ai.text.basedon') + ' ' + usedParts.join(', ') + '.';
+
+    // pH missing note
+    if (plausible.ph === undefined && plausible.tds !== undefined)
+        mainText += ' ' + aT('ai.text.noph');
+
+    textParts.push('<span>' + mainText + '</span>');
+    document.getElementById('ai-text-result').innerHTML = textParts.join('');
+}
+
 // ── Wikimedia Commons API — load correct thumbnail URLs for Art page ─
 function loadWikiArtImages() {
     const imgs = document.querySelectorAll('#art-screen .painting-frame img[data-wiki-file]');
@@ -547,6 +810,7 @@ function showDeviceDetail(device, ts) {
     }
 
     openModal('modal-device-detail');
+    analyseWaterQuality(ts);
 }
 
 function saveDeviceInfo() {
