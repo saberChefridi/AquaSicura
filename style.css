@@ -1825,7 +1825,10 @@ body {
     object-fit: cover;
     filter: saturate(0.96) contrast(1.03);
     background: #2a1e12;
+    transition: opacity .5s ease;
 }
+/* Hide until Wikimedia API sets the src */
+.painting-frame img[data-wiki-file]:not([src]) { opacity: 0; }
 .painting-caption {
     font-family: var(--font-sans);
     font-size: 10px;

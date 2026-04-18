@@ -187,6 +187,52 @@
 <body>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- UNIVERSAL NAVIGATION (body-level, always fixed)               -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <nav class="landing-nav">
+        <div class="landing-nav-brand" onclick="showLandingScreen()" style="cursor:pointer;">
+            <span class="brand-drop"></span>
+            <span class="brand-text">AquaSicura</span>
+        </div>
+        <div class="landing-nav-links">
+            <a href="#philosophy" class="nav-link" onclick="goToSection('philosophy')" data-i18n="nav.philosophy">Philosophy</a>
+            <a href="#products" class="nav-link" onclick="goToSection('products')" data-i18n="nav.products">Products</a>
+            <a href="#" class="nav-link" onclick="showLiteratureScreen()" data-i18n="nav.literature">Literature</a>
+            <a href="#" class="nav-link" onclick="showHydrationScreen()" data-i18n="nav.hydration">Hydration</a>
+            <a href="#" class="nav-link" onclick="showArtScreen()" data-i18n="nav.art">Art</a>
+            <a href="#" class="nav-link" onclick="showStoreScreen()" data-i18n="nav.store">Store</a>
+            <button class="btn btn-glass" onclick="showLoginScreen()" data-i18n="nav.dashboard">Dashboard</button>
+        </div>
+        <div class="lang-switcher" id="lang-dropdown">
+            <button class="lang-btn" onclick="toggleLangDropdown(event)" id="lang-btn-label">🇬🇧</button>
+            <div class="lang-options">
+                <button onclick="setLanguage('en')">🇬🇧 English</button>
+                <button onclick="setLanguage('ar')">🇦🇪 عربي</button>
+                <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+            </div>
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu (body-level) -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#philosophy" onclick="goToSection('philosophy'); toggleMobileMenu();" data-i18n="nav.philosophy">Philosophy</a>
+        <a href="#products" onclick="goToSection('products'); toggleMobileMenu();" data-i18n="nav.products">Products</a>
+        <a href="#" onclick="showLiteratureScreen(); toggleMobileMenu();" data-i18n="nav.literature">Literature</a>
+        <a href="#" onclick="showHydrationScreen(); toggleMobileMenu();" data-i18n="nav.hydration">Hydration</a>
+        <a href="#" onclick="showArtScreen(); toggleMobileMenu();" data-i18n="nav.art">Art</a>
+        <a href="#" onclick="showStoreScreen(); toggleMobileMenu();" data-i18n="nav.store">Store</a>
+        <a href="#" onclick="showLoginScreen(); toggleMobileMenu();" data-i18n="nav.dashboard">Dashboard</a>
+        <div class="mobile-lang-row">
+            <button class="mobile-lang-btn" onclick="setLanguage('en'); toggleMobileMenu();">🇬🇧 English</button>
+            <button class="mobile-lang-btn" onclick="setLanguage('ar'); toggleMobileMenu();">🇦🇪 عربي</button>
+            <button class="mobile-lang-btn" onclick="setLanguage('it'); toggleMobileMenu();">🇮🇹 Italiano</button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
     <!-- LANDING PAGE                                                    -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="landing-screen" class="screen active">
@@ -194,50 +240,6 @@
         <div class="hero-bg">
             <img src="hero-bg.jpg" alt="" class="hero-img">
             <div class="hero-overlay"></div>
-        </div>
-
-        <!-- Floating Navigation -->
-        <nav class="landing-nav">
-            <div class="landing-nav-brand">
-                <span class="brand-drop"></span>
-                <span class="brand-text">AquaSicura</span>
-            </div>
-            <div class="landing-nav-links">
-                <a href="#philosophy" class="nav-link" onclick="scrollToSection('philosophy')" data-i18n="nav.philosophy">Philosophy</a>
-                <a href="#products" class="nav-link" onclick="scrollToSection('products')" data-i18n="nav.products">Products</a>
-                <a href="#" class="nav-link" onclick="showLiteratureScreen()" data-i18n="nav.literature">Literature</a>
-                <a href="#" class="nav-link" onclick="showHydrationScreen()" data-i18n="nav.hydration">Hydration</a>
-                <a href="#" class="nav-link" onclick="showArtScreen()" data-i18n="nav.art">Art</a>
-                <a href="#" class="nav-link" onclick="showStoreScreen()" data-i18n="nav.store">Store</a>
-                <button class="btn btn-glass" onclick="showLoginScreen()" data-i18n="nav.dashboard">Dashboard</button>
-            </div>
-            <div class="lang-switcher" id="lang-dropdown">
-                <button class="lang-btn" onclick="toggleLangDropdown(event)" id="lang-btn-label">🇬🇧</button>
-                <div class="lang-options">
-                    <button onclick="setLanguage('en')">🇬🇧 English</button>
-                    <button onclick="setLanguage('ar')">🇦🇪 عربي</button>
-                    <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
-                </div>
-            </div>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <span></span><span></span><span></span>
-            </button>
-        </nav>
-
-        <!-- Mobile Menu -->
-        <div class="mobile-menu" id="mobile-menu">
-            <a href="#philosophy" onclick="scrollToSection('philosophy'); toggleMobileMenu();" data-i18n="nav.philosophy">Philosophy</a>
-            <a href="#products" onclick="scrollToSection('products'); toggleMobileMenu();" data-i18n="nav.products">Products</a>
-            <a href="#" onclick="showLiteratureScreen(); toggleMobileMenu();" data-i18n="nav.literature">Literature</a>
-            <a href="#" onclick="showHydrationScreen(); toggleMobileMenu();" data-i18n="nav.hydration">Hydration</a>
-            <a href="#" onclick="showArtScreen(); toggleMobileMenu();" data-i18n="nav.art">Art</a>
-            <a href="#" onclick="showStoreScreen(); toggleMobileMenu();" data-i18n="nav.store">Store</a>
-            <a href="#" onclick="showLoginScreen(); toggleMobileMenu();" data-i18n="nav.dashboard">Dashboard</a>
-            <div class="mobile-lang-row">
-                <button class="mobile-lang-btn" onclick="setLanguage('en'); toggleMobileMenu();">🇬🇧 English</button>
-                <button class="mobile-lang-btn" onclick="setLanguage('ar'); toggleMobileMenu();">🇦🇪 عربي</button>
-                <button class="mobile-lang-btn" onclick="setLanguage('it'); toggleMobileMenu();">🇮🇹 Italiano</button>
-            </div>
         </div>
 
         <!-- Hero Section -->
@@ -539,25 +541,6 @@
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="store-screen" class="screen">
 
-        <!-- Store Navigation -->
-        <nav class="store-nav">
-            <div class="store-nav-inner">
-                <button class="store-back" onclick="showLandingScreen()" title="Back to Home" data-i18n="store.back">&larr; Home</button>
-                <span class="store-nav-title" data-i18n="store.navtitle">AquaSicura Store</span>
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <div class="lang-switcher" id="lang-dropdown-store">
-                        <button class="lang-btn" onclick="toggleLangDropdown(event, 'lang-dropdown-store')">🌐</button>
-                        <div class="lang-options">
-                            <button onclick="setLanguage('en')">🇬🇧 English</button>
-                            <button onclick="setLanguage('ar')">🇦🇪 عربي</button>
-                            <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
-                        </div>
-                    </div>
-                    <button class="btn btn-glass" onclick="showLoginScreen()" style="padding:8px 20px;font-size:13px;" data-i18n="nav.dashboard">Dashboard</button>
-                </div>
-            </div>
-        </nav>
-
         <!-- ── Hero / Video Header ── -->
         <section class="store-hero">
             <video class="store-hero-video" autoplay muted loop playsinline>
@@ -848,14 +831,6 @@
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="literature-screen" class="screen classic-page">
 
-        <nav class="store-nav">
-            <div class="store-nav-inner">
-                <button class="store-back" onclick="showLandingScreen()">&larr; Home</button>
-                <span class="store-nav-title"><em>Water in Literature</em></span>
-                <button class="btn btn-glass" onclick="showLoginScreen()" style="padding:8px 20px;font-size:13px;">Dashboard</button>
-            </div>
-        </nav>
-
         <section class="cp-hero">
             <span class="section-badge">A Reading Room</span>
             <h1><strong>Water in</strong> Literature</h1>
@@ -1039,14 +1014,6 @@
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="hydration-screen" class="screen classic-page">
 
-        <nav class="store-nav">
-            <div class="store-nav-inner">
-                <button class="store-back" onclick="showLandingScreen()">&larr; Home</button>
-                <span class="store-nav-title"><em>The Art of Hydration</em></span>
-                <button class="btn btn-glass" onclick="showLoginScreen()" style="padding:8px 20px;font-size:13px;">Dashboard</button>
-            </div>
-        </nav>
-
         <section class="cp-hero">
             <span class="section-badge">A Brief Treatise</span>
             <h1><strong>The Art of</strong> Hydration</h1>
@@ -1173,14 +1140,6 @@
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="art-screen" class="screen classic-page">
 
-        <nav class="store-nav">
-            <div class="store-nav-inner">
-                <button class="store-back" onclick="showLandingScreen()">&larr; Home</button>
-                <span class="store-nav-title"><em>Water in Art</em></span>
-                <button class="btn btn-glass" onclick="showLoginScreen()" style="padding:8px 20px;font-size:13px;">Dashboard</button>
-            </div>
-        </nav>
-
         <section class="cp-hero">
             <span class="section-badge">A Private Gallery</span>
             <h1><strong>Water in</strong> Art</h1>
@@ -1192,7 +1151,7 @@
             <!-- 1. Hokusai -->
             <div class="gallery-row">
                 <div class="painting-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tsunami_by_hokusai_19th_century.jpg/800px-Tsunami_by_hokusai_19th_century.jpg" referrerpolicy="no-referrer"
+                    <img data-wiki-file="Tsunami_by_hokusai_19th_century.jpg"
                          alt="The Great Wave off Kanagawa by Katsushika Hokusai">
                     <div class="painting-caption">Met Museum &middot; Edo Period</div>
                 </div>
@@ -1207,7 +1166,7 @@
             <!-- 2. Aivazovsky -->
             <div class="gallery-row reverse">
                 <div class="painting-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Hovhannes_Aivazovsky_-_The_Ninth_Wave_-_Google_Art_Project.jpg/800px-Hovhannes_Aivazovsky_-_The_Ninth_Wave_-_Google_Art_Project.jpg" referrerpolicy="no-referrer"
+                    <img data-wiki-file="Hovhannes_Aivazovsky_-_The_Ninth_Wave_-_Google_Art_Project.jpg"
                          alt="The Ninth Wave by Ivan Aivazovsky">
                     <div class="painting-caption">Russian Museum &middot; Saint Petersburg</div>
                 </div>
@@ -1222,7 +1181,7 @@
             <!-- 3. Monet -->
             <div class="gallery-row">
                 <div class="painting-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_The_Water_Lilies_-_The_Clouds_-_Google_Art_Project.jpg/800px-Claude_Monet_-_The_Water_Lilies_-_The_Clouds_-_Google_Art_Project.jpg" referrerpolicy="no-referrer"
+                    <img data-wiki-file="Claude_Monet_-_The_Water_Lilies_-_The_Clouds_-_Google_Art_Project.jpg"
                          alt="Water Lilies — The Clouds by Claude Monet">
                     <div class="painting-caption">Mus&eacute;e de l&#x2019;Orangerie &middot; Paris</div>
                 </div>
@@ -1237,7 +1196,7 @@
             <!-- 4. Turner -->
             <div class="gallery-row reverse">
                 <div class="painting-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Turner%2C_J._M._W._-_The_Fighting_T%C3%A9m%C3%A9raire_tugged_to_her_last_Berth_to_be_broken.jpg/800px-Turner%2C_J._M._W._-_The_Fighting_T%C3%A9m%C3%A9raire_tugged_to_her_last_Berth_to_be_broken.jpg" referrerpolicy="no-referrer"
+                    <img data-wiki-file="Turner,_J._M._W._-_The_Fighting_Téméraire_tugged_to_her_last_Berth_to_be_broken.jpg"
                          alt="The Fighting Temeraire by J. M. W. Turner">
                     <div class="painting-caption">National Gallery &middot; London</div>
                 </div>
@@ -1252,7 +1211,7 @@
             <!-- 5. Winslow Homer -->
             <div class="gallery-row">
                 <div class="painting-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Winslow_Homer_-_The_Gulf_Stream_-_Metropolitan_Museum_of_Art.jpg/800px-Winslow_Homer_-_The_Gulf_Stream_-_Metropolitan_Museum_of_Art.jpg" referrerpolicy="no-referrer"
+                    <img data-wiki-file="Winslow_Homer_-_The_Gulf_Stream_-_Metropolitan_Museum_of_Art.jpg"
                          alt="The Gulf Stream by Winslow Homer">
                     <div class="painting-caption">Metropolitan Museum of Art &middot; New York</div>
                 </div>
@@ -1267,7 +1226,7 @@
             <!-- 6. Friedrich -->
             <div class="gallery-row reverse">
                 <div class="painting-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Caspar_David_Friedrich_-_Der_M%C3%B6nch_am_Meer_-_Google_Art_Project.jpg/800px-Caspar_David_Friedrich_-_Der_M%C3%B6nch_am_Meer_-_Google_Art_Project.jpg" referrerpolicy="no-referrer"
+                    <img data-wiki-file="Caspar_David_Friedrich_-_Der_Mönch_am_Meer_-_Google_Art_Project.jpg"
                          alt="The Monk by the Sea by Caspar David Friedrich">
                     <div class="painting-caption">Alte Nationalgalerie &middot; Berlin</div>
                 </div>
@@ -1282,7 +1241,7 @@
             <!-- 7. Courbet -->
             <div class="gallery-row">
                 <div class="painting-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Gustave_Courbet_-_La_Vague_-_1869-1870.jpg/800px-Gustave_Courbet_-_La_Vague_-_1869-1870.jpg" referrerpolicy="no-referrer"
+                    <img data-wiki-file="Gustave_Courbet_-_La_Vague_-_1869-1870.jpg"
                          alt="The Wave by Gustave Courbet">
                     <div class="painting-caption">Mus&eacute;e d&#x2019;Orsay &middot; Paris</div>
                 </div>
@@ -1297,7 +1256,7 @@
             <!-- 8. Botticelli -->
             <div class="gallery-row reverse">
                 <div class="painting-frame">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Arts_%26_Culture.jpg/800px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Arts_%26_Culture.jpg" referrerpolicy="no-referrer"
+                    <img data-wiki-file="Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Arts_&_Culture.jpg"
                          alt="The Birth of Venus by Sandro Botticelli">
                     <div class="painting-caption">Uffizi Gallery &middot; Florence</div>
                 </div>

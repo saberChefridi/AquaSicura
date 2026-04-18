@@ -7,35 +7,39 @@
 // LANDING PAGE — Navigation & Scroll
 // ══════════════════════════════════════════════════════════════════════
 
+// ── Nav helper: show or hide the universal nav ─────────────────────
+function _navShow(scrolled) {
+    const nav = document.querySelector('.landing-nav');
+    const mm  = document.getElementById('mobile-menu');
+    if (!nav) return;
+    nav.style.display = '';
+    if (scrolled) nav.classList.add('scrolled');
+    else          nav.classList.remove('scrolled');
+    if (mm && mm.classList.contains('open')) mm.classList.remove('open');
+}
+function _navHide() {
+    const nav = document.querySelector('.landing-nav');
+    const mm  = document.getElementById('mobile-menu');
+    if (nav) nav.style.display = 'none';
+    if (mm && mm.classList.contains('open')) mm.classList.remove('open');
+}
+
 function showLoginScreen() {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('login-screen').classList.add('active');
-    // Hide landing fixed elements but keep login-bg visible
-    const landingNav = document.querySelector('.landing-nav');
-    const heroBg = document.querySelector('.hero-bg');
-    if (landingNav) landingNav.style.display = 'none';
-    if (heroBg) heroBg.style.display = 'none';
+    _navHide();
 }
 
 function showLandingScreen() {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('landing-screen').classList.add('active');
-    // Restore fixed elements
-    const landingNav = document.querySelector('.landing-nav');
-    const heroBg = document.querySelector('.hero-bg');
-    if (landingNav) landingNav.style.display = '';
-    if (heroBg) heroBg.style.display = '';
+    _navShow(false);   // transparent on landing; scroll event handles 'scrolled' class
 }
 
 function showStoreScreen(scrollTo) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('store-screen').classList.add('active');
-    // Hide landing fixed elements (position:fixed escapes parent display:none)
-    const landingNav = document.querySelector('.landing-nav');
-    const heroBg = document.querySelector('.hero-bg');
-    if (landingNav) landingNav.style.display = 'none';
-    if (heroBg) heroBg.style.display = 'none';
-    // Scroll to top, then optionally scroll to a specific product
+    _navShow(true);    // always dark on store/classic screens
     document.getElementById('store-screen').scrollTop = 0;
     if (scrollTo) {
         setTimeout(() => {
@@ -45,26 +49,48 @@ function showStoreScreen(scrollTo) {
     }
 }
 
+// ── Navigate to a section on the landing page from any screen ──────
+function goToSection(id) {
+    showLandingScreen();
+    setTimeout(() => scrollToSection(id), 150);
+}
+
 // ── Classic content pages (Literature / Hydration / Art) ───────────
 function _showClassicScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     const screen = document.getElementById(screenId);
     if (!screen) return;
     screen.classList.add('active');
-    const landingNav = document.querySelector('.landing-nav');
-    const heroBg = document.querySelector('.hero-bg');
-    if (landingNav) landingNav.style.display = 'none';
-    if (heroBg) heroBg.style.display = 'none';
-    // Scroll both the screen and the window to top
+    _navShow(true);    // always dark on classic pages
     screen.scrollTop = 0;
     window.scrollTo(0, 0);
-    // Close mobile menu if it was open
-    const mm = document.getElementById('mobile-menu');
-    if (mm && mm.classList.contains('open')) mm.classList.remove('open');
 }
 function showLiteratureScreen() { _showClassicScreen('literature-screen'); }
 function showHydrationScreen()  { _showClassicScreen('hydration-screen'); }
-function showArtScreen()        { _showClassicScreen('art-screen'); }
+function showArtScreen()        { _showClassicScreen('art-screen'); loadWikiArtImages(); }
+
+// ── Wikimedia Commons API — load correct thumbnail URLs for Art page ─
+function loadWikiArtImages() {
+    const imgs = document.querySelectorAll('#art-screen .painting-frame img[data-wiki-file]');
+    imgs.forEach(img => {
+        if (img.dataset.loaded) return;
+        img.dataset.loaded = '1';
+        const file = img.dataset.wikiFile;
+        fetch('https://commons.wikimedia.org/w/api.php?action=query' +
+              '&titles=File:' + encodeURIComponent(file) +
+              '&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*')
+            .then(r => r.json())
+            .then(data => {
+                const pages = data.query && data.query.pages;
+                if (!pages) return;
+                const page = Object.values(pages)[0];
+                if (page && page.imageinfo && page.imageinfo[0]) {
+                    img.src = page.imageinfo[0].thumburl;
+                }
+            })
+            .catch(() => {});
+    });
+}
 
 function storeContact(product) {
     document.getElementById('store-modal-product').textContent = product;
@@ -158,12 +184,9 @@ function api(path, opts = {}) {
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    // Hide fixed elements (landing nav & hero-bg) when not on landing page
-    const isLanding = (id === 'landing-screen');
-    const landingNav = document.querySelector('.landing-nav');
-    const heroBg = document.querySelector('.hero-bg');
-    if (landingNav) landingNav.style.display = isLanding ? '' : 'none';
-    if (heroBg) heroBg.style.display = isLanding ? '' : 'none';
+    // Nav: show on landing (transparent), hide on app/login screens
+    if (id === 'landing-screen') _navShow(false);
+    else _navHide();
 }
 
 function switchTab(btn) {
