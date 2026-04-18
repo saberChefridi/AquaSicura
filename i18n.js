@@ -12,6 +12,9 @@ const TRANSLATIONS = {
 "nav.dashboard":        { en:"Dashboard",    ar:"\u0644\u0648\u062d\u0629 \u0627\u0644\u0642\u064a\u0627\u062f\u0629", it:"Pannello" },
 "nav.home":             { en:"Home",         ar:"\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629",  it:"Home" },
 "nav.logout":           { en:"Logout",       ar:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062e\u0631\u0648\u062c", it:"Esci" },
+"nav.literature":       { en:"Literature",   ar:"\u0627\u0644\u0623\u062f\u0628",                                 it:"Letteratura" },
+"nav.hydration":        { en:"Hydration",    ar:"\u0627\u0644\u0625\u0631\u062a\u0648\u0627\u0621",               it:"Idratazione" },
+"nav.art":              { en:"Art",          ar:"\u0627\u0644\u0641\u0646",                                         it:"Arte" },
 
 // ─── HERO SECTION ────────────────────────────────────────────────────
 "hero.badge":           { en:"Water Filtration Intelligence",

@@ -45,6 +45,27 @@ function showStoreScreen(scrollTo) {
     }
 }
 
+// ── Classic content pages (Literature / Hydration / Art) ───────────
+function _showClassicScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screen = document.getElementById(screenId);
+    if (!screen) return;
+    screen.classList.add('active');
+    const landingNav = document.querySelector('.landing-nav');
+    const heroBg = document.querySelector('.hero-bg');
+    if (landingNav) landingNav.style.display = 'none';
+    if (heroBg) heroBg.style.display = 'none';
+    // Scroll both the screen and the window to top
+    screen.scrollTop = 0;
+    window.scrollTo(0, 0);
+    // Close mobile menu if it was open
+    const mm = document.getElementById('mobile-menu');
+    if (mm && mm.classList.contains('open')) mm.classList.remove('open');
+}
+function showLiteratureScreen() { _showClassicScreen('literature-screen'); }
+function showHydrationScreen()  { _showClassicScreen('hydration-screen'); }
+function showArtScreen()        { _showClassicScreen('art-screen'); }
+
 function storeContact(product) {
     document.getElementById('store-modal-product').textContent = product;
     document.getElementById('store-modal-title').textContent =

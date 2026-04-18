@@ -205,8 +205,10 @@
             <div class="landing-nav-links">
                 <a href="#philosophy" class="nav-link" onclick="scrollToSection('philosophy')" data-i18n="nav.philosophy">Philosophy</a>
                 <a href="#products" class="nav-link" onclick="scrollToSection('products')" data-i18n="nav.products">Products</a>
+                <a href="#" class="nav-link" onclick="showLiteratureScreen()" data-i18n="nav.literature">Literature</a>
+                <a href="#" class="nav-link" onclick="showHydrationScreen()" data-i18n="nav.hydration">Hydration</a>
+                <a href="#" class="nav-link" onclick="showArtScreen()" data-i18n="nav.art">Art</a>
                 <a href="#" class="nav-link" onclick="showStoreScreen()" data-i18n="nav.store">Store</a>
-                <a href="#mission" class="nav-link" onclick="scrollToSection('mission')" data-i18n="nav.technology">Technology</a>
                 <button class="btn btn-glass" onclick="showLoginScreen()" data-i18n="nav.dashboard">Dashboard</button>
             </div>
             <div class="lang-switcher" id="lang-dropdown">
@@ -226,8 +228,10 @@
         <div class="mobile-menu" id="mobile-menu">
             <a href="#philosophy" onclick="scrollToSection('philosophy'); toggleMobileMenu();" data-i18n="nav.philosophy">Philosophy</a>
             <a href="#products" onclick="scrollToSection('products'); toggleMobileMenu();" data-i18n="nav.products">Products</a>
+            <a href="#" onclick="showLiteratureScreen(); toggleMobileMenu();" data-i18n="nav.literature">Literature</a>
+            <a href="#" onclick="showHydrationScreen(); toggleMobileMenu();" data-i18n="nav.hydration">Hydration</a>
+            <a href="#" onclick="showArtScreen(); toggleMobileMenu();" data-i18n="nav.art">Art</a>
             <a href="#" onclick="showStoreScreen(); toggleMobileMenu();" data-i18n="nav.store">Store</a>
-            <a href="#mission" onclick="scrollToSection('mission'); toggleMobileMenu();" data-i18n="nav.technology">Technology</a>
             <a href="#" onclick="showLoginScreen(); toggleMobileMenu();" data-i18n="nav.dashboard">Dashboard</a>
             <div class="mobile-lang-row">
                 <button class="mobile-lang-btn" onclick="setLanguage('en'); toggleMobileMenu();">🇬🇧 English</button>
@@ -519,8 +523,10 @@
                 <div class="footer-links">
                     <a href="#philosophy" onclick="scrollToSection('philosophy')" data-i18n="nav.philosophy">Philosophy</a>
                     <a href="#products" onclick="scrollToSection('products')" data-i18n="nav.products">Products</a>
+                    <a href="#" onclick="showLiteratureScreen()" data-i18n="nav.literature">Literature</a>
+                    <a href="#" onclick="showHydrationScreen()" data-i18n="nav.hydration">Hydration</a>
+                    <a href="#" onclick="showArtScreen()" data-i18n="nav.art">Art</a>
                     <a href="#" onclick="showStoreScreen()" data-i18n="nav.store">Store</a>
-                    <a href="#mission" onclick="scrollToSection('mission')" data-i18n="nav.technology">Technology</a>
                     <a href="#" onclick="showLoginScreen()" data-i18n="nav.dashboard">Dashboard</a>
                 </div>
                 <div class="footer-copy" data-i18n="footer.copy">&copy; 2026 AquaSicura. Reviving the essence of water.</div>
@@ -837,7 +843,502 @@
         </div>
     </div>
 
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- LITERATURE SCREEN — Books on Water                              -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="literature-screen" class="screen classic-page">
+
+        <nav class="classic-nav">
+            <button class="back" onclick="showLandingScreen()">&larr; Home</button>
+            <span class="classic-nav-title">Water in Literature</span>
+            <div class="classic-nav-actions">
+                <button class="mini-link" onclick="showHydrationScreen()">Hydration</button>
+                <button class="mini-link" onclick="showArtScreen()">Art</button>
+            </div>
+        </nav>
+
+        <header class="classic-hero">
+            <span class="flourish-top">&#x2767; &#x2767; &#x2767;</span>
+            <div class="eyebrow">A Reading Room</div>
+            <h1>Water in <em>Literature</em></h1>
+            <p class="lede">Across centuries and civilisations, the greatest minds have turned to water for metaphor, meaning and meditation. Here is a small shelf of their works &mdash; scripture, philosophy, fiction and science &mdash; each a witness to the same truth: that water is the first book of life.</p>
+            <div class="classic-rule"></div>
+        </header>
+
+        <section class="books-grid">
+
+            <!-- 1. The Holy Qur'an -->
+            <div class="book-card">
+                <div class="book-cover cover-quran">
+                    <div class="book-ornament">&#x2732; &#x2740; &#x2732;</div>
+                    <div class="book-title">The Holy Qur&#x2019;an<span class="sub">Al-Qur&#x2019;an al-Kar&#x12B;m</span></div>
+                    <div class="book-spacer"></div>
+                    <div class="book-author">Revealed Scripture</div>
+                    <div class="book-year">VII Century CE</div>
+                </div>
+                <div class="book-meta">
+                    <h3>The Holy Qur&#x2019;an</h3>
+                    <div class="by">Revealed Scripture of Islam</div>
+                    <p>Among the earliest written meditations on water, the Qur&#x2019;an affirms water as the living origin of every created thing and as a recurring sign of the Creator&#x2019;s mercy upon the earth.</p>
+                    <blockquote>
+                        &ldquo;And We made from water every living thing. Will they not then believe?&rdquo;
+                        <footer>Surah Al-Anbiya, 21:30</footer>
+                    </blockquote>
+                </div>
+            </div>
+
+            <!-- 2. Tao Te Ching -->
+            <div class="book-card">
+                <div class="book-cover cover-tao">
+                    <div class="book-ornament">&#x2724; &#x2726; &#x2724;</div>
+                    <div class="book-title">Tao Te Ching<span class="sub">The Book of the Way</span></div>
+                    <div class="book-spacer"></div>
+                    <div class="book-author">Laozi</div>
+                    <div class="book-year">IV Century BCE</div>
+                </div>
+                <div class="book-meta">
+                    <h3>Tao Te Ching</h3>
+                    <div class="by">Laozi &middot; Ancient China</div>
+                    <p>The foundational text of Taoism places water at the very heart of its wisdom. To the sage, water is the emblem of virtue: yielding, patient, life-giving, finding without effort the humblest places that others scorn.</p>
+                    <blockquote>
+                        &ldquo;The highest good is like water. Water benefits all things and does not contend. It dwells in places that the multitude disdains &mdash; therein lies its closeness to the Tao.&rdquo;
+                        <footer>Chapter 8</footer>
+                    </blockquote>
+                </div>
+            </div>
+
+            <!-- 3. Moby-Dick -->
+            <div class="book-card">
+                <div class="book-cover cover-moby">
+                    <div class="book-ornament">&#x2693; &#x2740; &#x2693;</div>
+                    <div class="book-title">Moby-Dick<span class="sub">or, The Whale</span></div>
+                    <div class="book-spacer"></div>
+                    <div class="book-author">Herman Melville</div>
+                    <div class="book-year">MDCCCLI</div>
+                </div>
+                <div class="book-meta">
+                    <h3>Moby-Dick</h3>
+                    <div class="by">Herman Melville &middot; 1851</div>
+                    <p>Melville&#x2019;s great American epic opens upon the sea as if upon a cathedral. For him the ocean is mirror, adversary and altar &mdash; the element to which every thoughtful soul is, sooner or later, inevitably drawn.</p>
+                    <blockquote>
+                        &ldquo;Meditation and water are wedded for ever.&rdquo;
+                        <footer>Chapter 1, &ldquo;Loomings&rdquo;</footer>
+                    </blockquote>
+                </div>
+            </div>
+
+            <!-- 4. The Old Man and the Sea -->
+            <div class="book-card">
+                <div class="book-cover cover-oldman">
+                    <div class="book-ornament">&#x273F; &#x2740; &#x273F;</div>
+                    <div class="book-title">The Old Man<span class="sub">&amp; the Sea</span></div>
+                    <div class="book-spacer"></div>
+                    <div class="book-author">Ernest Hemingway</div>
+                    <div class="book-year">MCMLII</div>
+                </div>
+                <div class="book-meta">
+                    <h3>The Old Man and the Sea</h3>
+                    <div class="by">Ernest Hemingway &middot; 1952</div>
+                    <p>A lone Cuban fisherman, a great marlin, and the vast Gulf Stream. Hemingway&#x2019;s Nobel-winning novella is a parable of endurance upon living water &mdash; a meditation on dignity, solitude and the sea&#x2019;s immense indifference to man.</p>
+                    <blockquote>
+                        &ldquo;The sea is the sea. The old man was thinking. The sea is kind and very beautiful.&rdquo;
+                    </blockquote>
+                </div>
+            </div>
+
+            <!-- 5. Twenty Thousand Leagues Under the Sea -->
+            <div class="book-card">
+                <div class="book-cover cover-verne">
+                    <div class="book-ornament">&#x2693; &#x2726; &#x2693;</div>
+                    <div class="book-title">Twenty Thousand<span class="sub">Leagues Under the Sea</span></div>
+                    <div class="book-spacer"></div>
+                    <div class="book-author">Jules Verne</div>
+                    <div class="book-year">MDCCCLXX</div>
+                </div>
+                <div class="book-meta">
+                    <h3>Vingt mille lieues sous les mers</h3>
+                    <div class="by">Jules Verne &middot; 1870</div>
+                    <p>Aboard the <em>Nautilus</em>, Captain Nemo reveals an underwater world of coral palaces and sunken cities. Verne&#x2019;s vision was prophecy: the ocean as another living planet, vast and teeming, awaiting our reverence.</p>
+                    <blockquote>
+                        &ldquo;The sea is everything. It covers seven tenths of the terrestrial globe. Its breath is pure and healthy. It is an immense desert, where man is never lonely.&rdquo;
+                    </blockquote>
+                </div>
+            </div>
+
+            <!-- 6. Codex Leicester -->
+            <div class="book-card">
+                <div class="book-cover cover-davinci">
+                    <div class="book-ornament">&#x269C; &#x2740; &#x269C;</div>
+                    <div class="book-title">Codex Leicester<span class="sub">Studies of Water</span></div>
+                    <div class="book-spacer"></div>
+                    <div class="book-author">Leonardo da Vinci</div>
+                    <div class="book-year">MDVIII</div>
+                </div>
+                <div class="book-meta">
+                    <h3>Codex Leicester</h3>
+                    <div class="by">Leonardo da Vinci &middot; c. 1508</div>
+                    <p>Of Leonardo&#x2019;s notebooks, none is so entirely devoted to water. Seventy-two pages of mirror-script, sketches of eddies, rivers and rain &mdash; a Renaissance hymn to hydraulics and to the principle the master called the <em>vetturale della natura</em>, the vehicle of nature.</p>
+                    <blockquote>
+                        &ldquo;Water is the driving force of all nature.&rdquo;
+                    </blockquote>
+                </div>
+            </div>
+
+            <!-- 7. Walden -->
+            <div class="book-card">
+                <div class="book-cover cover-walden">
+                    <div class="book-ornament">&#x2741; &#x2726; &#x2741;</div>
+                    <div class="book-title">Walden<span class="sub">or, Life in the Woods</span></div>
+                    <div class="book-spacer"></div>
+                    <div class="book-author">H. D. Thoreau</div>
+                    <div class="book-year">MDCCCLIV</div>
+                </div>
+                <div class="book-meta">
+                    <h3>Walden</h3>
+                    <div class="by">Henry David Thoreau &middot; 1854</div>
+                    <p>Two years by a New England pond: Thoreau taught a generation that the surface of still water is the truest mirror of a tranquil mind. Every page returns to the pond as teacher, witness and friend.</p>
+                    <blockquote>
+                        &ldquo;A lake is the landscape&#x2019;s most beautiful and expressive feature. It is earth&#x2019;s eye; looking into which the beholder measures the depth of his own nature.&rdquo;
+                    </blockquote>
+                </div>
+            </div>
+
+            <!-- 8. The Hidden Messages in Water -->
+            <div class="book-card">
+                <div class="book-cover cover-emoto">
+                    <div class="book-ornament">&#x2745; &#x2740; &#x2745;</div>
+                    <div class="book-title">The Hidden Messages<span class="sub">in Water</span></div>
+                    <div class="book-spacer"></div>
+                    <div class="book-author">Masaru Emoto</div>
+                    <div class="book-year">MMI</div>
+                </div>
+                <div class="book-meta">
+                    <h3>The Hidden Messages in Water</h3>
+                    <div class="by">Masaru Emoto &middot; 2001</div>
+                    <p>A modern Japanese study &mdash; poetic, controversial, endlessly photographed &mdash; of how intention and environment appear reflected in the crystalline structure of frozen water. Whether one reads it as science or as meditation, the message is the same: water remembers.</p>
+                    <blockquote>
+                        &ldquo;Water is the mirror that has the ability to show us what we cannot see. It is the blueprint for our reality.&rdquo;
+                    </blockquote>
+                </div>
+            </div>
+
+        </section>
+
+        <footer class="classic-footer">
+            <div class="links">
+                <a onclick="showLandingScreen()">Home</a>
+                <a onclick="showLiteratureScreen()">Literature</a>
+                <a onclick="showHydrationScreen()">Hydration</a>
+                <a onclick="showArtScreen()">Art</a>
+                <a onclick="showStoreScreen()">Store</a>
+                <a onclick="showLoginScreen()">Dashboard</a>
+            </div>
+            <div class="copy">&copy; 2026 AquaSicura &middot; Reviving the essence of water.</div>
+        </footer>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- HYDRATION SCREEN — Medical advice on drinking water             -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="hydration-screen" class="screen classic-page">
+
+        <nav class="classic-nav">
+            <button class="back" onclick="showLandingScreen()">&larr; Home</button>
+            <span class="classic-nav-title">The Art of Hydration</span>
+            <div class="classic-nav-actions">
+                <button class="mini-link" onclick="showLiteratureScreen()">Literature</button>
+                <button class="mini-link" onclick="showArtScreen()">Art</button>
+            </div>
+        </nav>
+
+        <header class="classic-hero">
+            <span class="flourish-top">&#x2767; &#x2767; &#x2767;</span>
+            <div class="eyebrow">A Brief Treatise</div>
+            <h1>The Art of <em>Hydration</em></h1>
+            <p class="lede">A short reader&#x2019;s companion, gathered from modern medicine and ancient wisdom alike, on how to drink water well &mdash; the temperature, the minerals, the posture, and the quiet discipline that turns a simple glass into a daily act of health.</p>
+            <div class="classic-rule"></div>
+        </header>
+
+        <section class="manuscript-wrap">
+            <div class="manuscript">
+
+                <!-- Chapter I -->
+                <div class="chapter">
+                    <span class="num">Chapter I</span>
+                    <h2>On the Temperature of Water</h2>
+                    <div class="chapter-rule"></div>
+                    <p class="lead">Water that is too cold shocks the stomach, constricts its vessels, and slows the very digestion it was drawn to aid. Water that is too hot scalds the delicate lining of the gut. The happy mean, long recommended by physicians, is water drawn neither from ice nor from flame &mdash; but from the natural temperature of a cool cellar: somewhere between fifteen and twenty-five degrees Celsius.</p>
+                    <p>At this &#x201C;room temperature&#x201D; the body need not expend energy to warm or to cool what it receives; the water is absorbed swiftly through the stomach wall and reaches the tissues at the pace nature intended. Upon waking, a glass of warm (never hot) water is gentler still, rousing the digestive organs without jolting them.</p>
+                    <div class="aside">Cold water is a pleasure in great heat, but after exertion or with meals it is best set aside. The Prophet Muhammad (peace be upon him) is reported to have preferred cool, sweet water &mdash; not iced &mdash; and the physicians of Salerno gave the same counsel a thousand years ago.</div>
+                </div>
+
+                <!-- Chapter II -->
+                <div class="chapter">
+                    <span class="num">Chapter II</span>
+                    <h2>On the Manner of Drinking</h2>
+                    <div class="chapter-rule"></div>
+                    <p class="lead">Modern gastroenterology and the traditions of East and West converge upon a single quiet instruction: drink slowly, and drink seated. Gulping half a litre in a single breath overwhelms the stomach, dilutes the gastric acid needed for digestion, and loads the kidneys with a sudden volume they must then hastily expel.</p>
+                    <p>Sipping, by contrast, allows saliva &mdash; which is itself mildly alkaline &mdash; to mingle with the water; it gives the stomach time to signal satiety; and it permits cells to draw what they need rather than pass the excess away as urine. A small cup, refilled often, nourishes the body more deeply than a tall glass drained at once.</p>
+                    <ul>
+                        <li><strong>Sit down to drink.</strong> Standing compresses the stomach and sends water under pressure; seated, the organs are aligned and at rest. The Islamic tradition forbids drinking while standing, and modern studies note gentler renal and cardiac response when seated.</li>
+                        <li><strong>Three breaths, not one.</strong> Pause between sips. Breathe. This is an old counsel found in Arab <em>adab</em> and in Ayurveda alike.</li>
+                        <li><strong>Do not drown the meal.</strong> A small sip with food is welcome; a large glass during the meal thins digestive juices and bloats the stomach. Drink most of your water between meals.</li>
+                        <li><strong>Hold the glass in the right hand,</strong> as is traditional &mdash; a small courtesy to the water and to yourself.</li>
+                    </ul>
+                </div>
+
+                <!-- Chapter III -->
+                <div class="chapter">
+                    <span class="num">Chapter III</span>
+                    <h2>Of Minerals &amp; Living Waters</h2>
+                    <div class="chapter-rule"></div>
+                    <p class="lead">Pure water &mdash; that is, chemically pure H&#x2082;O &mdash; is not healthy water. The body requires that its drink carry the traces of the earth through which it has passed. A few dissolved minerals are not impurities but nourishment; they are what transform mere liquid into <em>living water</em>.</p>
+                    <p>The World Health Organisation recommends a Total Dissolved Solids (TDS) of roughly 150 to 300 mg/L for pleasant, healthful drinking water. Below 100, water tastes flat and leaches minerals from the body; above 500, it may taste heavy. Within that temperate range, the following elements are the most precious:</p>
+                    <div class="minerals-grid">
+                        <div class="mineral">
+                            <div class="symbol">Ca</div>
+                            <div class="name">Calcium</div>
+                            <div class="detail">Builds bone and tooth; regulates heart rhythm. 40&ndash;80 mg/L is ideal.</div>
+                        </div>
+                        <div class="mineral">
+                            <div class="symbol">Mg</div>
+                            <div class="name">Magnesium</div>
+                            <div class="detail">Calms nerve and muscle; guards against cramp. Target 20&ndash;50 mg/L.</div>
+                        </div>
+                        <div class="mineral">
+                            <div class="symbol">K</div>
+                            <div class="name">Potassium</div>
+                            <div class="detail">Balances sodium; steadies blood pressure and the heartbeat.</div>
+                        </div>
+                        <div class="mineral">
+                            <div class="symbol">Na</div>
+                            <div class="name">Sodium</div>
+                            <div class="detail">Essential in trace &mdash; yet never above 20 mg/L in daily drinking water.</div>
+                        </div>
+                        <div class="mineral">
+                            <div class="symbol">HCO&#x2083;</div>
+                            <div class="name">Bicarbonate</div>
+                            <div class="detail">Gentle buffer; keeps the stomach calm and the blood faintly alkaline.</div>
+                        </div>
+                        <div class="mineral">
+                            <div class="symbol">SiO&#x2082;</div>
+                            <div class="name">Silica</div>
+                            <div class="detail">Quiet architect of skin, hair and connective tissue.</div>
+                        </div>
+                    </div>
+                    <div class="aside">Water stripped to zero TDS by reverse osmosis without re-mineralisation is <em>aggressive</em> water: it will readily take minerals from the very body it is meant to sustain. Every AquaSicura system therefore concludes with a mineral re-injection stage &mdash; the final breath of life returned to the filtered stream.</div>
+                </div>
+
+                <!-- Chapter IV -->
+                <div class="chapter">
+                    <span class="num">Chapter IV</span>
+                    <h2>On the Rhythm of the Day</h2>
+                    <div class="chapter-rule"></div>
+                    <p class="lead">A healthy adult needs roughly two litres of water a day &mdash; more in heat, exertion or illness. Yet more important than the sum is the rhythm by which it is taken. Drink a little, often, through the waking hours, and the body receives a steady river rather than a tide.</p>
+                    <ul>
+                        <li><strong>On waking.</strong> One glass of warm water, sipped slowly, before anything else. It stirs the digestive fire gently and rehydrates the blood thickened by the night.</li>
+                        <li><strong>Half an hour before meals.</strong> A glass primes the stomach and sharpens the sense of true hunger.</li>
+                        <li><strong>Between meals.</strong> Small sips every twenty or thirty minutes. This is the body&#x2019;s preferred rhythm.</li>
+                        <li><strong>After exertion.</strong> Cool &mdash; not iced &mdash; water, sipped, never gulped.</li>
+                        <li><strong>Evening.</strong> Taper the quantity an hour before sleep, that the kidneys too may rest.</li>
+                    </ul>
+                </div>
+
+                <!-- Chapter V -->
+                <div class="chapter">
+                    <span class="num">Chapter V</span>
+                    <h2>A Closing Counsel</h2>
+                    <div class="chapter-rule"></div>
+                    <p>Hydration is the quietest of the disciplines. It asks no equipment, no appointment, no effort &mdash; only attention. Drink water that is clean, mineralised and alive; drink it seated, sipped and warmed to the temperament of the body; drink it through the whole of the day, rather than all at once. Do this, and one of the humblest habits of the household becomes, in time, one of the surest foundations of a long and luminous life.</p>
+                    <div class="signoff">&mdash; <em>the house of AquaSicura</em> &mdash;</div>
+                </div>
+
+                <div class="disclaimer">
+                    This page is offered for reflection and general guidance; it does not constitute medical advice.
+                    Consult a qualified physician for any condition relating to hydration, kidney function, blood pressure
+                    or mineral balance.
+                </div>
+            </div>
+        </section>
+
+        <footer class="classic-footer">
+            <div class="links">
+                <a onclick="showLandingScreen()">Home</a>
+                <a onclick="showLiteratureScreen()">Literature</a>
+                <a onclick="showHydrationScreen()">Hydration</a>
+                <a onclick="showArtScreen()">Art</a>
+                <a onclick="showStoreScreen()">Store</a>
+                <a onclick="showLoginScreen()">Dashboard</a>
+            </div>
+            <div class="copy">&copy; 2026 AquaSicura &middot; Reviving the essence of water.</div>
+        </footer>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- ART SCREEN — Classic paintings of water                         -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="art-screen" class="screen classic-page">
+
+        <nav class="classic-nav">
+            <button class="back" onclick="showLandingScreen()">&larr; Home</button>
+            <span class="classic-nav-title">Water in Art</span>
+            <div class="classic-nav-actions">
+                <button class="mini-link" onclick="showLiteratureScreen()">Literature</button>
+                <button class="mini-link" onclick="showHydrationScreen()">Hydration</button>
+            </div>
+        </nav>
+
+        <header class="classic-hero">
+            <span class="flourish-top">&#x2767; &#x2767; &#x2767;</span>
+            <div class="eyebrow">A Private Gallery</div>
+            <h1>Water in <em>Art</em></h1>
+            <p class="lede">The painter, like the poet, has always returned to water. Waves and ponds, storms and still lagoons &mdash; here are eight of the great canvases in which water is not a background, but the true subject: living, breathing, untamed.</p>
+            <div class="classic-rule"></div>
+        </header>
+
+        <section class="gallery-wrap">
+
+            <!-- 1. Hokusai -->
+            <div class="gallery-row">
+                <div class="painting-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tsunami_by_hokusai_19th_century.jpg/1024px-Tsunami_by_hokusai_19th_century.jpg"
+                         alt="The Great Wave off Kanagawa by Katsushika Hokusai" loading="lazy">
+                    <div class="painting-caption">Met Museum &middot; Edo Period</div>
+                </div>
+                <div class="painting-plaque">
+                    <div class="eyebrow">Plate I</div>
+                    <h3>The Great Wave <em>off Kanagawa</em></h3>
+                    <div class="artist">Katsushika Hokusai &middot; c. 1831</div>
+                    <p>The most celebrated wave ever drawn. Hokusai&#x2019;s claw-like curl, rising over three slender fishing boats with Mount Fuji impossibly distant beyond it, has become the very emblem of the ocean&#x2019;s sublime indifference to men and mountains alike &mdash; a woodblock print that travelled the world and changed Western art forever.</p>
+                </div>
+            </div>
+
+            <!-- 2. Aivazovsky -->
+            <div class="gallery-row reverse">
+                <div class="painting-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Hovhannes_Aivazovsky_-_The_Ninth_Wave_-_Google_Art_Project.jpg/1024px-Hovhannes_Aivazovsky_-_The_Ninth_Wave_-_Google_Art_Project.jpg"
+                         alt="The Ninth Wave by Ivan Aivazovsky" loading="lazy">
+                    <div class="painting-caption">Russian Museum &middot; Saint Petersburg</div>
+                </div>
+                <div class="painting-plaque">
+                    <div class="eyebrow">Plate II</div>
+                    <h3>The Ninth <em>Wave</em></h3>
+                    <div class="artist">Ivan Aivazovsky &middot; 1850</div>
+                    <p>Survivors cling to a shattered mast at the dawn after a storm. The Armenian-Russian master, unrivalled painter of seas, renders the water as a living being: luminous, terrible, and somehow &mdash; in the warm gold of the rising sun &mdash; merciful. An old sailor&#x2019;s belief names the ninth wave the most fearful; Aivazovsky paints it as the last.</p>
+                </div>
+            </div>
+
+            <!-- 3. Monet -->
+            <div class="gallery-row">
+                <div class="painting-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_The_Water_Lilies_-_The_Clouds_-_Google_Art_Project.jpg/1024px-Claude_Monet_-_The_Water_Lilies_-_The_Clouds_-_Google_Art_Project.jpg"
+                         alt="Water Lilies — The Clouds by Claude Monet" loading="lazy">
+                    <div class="painting-caption">Mus&eacute;e de l&#x2019;Orangerie &middot; Paris</div>
+                </div>
+                <div class="painting-plaque">
+                    <div class="eyebrow">Plate III</div>
+                    <h3>Water Lilies <em>&mdash; The Clouds</em></h3>
+                    <div class="artist">Claude Monet &middot; 1914&ndash;1926</div>
+                    <p>In the garden pond at Giverny Monet found a world sufficient for the last thirty years of his life. The surface is neither water nor sky but both at once: reflection dissolves matter, and the viewer stands suspended between the floating lilies and the clouds beneath them. The great <em>Nymph&eacute;as</em> cycle is the quietest monument of Impressionism.</p>
+                </div>
+            </div>
+
+            <!-- 4. Turner -->
+            <div class="gallery-row reverse">
+                <div class="painting-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Turner%2C_J._M._W._-_The_Fighting_T%C3%A9m%C3%A9raire_tugged_to_her_last_Berth_to_be_broken.jpg/1024px-Turner%2C_J._M._W._-_The_Fighting_T%C3%A9m%C3%A9raire_tugged_to_her_last_Berth_to_be_broken.jpg"
+                         alt="The Fighting Temeraire by J. M. W. Turner" loading="lazy">
+                    <div class="painting-caption">National Gallery &middot; London</div>
+                </div>
+                <div class="painting-plaque">
+                    <div class="eyebrow">Plate IV</div>
+                    <h3>The Fighting <em>T&eacute;m&eacute;raire</em></h3>
+                    <div class="artist">J. M. W. Turner &middot; 1839</div>
+                    <p>A ghost-white ship-of-the-line, hero of Trafalgar, is drawn across still estuary water by a dark tug to be broken up for scrap; the sun sets behind her in gold and crimson. Turner&#x2019;s elegy for the age of sail is carried by the Thames itself &mdash; a river turned mirror of a disappearing world. Often named Britain&#x2019;s favourite painting.</p>
+                </div>
+            </div>
+
+            <!-- 5. Winslow Homer -->
+            <div class="gallery-row">
+                <div class="painting-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Winslow_Homer_-_The_Gulf_Stream_-_Metropolitan_Museum_of_Art.jpg/1024px-Winslow_Homer_-_The_Gulf_Stream_-_Metropolitan_Museum_of_Art.jpg"
+                         alt="The Gulf Stream by Winslow Homer" loading="lazy">
+                    <div class="painting-caption">Metropolitan Museum of Art &middot; New York</div>
+                </div>
+                <div class="painting-plaque">
+                    <div class="eyebrow">Plate V</div>
+                    <h3>The Gulf <em>Stream</em></h3>
+                    <div class="artist">Winslow Homer &middot; 1899</div>
+                    <p>A dismasted sloop, a lone Black sailor, circling sharks, a distant schooner and an approaching waterspout &mdash; Homer&#x2019;s American masterpiece is unsparing and magnificent. The sea here is power, fate, and a vast unjudged beauty. Hemingway read this painting as much as any book when he wrote <em>The Old Man and the Sea</em>.</p>
+                </div>
+            </div>
+
+            <!-- 6. Friedrich -->
+            <div class="gallery-row reverse">
+                <div class="painting-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Caspar_David_Friedrich_-_Der_M%C3%B6nch_am_Meer_-_Google_Art_Project.jpg/1024px-Caspar_David_Friedrich_-_Der_M%C3%B6nch_am_Meer_-_Google_Art_Project.jpg"
+                         alt="The Monk by the Sea by Caspar David Friedrich" loading="lazy">
+                    <div class="painting-caption">Alte Nationalgalerie &middot; Berlin</div>
+                </div>
+                <div class="painting-plaque">
+                    <div class="eyebrow">Plate VI</div>
+                    <h3>The Monk <em>by the Sea</em></h3>
+                    <div class="artist">Caspar David Friedrich &middot; 1808&ndash;1810</div>
+                    <p>A single small figure stands on a dune before an immensity of sea and sky. No horizon line, no ship, no comfort &mdash; only water, air, and a human silhouette no larger than a thumbprint. Friedrich&#x2019;s Romantic meditation on solitude and the infinite is, in truth, a painting of how small we are, and how beautifully so.</p>
+                </div>
+            </div>
+
+            <!-- 7. Courbet -->
+            <div class="gallery-row">
+                <div class="painting-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Gustave_Courbet_-_La_Vague_-_1869-1870.jpg/1024px-Gustave_Courbet_-_La_Vague_-_1869-1870.jpg"
+                         alt="The Wave by Gustave Courbet" loading="lazy">
+                    <div class="painting-caption">Mus&eacute;e d&#x2019;Orsay &middot; Paris</div>
+                </div>
+                <div class="painting-plaque">
+                    <div class="eyebrow">Plate VII</div>
+                    <h3>The <em>Wave</em></h3>
+                    <div class="artist">Gustave Courbet &middot; 1869</div>
+                    <p>Courbet painted the Norman coast again and again, building his waves with the palette knife in thick, almost sculpted strokes. This close, low view of a single cresting wave &mdash; the beach empty, the horizon heavy with cloud &mdash; is the sea without ornament: muscular, lonely, entirely itself. C&eacute;zanne called it the finest wave ever painted.</p>
+                </div>
+            </div>
+
+            <!-- 8. Botticelli -->
+            <div class="gallery-row reverse">
+                <div class="painting-frame">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Arts_%26_Culture.jpg/1024px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Arts_%26_Culture.jpg"
+                         alt="The Birth of Venus by Sandro Botticelli" loading="lazy">
+                    <div class="painting-caption">Uffizi Gallery &middot; Florence</div>
+                </div>
+                <div class="painting-plaque">
+                    <div class="eyebrow">Plate VIII</div>
+                    <h3>The Birth <em>of Venus</em></h3>
+                    <div class="artist">Sandro Botticelli &middot; c. 1485</div>
+                    <p>From the foam of the Aegean, upon a great scallop shell, beauty is born into the world. Botticelli&#x2019;s Renaissance allegory is also, quietly, a painting about water: the sea as origin, as mother, as the first cradle of life. The gentle waves under Venus&#x2019; shell were, for a Florentine poet-painter, nothing less than the beginning of all things.</p>
+                </div>
+            </div>
+
+            <div class="gallery-closing">
+                &ldquo;In every drop of water there is a story of life.&rdquo;
+                <cite>&mdash; A closing meditation</cite>
+            </div>
+
+        </section>
+
+        <footer class="classic-footer">
+            <div class="links">
+                <a onclick="showLandingScreen()">Home</a>
+                <a onclick="showLiteratureScreen()">Literature</a>
+                <a onclick="showHydrationScreen()">Hydration</a>
+                <a onclick="showArtScreen()">Art</a>
+                <a onclick="showStoreScreen()">Store</a>
+                <a onclick="showLoginScreen()">Dashboard</a>
+            </div>
+            <div class="copy">&copy; 2026 AquaSicura &middot; Reviving the essence of water.</div>
+        </footer>
+    </div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
     <!-- LOGIN SCREEN                                                    -->
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <div id="login-screen" class="screen">
