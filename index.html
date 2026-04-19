@@ -36,7 +36,7 @@
     <meta name="geo.position" content="25.2048;55.2708">
     <meta name="ICBM" content="25.2048, 55.2708">
     <meta name="language" content="English">
-    <meta http-equiv="content-language" content="en, ar, it">
+    <meta http-equiv="content-language" content="en, ar, it, ru">
 
     <!-- ═══ SEO — Structured Data (JSON-LD) ═══ -->
     <script type="application/ld+json">
@@ -175,7 +175,7 @@
     </script>
 
     <!-- ═══ Stylesheets & Scripts ═══ -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -185,6 +185,19 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 </head>
 <body>
+
+    <script>
+        // Fallback language switcher — works even if i18n.js fails to load
+        window.setLanguage = window.setLanguage || function(lang){
+            try { localStorage.setItem('aquasicura_lang', lang); } catch(e){}
+            location.reload();
+        };
+        window.toggleLangDropdown = window.toggleLangDropdown || function(e, id){
+            if(e) e.stopPropagation();
+            var el = document.getElementById(id || 'lang-dropdown');
+            if(el) el.classList.toggle('open');
+        };
+    </script>
 
     <!-- ═══════════════════════════════════════════════════════════════ -->
     <!-- UNIVERSAL NAVIGATION (body-level, always fixed)               -->
@@ -205,11 +218,12 @@
             <button class="btn btn-glass" onclick="showLoginScreen()" data-i18n="nav.dashboard">Dashboard</button>
         </div>
         <div class="lang-switcher" id="lang-dropdown">
-            <button class="lang-btn" onclick="toggleLangDropdown(event)" id="lang-btn-label">🇬🇧</button>
+            <button class="lang-btn" onclick="event.stopPropagation();document.getElementById('lang-dropdown').classList.toggle('open');" id="lang-btn-label">🇬🇧</button>
             <div class="lang-options">
                 <button onclick="setLanguage('en')">🇬🇧 English</button>
                 <button onclick="setLanguage('ar')">🇦🇪 عربي</button>
                 <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                <button onclick="setLanguage('ru')">🇷🇺 Русский</button>
             </div>
         </div>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -231,6 +245,7 @@
             <button class="mobile-lang-btn" onclick="setLanguage('en'); closeMobileMenu();">🇬🇧 English</button>
             <button class="mobile-lang-btn" onclick="setLanguage('ar'); closeMobileMenu();">🇦🇪 عربي</button>
             <button class="mobile-lang-btn" onclick="setLanguage('it'); closeMobileMenu();">🇮🇹 Italiano</button>
+            <button class="mobile-lang-btn" onclick="setLanguage('ru'); closeMobileMenu();">🇷🇺 Русский</button>
         </div>
     </div>
 
@@ -1551,11 +1566,12 @@
                 <span id="nav-user" class="nav-user"></span>
                 <span id="nav-role" class="nav-badge"></span>
                 <div class="lang-switcher" id="lang-dropdown-app">
-                    <button class="lang-btn" onclick="toggleLangDropdown(event, 'lang-dropdown-app')">🌐</button>
+                    <button class="lang-btn" onclick="event.stopPropagation();document.getElementById('lang-dropdown-app').classList.toggle('open');">🌐</button>
                     <div class="lang-options">
                         <button onclick="setLanguage('en')">🇬🇧 English</button>
                         <button onclick="setLanguage('ar')">🇦🇪 عربي</button>
                         <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                        <button onclick="setLanguage('ru')">🇷🇺 Русский</button>
                     </div>
                 </div>
                 <button class="btn btn-sm btn-outline-light" onclick="doLogout()" data-i18n="nav.logout">Logout</button>
@@ -2031,7 +2047,7 @@
         </div>
     </div>
 
-    <script src="i18n.js"></script>
-    <script src="app.js"></script>
+    <script src="i18n.js?v=2"></script>
+    <script src="app.js?v=2"></script>
 </body>
 </html>
