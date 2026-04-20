@@ -885,6 +885,10 @@ body {
     padding-bottom: 6px; border-bottom: 1px solid var(--border);
 }
 .form-section-label:first-of-type { margin-top: 4px; }
+.readonly-field {
+    padding: 10px 14px; background: var(--bg-soft, #f5f5f0); border: 1px solid var(--border, #ddd);
+    border-radius: 6px; font-size: 14px; color: var(--text, #333); min-height: 20px;
+}
 
 /* ── Map View ───────────────────────────────────────────────────── */
 .device-map-marker {

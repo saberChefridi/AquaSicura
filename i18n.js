@@ -12,6 +12,7 @@ const TRANSLATIONS = {
 "nav.dashboard":        { en:"Dashboard",    ar:"\u0644\u0648\u062d\u0629 \u0627\u0644\u0642\u064a\u0627\u062f\u0629", it:"Pannello",   ru:"\u041f\u0430\u043d\u0435\u043b\u044c \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f" },
 "nav.home":             { en:"Home",         ar:"\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629",  it:"Home",         ru:"\u0413\u043b\u0430\u0432\u043d\u0430\u044f" },
 "nav.logout":           { en:"Logout",       ar:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062e\u0631\u0648\u062c", it:"Esci",       ru:"\u0412\u044b\u0445\u043e\u0434" },
+"nav.profile":          { en:"Profile",      ar:"\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062e\u0635\u064a",    it:"Profilo",    ru:"\u041f\u0440\u043e\u0444\u0438\u043b\u044c" },
 "nav.literature":       { en:"Literature",   ar:"\u0627\u0644\u0623\u062f\u0628",                                 it:"Letteratura",  ru:"\u041b\u0438\u0442\u0435\u0440\u0430\u0442\u0443\u0440\u0430" },
 "nav.hydration":        { en:"Hydration",    ar:"\u0627\u0644\u0625\u0631\u062a\u0648\u0627\u0621",               it:"Idratazione",  ru:"\u0413\u0438\u0434\u0440\u0430\u0442\u0430\u0446\u0438\u044f" },
 "nav.art":              { en:"Art",          ar:"\u0627\u0644\u0641\u0646",                                         it:"Arte",          ru:"\u0418\u0441\u043a\u0443\u0441\u0441\u0442\u0432\u043e" },

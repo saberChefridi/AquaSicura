@@ -1015,7 +1015,7 @@ function loadCustomers() {
                     const users = up.data || [];
                     if (users.length === 0) el.innerHTML = '<em>No users</em>';
                     else el.innerHTML = '<strong>Users:</strong><ul class="customer-users">' +
-                        users.map(u => '<li>' + u.email + ' <button class="btn btn-sm btn-outline" onclick="deleteUser(\'' + u.id.id + '\',\'' + u.email + '\')">x</button></li>').join('') +
+                        users.map(u => '<li><a href="#" onclick="openUserDetail(\'' + u.id.id + '\');return false;" style="color:var(--accent);text-decoration:none;cursor:pointer;">' + u.email + '</a></li>').join('') +
                         '</ul>';
                 });
             // Load devices
@@ -1209,10 +1209,136 @@ async function deleteCustomer(id, title) {
     }
 }
 
-function deleteUser(id, email) {
-    if (!confirm('Delete user "' + email + '"?')) return;
-    api('/user/' + id, { method: 'DELETE' }).then(() => loadCustomers())
-        .catch(err => alert('Error: ' + err.message));
+// ── User Detail (admin view) & Profile (self-service) ───────────────
+//
+// ThingsBoard stores passwords as bcrypt hashes, so the current password
+// can never be READ — only RESET. Admin can set a new password; normal
+// users can change their own password via /auth/changePassword.
+
+async function openUserDetail(userId) {
+    try {
+        const u = await api('/user/' + userId);
+        document.getElementById('user-detail-id').value = u.id.id;
+        document.getElementById('user-detail-email').value = u.email || '';
+        document.getElementById('user-detail-first').value = u.firstName || '';
+        document.getElementById('user-detail-last').value = u.lastName || '';
+        document.getElementById('user-detail-authority').textContent = u.authority || '';
+        document.getElementById('user-detail-created').textContent =
+            u.createdTime ? new Date(u.createdTime).toLocaleString() : '—';
+        document.getElementById('user-detail-customer').textContent =
+            (u.additionalInfo && u.additionalInfo.deviceName) ? u.additionalInfo.deviceName : '—';
+        document.getElementById('user-detail-password').value = '';
+        document.getElementById('user-detail-result').textContent = '';
+        document.getElementById('user-detail-result').className = 'status-msg';
+        openModal('modal-user-detail');
+    } catch(err) {
+        alert('Error loading user: ' + err.message);
+    }
+}
+
+async function saveUserDetails() {
+    const id    = document.getElementById('user-detail-id').value;
+    const email = document.getElementById('user-detail-email').value.trim();
+    const first = document.getElementById('user-detail-first').value.trim();
+    const last  = document.getElementById('user-detail-last').value.trim();
+    const newPw = document.getElementById('user-detail-password').value;
+    const res   = document.getElementById('user-detail-result');
+
+    if (!email) { res.textContent = 'Email is required'; res.className = 'status-msg err'; return; }
+    if (newPw && newPw.length < 6) { res.textContent = 'New password must be at least 6 characters'; res.className = 'status-msg err'; return; }
+
+    try {
+        // Fetch current user object so we don't clobber existing fields (customerId, authority, etc.)
+        res.innerHTML = '⏳ Saving profile...'; res.className = 'status-msg';
+        const current = await api('/user/' + id);
+        current.email = email;
+        current.firstName = first;
+        current.lastName  = last;
+        await api('/user?sendActivationMail=false', { method: 'POST', body: JSON.stringify(current) });
+
+        // Optional password reset via activation-link flow (the same flow used on customer creation)
+        if (newPw) {
+            res.innerHTML = '⏳ Resetting password...';
+            const linkRaw = await api('/user/' + id + '/activationLink');
+            const clean = String(linkRaw).replace(/^"|"$/g, '').trim();
+            let token = '';
+            try { token = new URL(clean).searchParams.get('activateToken'); } catch(e) {}
+            if (!token) { const m = clean.match(/activateToken=([^&"'\s]+)/); if (m) token = m[1]; }
+            if (!token) throw new Error('Could not obtain activation token from server');
+
+            const resp = await fetch(TB_URL + '/api/noauth/activate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ activateToken: token, password: newPw })
+            });
+            if (!resp.ok) throw new Error('Password reset failed: ' + (await resp.text()));
+        }
+
+        res.className = 'status-msg ok';
+        res.innerHTML = '✅ Saved successfully.' + (newPw ? ' New password is active.' : '');
+        if (typeof loadCustomers === 'function') loadCustomers();
+    } catch(err) {
+        res.className = 'status-msg err';
+        res.textContent = 'Error: ' + err.message;
+    }
+}
+
+async function openMyProfile() {
+    // Self-service: any logged-in user can view/edit their own profile + password
+    try {
+        const u = await api('/auth/user');
+        document.getElementById('profile-email').value = u.email || '';
+        document.getElementById('profile-first').value = u.firstName || '';
+        document.getElementById('profile-last').value  = u.lastName || '';
+        document.getElementById('profile-authority').textContent = u.authority || '';
+        document.getElementById('profile-current-pw').value = '';
+        document.getElementById('profile-new-pw').value = '';
+        document.getElementById('profile-result').textContent = '';
+        document.getElementById('profile-result').className = 'status-msg';
+        openModal('modal-my-profile');
+    } catch(err) {
+        alert('Error loading profile: ' + err.message);
+    }
+}
+
+async function saveMyProfile() {
+    const email = document.getElementById('profile-email').value.trim();
+    const first = document.getElementById('profile-first').value.trim();
+    const last  = document.getElementById('profile-last').value.trim();
+    const curPw = document.getElementById('profile-current-pw').value;
+    const newPw = document.getElementById('profile-new-pw').value;
+    const res   = document.getElementById('profile-result');
+
+    if (!email) { res.textContent = 'Email is required'; res.className = 'status-msg err'; return; }
+    if (newPw && newPw.length < 6) { res.textContent = 'New password must be at least 6 characters'; res.className = 'status-msg err'; return; }
+    if (newPw && !curPw) { res.textContent = 'Enter your current password to change it'; res.className = 'status-msg err'; return; }
+
+    try {
+        res.innerHTML = '⏳ Saving profile...'; res.className = 'status-msg';
+        const current = await api('/auth/user');
+        current.email = email;
+        current.firstName = first;
+        current.lastName  = last;
+        await api('/user?sendActivationMail=false', { method: 'POST', body: JSON.stringify(current) });
+
+        if (newPw) {
+            res.innerHTML = '⏳ Changing password...';
+            await api('/auth/changePassword', {
+                method: 'POST',
+                body: JSON.stringify({ currentPassword: curPw, newPassword: newPw })
+            });
+        }
+
+        // Refresh cached user email shown in nav
+        USER.email = email;
+        document.getElementById('nav-user').textContent = email;
+
+        res.className = 'status-msg ok';
+        res.innerHTML = '✅ Profile saved.' + (newPw ? ' Password updated — it will be used on next login.' : '');
+    } catch(err) {
+        res.className = 'status-msg err';
+        res.textContent = 'Error: ' + err.message;
+    }
 }
 
 // ── Alarm Config via ThingsBoard Shared Attributes ──────────────────
