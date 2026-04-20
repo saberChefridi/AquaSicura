@@ -1003,7 +1003,6 @@ function loadCustomers() {
                 <div class="customer-users" id="cust-users-${c.id.id}">Loading users...</div>
                 <div class="customer-devices" id="cust-devices-${c.id.id}">Loading devices...</div>
                 <div style="margin-top:10px;">
-                    <button class="btn btn-sm btn-outline" onclick="openAddUserToCustomer('${c.id.id}','${c.title}')">+ Add User</button>
                     <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${c.id.id}','${c.title}')">Delete</button>
                 </div>
             `;
@@ -1188,16 +1187,26 @@ async function addCustomerAndUser() {
     }
 }
 
-function openAddUserToCustomer(customerId, customerTitle) {
-    openAddCustomerModal();
-    document.getElementById('new-customer-name').value = customerTitle;
-    document.getElementById('new-customer-name').readOnly = true;
-}
-
-function deleteCustomer(id, title) {
-    if (!confirm('Delete customer "' + title + '"? All users under this customer will be removed.')) return;
-    api('/customer/' + id, { method: 'DELETE' }).then(() => loadCustomers())
-        .catch(err => alert('Error: ' + err.message));
+async function deleteCustomer(id, title) {
+    if (!confirm(
+        'Delete customer "' + title + '"?\n\n' +
+        '• The customer user account will be removed.\n' +
+        '• Assigned devices will be preserved and returned to tenant ownership — admin will still see them.'
+    )) return;
+    try {
+        // Unassign any devices currently owned by this customer, so they return to tenant scope.
+        // TB auto-unassigns on customer delete, but doing it explicitly makes the behavior visible
+        // and survives edge cases where the customer owned devices via the owner API.
+        const devicesPage = await api('/customer/' + id + '/devices?pageSize=200&page=0').catch(() => ({ data: [] }));
+        for (const d of (devicesPage.data || [])) {
+            await api('/customer/device/' + d.id.id, { method: 'DELETE' }).catch(() => {});
+        }
+        await api('/customer/' + id, { method: 'DELETE' });
+        loadCustomers();
+        refreshDashboard();
+    } catch(err) {
+        alert('Error: ' + err.message);
+    }
 }
 
 function deleteUser(id, email) {
