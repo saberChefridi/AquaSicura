@@ -890,6 +890,31 @@ body {
     border-radius: 6px; font-size: 14px; color: var(--text, #333); min-height: 20px;
 }
 
+/* ── Sticky Save Bar for Alarm tab ───────────────────────────────── */
+.alarm-save-bar {
+    position: sticky; bottom: 0; z-index: 50; margin: 24px -8px 8px;
+    background: #fff; border: 1px solid var(--border, #ddd); border-radius: 10px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.08); transition: all 0.2s ease;
+}
+.alarm-save-bar-inner {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 18px;
+}
+.alarm-save-bar-msg { font-size: 14px; color: #666; flex: 1; }
+.alarm-save-bar-clean { display: inline; color: #28a745; }
+.alarm-save-bar-dirty { display: none; color: #856404; font-weight: 500; }
+.alarm-save-bar.dirty {
+    background: #fff9e6; border-color: #ffe187;
+    box-shadow: 0 -4px 20px rgba(255,193,7,0.25);
+}
+.alarm-save-bar.dirty .alarm-save-bar-clean { display: none; }
+.alarm-save-bar.dirty .alarm-save-bar-dirty { display: inline; }
+.alarm-save-bar .btn-primary { white-space: nowrap; padding: 10px 22px; font-size: 14px; }
+@media (max-width: 640px) {
+    .alarm-save-bar-inner { flex-direction: column; align-items: stretch; }
+    .alarm-save-bar .btn-primary { width: 100%; }
+}
+
 /* ── Map View ───────────────────────────────────────────────────── */
 .device-map-marker {
     background: none !important; border: none !important;

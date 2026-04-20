@@ -1392,9 +1392,42 @@ function updateNotifPermStatus() {
     }
 }
 
+// ── Alarm-tab dirty tracking ────────────────────────────────────────
+// Tracks whether the user has modified any alarm setting since last load/save,
+// so we can show an "Unsaved changes" indicator and warn on tab switch.
+let alarmDirty = false;
+function markAlarmDirty() {
+    if (alarmDirty) return;
+    alarmDirty = true;
+    const bar = document.getElementById('alarm-save-bar');
+    if (bar) bar.classList.add('dirty');
+    const ind = document.getElementById('alarm-dirty-indicator');
+    if (ind) ind.style.display = 'inline-flex';
+}
+function clearAlarmDirty() {
+    alarmDirty = false;
+    const bar = document.getElementById('alarm-save-bar');
+    if (bar) bar.classList.remove('dirty');
+    const ind = document.getElementById('alarm-dirty-indicator');
+    if (ind) ind.style.display = 'none';
+}
+function wireAlarmDirtyListeners() {
+    const ids = ['wa-tds-min','wa-tds-max','wa-ph-min','wa-ph-max','wa-temp-min','wa-temp-max',
+                 'alarm-delay','notif-web','notif-list','notif-email','notif-sms',
+                 'notif-email-addr','notif-sms-phone'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.dataset.dirtyWired) return;
+        el.dataset.dirtyWired = '1';
+        el.addEventListener('input',  markAlarmDirty);
+        el.addEventListener('change', markAlarmDirty);
+    });
+}
+
 function loadDeviceAlarmConfig() {
     const deviceId = document.getElementById('alarm-device-select').value;
     if (!deviceId) return;
+    wireAlarmDirtyListeners();
 
     function applyDefaults() {
         document.getElementById('wa-tds-min').value  = DEFAULT_ALARMS.tdsAlarmMin;
@@ -1446,6 +1479,8 @@ function loadDeviceAlarmConfig() {
     .catch(() => { applyDefaults(); });
 
     loadAlarmHistory();
+    // After a fresh load, values match server state — reset dirty flag
+    setTimeout(clearAlarmDirty, 50);
 }
 
 function saveDeviceAlarmConfig() {
@@ -1497,7 +1532,8 @@ function saveDeviceAlarmConfig() {
         body: JSON.stringify(attrs)
     })
     .then(() => {
-        status.innerHTML = 'All alarm settings saved successfully. The device will pick up new limits on its next check (up to 60s).' +
+        clearAlarmDirty();
+        status.innerHTML = '✅ All alarm settings saved successfully. The device will pick up new limits on its next check (up to 60s).' +
             '<br><small>Notification channels: ' +
             (attrs.notifWeb ? 'Browser ' : '') +
             (attrs.notifList ? 'AlarmList ' : '') +
@@ -1655,6 +1691,13 @@ setInterval(checkAlarmsAndNotify, 30000);
 // ── Tab switch hooks ────────────────────────────────────────────────
 const origSwitchTab = switchTab;
 switchTab = function(btn) {
+    // Guard: if leaving the Alarms tab with unsaved changes, ask before discarding
+    const currentActive = document.querySelector('.tab-content.active');
+    const leavingAlarms = currentActive && currentActive.id === 'tab-alarms';
+    if (leavingAlarms && alarmDirty && btn.dataset.tab !== 'alarms') {
+        if (!confirm('You have unsaved alarm settings. Leave anyway and discard changes?')) return;
+        clearAlarmDirty();
+    }
     origSwitchTab(btn);
     const tab = btn.dataset.tab;
     if (tab === 'devices' && IS_ADMIN) loadDevicesTable();
@@ -1663,6 +1706,10 @@ switchTab = function(btn) {
     if (tab === 'charts') { populateChartDeviceSelector(); loadCharts(); }
     if (tab === 'log')    { populateLogDeviceSelector(); loadLog(); }
 };
+
+window.addEventListener('beforeunload', e => {
+    if (alarmDirty) { e.preventDefault(); e.returnValue = ''; }
+});
 
 // ── Auto-refresh every 30 seconds ───────────────────────────────────
 setInterval(() => {
